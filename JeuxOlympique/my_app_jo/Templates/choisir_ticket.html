@@ -1,0 +1,27 @@
+<!-- choisir_ticket.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choisir un ticket</title>
+</head>
+<body>
+    <h1>Choisissez un ticket :</h1>
+    <ul>
+        {% for offre in offres %}
+            <li>
+                <p>Type: {{ offre.Type }}</p>
+                <p>Nombre de personnes: {{ offre.NombrePersonnes }}</p>
+                <p>Prix: {{ offre.Prix }}</p>
+                <form action="{% url 'passer_commande' offre.pk_Offre %}" method="post">
+                    {% csrf_token %}
+                    <label for="quantite">Quantité:</label>
+                    <input type="number" name="quantite" id="quantite" value="1" min="1">
+                    <button type="submit">Acheter</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
