@@ -25,14 +25,6 @@ class Utilisateur(models.Model):
     def __str__(self):
         return f'{self.Nom}, {self.Prenom}, {self.AdresseEmail}'
 
-class lieu_des_competions(models.Model):
-    pk_lieu = models.AutoField(primary_key=True)
-    Nom = models.CharField(max_length=250)
-    Ville = models.CharField(max_length=50)
-    Capacite = models.BigIntegerField()
-
-    def __str__(self):
-        return f'{self.Nom}, {self.Ville}, {self.Capacite}'
 
 class Dates_commandes(models.Model):
     pk_date = models.DateTimeField(primary_key=True)
@@ -40,26 +32,42 @@ class Dates_commandes(models.Model):
     def __str__(self):
         return f'{self.pk_date}'
 
-class Dates_Competions(models.Model):
-    pk_date_competition = models.DateTimeField(primary_key=True)
-    date_debut = models.DateTimeField()
-    Dates_fin = models.DateTimeField()
-
-    def __str__(self):
-        return f'{self.pk_date_competition}, {self.date_debut}, {self.Dates_fin}'
-
-class list_competition(models.Model):
-    pk_list_competition = models.CharField(max_length=50, primary_key=True)
+class List_competition(models.Model):
+    pk_list_competition = models.CharField(max_length=150, primary_key=True)
 
     def __str__(self):
         return f'{self.pk_list_competition}'
+class Lieu_des_competions(models.Model):
+    pk_lieu = models.AutoField(primary_key=True)
+    Nom = models.CharField(max_length=250)
+    Ville = models.CharField(max_length=50)
+    Capacite = models.BigIntegerField()
+    Discipline = models.ForeignKey(List_competition, on_delete=models.CASCADE)
+    def __str__(self):
+        return f'{self.Nom}, {self.Ville}, {self.Capacite}'    
+class Dates_Competions(models.Model):
+    # Définir le champ pour la clé primaire concaténée
+    pk_date_competition = models.CharField(max_length=255, primary_key=True)
+    date_debut = models.DateTimeField()
+    date_fin = models.DateTimeField()
+    pk_list_competition = models.ForeignKey(List_competition, on_delete=models.CASCADE)
+    Remises_de_medailles = models.CharField(max_length=250, default='')  # Valeur par défaut ajoutée ici
+
+    def save(self, *args, **kwargs):
+        # Concaténer les champs pour former la clé primaire
+        self.pk_date_competition = f"{self.pk_list_competition}_{self.date_debut}_{self.date_fin}"
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f'{self.pk_date_competition}, ({self.date_debut} au {self.date_fin}), {self.Remises_de_medailles}'
+
 
 class Competitions(models.Model):
     pk_typ_competition = models.AutoField(primary_key=True)
     Nom = models.CharField(max_length=250)
-    pk_list_competition = models.ForeignKey(list_competition, on_delete=models.CASCADE)
+    pk_list_competition = models.ForeignKey(List_competition, on_delete=models.CASCADE)
     pk_date_competition = models.ForeignKey(Dates_Competions, on_delete=models.CASCADE)
-    pk_lieu = models.ForeignKey(lieu_des_competions, on_delete=models.CASCADE)
+    pk_lieu = models.ForeignKey(Lieu_des_competions, on_delete=models.CASCADE)
 
     def __str__(self):
         return f'{self.Nom}, {self.pk_list_competition}, {self.pk_date_competition}, {self.pk_lieu}'
@@ -92,9 +100,20 @@ class Commande(models.Model):
         return f'Commande {self.pk_Commande} pour {self.quantite} billet(s)'
 
     def save(self, *args, **kwargs):
-        if not self.pk_Billet_id:
+        if not self.pk_Billet:
             billet = Billet.objects.create(pk_typ_competition=self.pk_Competition)
             billet.Cledebilletelectroniquesecurisee = billet.generer_cle()
             billet.save()
             self.pk_Billet = billet
         super(Commande, self).save(*args, **kwargs)
+
+class ODS(models.Model):
+    discipline = models.CharField(max_length=250)
+    date_debut = models.DateField()
+    date_fin = models.DateField()
+    lieu = models.CharField(max_length=250)
+    capacite = models.BigIntegerField()
+    remises_de_medailles = models.CharField(max_length=250, blank=True)
+
+    def __str__(self):
+        return f'{self.discipline} - {self.lieu} ({self.date_debut} to {self.date_fin})'

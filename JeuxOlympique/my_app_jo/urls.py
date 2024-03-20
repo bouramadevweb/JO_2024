@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .views import deconnexion
+# from .views import deconnexion
 
 urlpatterns = [
     path('', views.home, name='home'),
