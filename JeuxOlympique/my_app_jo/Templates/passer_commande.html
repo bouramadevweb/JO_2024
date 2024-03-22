@@ -1,19 +1,18 @@
 <!-- passer_commande.html -->
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Passer une commande</title>
-</head>
-<body>
-    <h1>Passer une commande :</h1>
-    <p>Vous avez choisi l'offre : {{ offre.Type }}</p>
-    <form action="" method="post">
+{% extends 'base.html' %}
+
+{% block title %} {% endblock %}
+
+{% block content %}
+    <h1>Passer une commande</h1>
+    <!-- Afficher les détails de l'offre -->
+    <p>Offre: {{ offre }}</p>
+    <!-- Afficher le formulaire de commande -->
+    <form method="post">
         {% csrf_token %}
-        <label for="quantite">Quantité:</label>
-        <input type="number" name="quantite" id="quantite" value="1" min="1">
-        <button type="submit">Confirmer</button>
+        <!-- Afficher les champs du formulaire -->
+        {{ form.as_p }}
+        <!-- Bouton de soumission du formulaire -->
+        <button type="submit">Passer la commande</button>
     </form>
-</body>
-</html>
+{% endblock %}

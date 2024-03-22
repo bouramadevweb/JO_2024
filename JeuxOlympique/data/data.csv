@@ -2,32 +2,40 @@ Discipline,date_debut,date_fin,Lieu,Capacite,Remises_de_médailles
 Athlétisme,2024-08-01,2024-08-11,Stade de France,80000,À chaque session
 Aviron,2024-07-27,2024-08-03,Stade nautique de Vaires-sur-Marne,5000,"['31 juillet', '1er', '2 et 3 août']"
 Badminton,2024-07-27,2024-08-05,Arena Porte de la Chapelle,10000,"['2', '3', '4 et 5 août']"
-Basketball,2024-07-27,2024-08-11,Stade Pierre Mauroy et Arena Bercy,30000,['10 et 11 août']
+Basketball,2024-07-27,2024-08-11,Stade Pierre Mauroy,30000 ,['10 et 11 août']
+Basketball,2024-07-27,2024-08-11,Arena Bercy,40000,['10 et 11 août']
 Basketball 3x3,2024-07-30,2024-08-05,La Concorde,5000,['5 août']
 BMX freestyle,2024-07-30,2024-07-31,La Concorde,5000,['31 juillet']
 BMX race,2024-08-01,2024-08-02,Stade BMX de Saint-Quentin-en-Yvelines,3000,['2 août']
-Boxe,2024-07-27,2024-08-10,Arena Paris Nord et Stade Roland-Garros,15000,"['6, 7, 8, 9 et 10 août']"
+Boxe,2024-07-27,2024-08-10, Stade Roland-Garros,15000,"['6, 7, 8, 9 et 10 août']"
+Boxe,2024-07-27,2024-08-10,Arena Paris Nord,25000,"['6, 7, 8, 9 et 10 août']"
 Breaking,2024-08-09,2024-08-10,La Concorde,5000,Lors de toutes les sessions
 Canoë slalom,2024-07-27,2024-08-05,Stade nautique de Vaires-sur-Marne,5000,"['28, 29 et 31 juillet', '1er et 5 août']"
 Canoë sprint,2024-08-06,2024-08-10,Stade nautique de Vaires-sur-Marne,5000,"['8, 9 et 10 août']"
 Cyclisme sur piste,2024-08-05,2024-08-11,Vélodrome national de Saint-Quentin-en-Yvelines,5000,Lors de toutes les sessions
-Cyclisme sur route,2024-07-27,2024-08-04,"Pont d’Iéna, aux Invalides et au pont Alexandre III",20000,Lors de toutes les sessions
+Cyclisme sur route,2024-07-27,2024-08-04,"['Pont d’Iéna, aux Invalides , au pont Alexandre III']",20000,Lors de toutes les sessions
 Escalade sportive,2024-08-05,2024-08-10,Site d’escalade du Bourget,5000,"['7, 8, 9 et 10 août']"
 Escrime,2024-07-27,2024-08-04,Grand Palais,10000,Lors de toutes les sessions
 Escrime fauteuil,2024-09-03,2024-09-07,Grand Palais,10000,Lors de toutes les sessions
-Football,2024-07-24,2024-08-10,"Parc des Princes, Stade de Nantes, Stade de Bordeaux, Stade de Marseille, Stade de Nice, Stade Geoffroy-Guichard et Stade de Lyon",60000,"['8, 9 et 10 août']"
+Football,2024-07-24,2024-08-10,Parc des Princes,60000,"['8, 9 et 10 août']"
+Football,2024-07-24,2024-08-10, Stade de Nantes,50000,"['8, 9 et 10 août']"
+Football,2024-07-24,2024-08-10,  Stade de Bordeaux,42000,"['8, 9 et 10 août']"
+Football,2024-07-24,2024-08-10,   Stade de Marseille,67000,"['8, 9 et 10 août']"
+Football,2024-07-24,2024-08-10, Stade de Nice,35500,"['8, 9 et 10 août']"
+Football,2024-07-24,2024-08-10, Stade Geoffroy-Guichard ,42000,"['8, 9 et 10 août']"
+Football,2024-07-24,2024-08-10, Stade de Lyon,59186,"['8, 9 et 10 août']"
 Golf,2024-08-01,2024-08-10,Golf National,20000,['4 et 10 août']
 Gymnastique artistique,2024-07-27,2024-08-05,Arena Bercy,15000,"['29, 30 et 31 juillet', '1er, 3, 4 et 5 août']"
 Gymnastique rythmique,2024-08-08,2024-08-10,Arena Porte de la Chapelle,10000,['9 et 10 août']
 Haltérophilie,2024-08-07,2024-08-11,Arena Paris Sud 6,8000,Lors de toutes les sessions
-Handball,2024-07-25,2024-08-11,Stade Pierre Mauroy et Arena Paris Sud 6,30000,['10 et 11 août']
+Handball,2024-07-25,2024-08-11,"['Stade Pierre Mauroy , Arena Paris Sud 6']","['30000,35000']",['10 et 11 août']
 Hockey,2024-07-27,2024-08-09,Stade Yves-du-Manoir,10000,['8 et 9 août']
 Judo,2024-07-27,2024-08-03,Arena Champ de Mars,12000,Lors de toutes les sessions
 Lutte,2024-08-05,2024-08-11,Arena Champ de Mars,12000,"['6, 7, 8, 9, 10 et 11 août']"
 Natation,2024-07-27,2024-08-04,Paris La Défense Arena,20000,Lors de toutes les sessions
 Natation artistique,2024-08-05,2024-08-10,Centre Aquatique,8000,['7 et 10 août']
 Natation marathon,2024-08-08,2024-08-09,Pont Alexandre III,10000,Lors de toutes les sessions
-Pentathlon moderne,2024-08-08,2024-08-11,Château de Versailles et Arena Paris Nord,15000,['10 et 11 août']
+Pentathlon moderne,2024-08-08,2024-08-11,"['Château de Versailles , Arena Paris Nord']","['15000,20000']",['10 et 11 août']
 Plongeon,2024-07-27,2024-08-10,Centre Aquatique,8000,"['27, 29 et 31 juillet', '2, 6, 8, 9 et 10 août']"
 Rugby,2024-07-24,2024-07-30,Stade de France,80000,['27 et 30 juillet']
 Skateboard,2024-07-27,2024-08-07,La Concorde,5000,Lors de toutes les sessions
@@ -44,4 +52,5 @@ Voile,2024-07-28,2024-08-08,Marina de Marseille,10000,"['1, 2, 6, 7 et 8 août']
 Volleyball,2024-07-27,2024-08-11,Arena Paris Sud 1,20000,"['9, 10 et 11 août']"
 Volleyball de plage,2024-07-27,2024-08-10,Stade Tour Eiffel,5000,['9 et 10 août']
 VTT,2024-07-28,2024-07-29,Colline d’Elancourt,5000,Lors de toutes les sessions
-Waterpolo,2024-07-27,2024-08-11,Centre Aquatique et Paris La Défense Arena,10000,['10 et 11 août']
+Waterpolo,2024-07-27,2024-08-11,Centre Aquatique,10000,['10 et 11 août']
+Waterpolo,2024-07-27,2024-08-11,Paris La Défense Arena,15000,['10 et 11 août']

@@ -1,278 +1,370 @@
 [
   {
     "Discipline": "Athlétisme",
-    "Dates": "1er au 11 août",
+    "date_debut": "2024-08-01",
+    "date_fin": "2024-08-11",
     "Lieu": "Stade de France",
+    "Capacite": 80000,
     "Remises_de_médailles": "À chaque session"
   },
   {
     "Discipline": "Aviron",
-    "Dates": "27 juillet au 3 août",
+    "date_debut": "2024-07-27",
+    "date_fin": "2024-08-03",
     "Lieu": "Stade nautique de Vaires-sur-Marne",
+    "Capacite": 5000,
     "Remises_de_médailles": ["31 juillet", "1er", "2 et 3 août"]
   },
   {
     "Discipline": "Badminton",
-    "Dates": "27 juillet au 5 août",
+    "date_debut": "2024-07-27",
+    "date_fin": "2024-08-05",
     "Lieu": "Arena Porte de la Chapelle",
+    "Capacite": 10000,
     "Remises_de_médailles": ["2", "3", "4 et 5 août"]
   },
   {
     "Discipline": "Basketball",
-    "Dates": "27 juillet au 11 août",
+    "date_debut": "2024-07-27",
+    "date_fin": "2024-08-11",
     "Lieu": "Stade Pierre Mauroy et Arena Bercy",
+    "Capacite": 30000,
     "Remises_de_médailles": ["10 et 11 août"]
   },
   {
     "Discipline": "Basketball 3x3",
-    "Dates": "30 juillet au 5 août",
+    "date_debut": "2024-07-30",
+    "date_fin": "2024-08-05",
     "Lieu": "La Concorde",
+    "Capacite": 5000,
     "Remises_de_médailles": ["5 août"]
   },
   {
     "Discipline": "BMX freestyle",
-    "Dates": "30 au 31 juillet",
+    "date_debut": "2024-07-30",
+    "date_fin": "2024-07-31",
     "Lieu": "La Concorde",
+    "Capacite": 5000,
     "Remises_de_médailles": ["31 juillet"]
   },
   {
     "Discipline": "BMX race",
-    "Dates": "1er au 2 août",
+    "date_debut": "2024-08-01",
+    "date_fin": "2024-08-02",
     "Lieu": "Stade BMX de Saint-Quentin-en-Yvelines",
+    "Capacite": 3000,
     "Remises_de_médailles": ["2 août"]
   },
   {
     "Discipline": "Boxe",
-    "Dates": "27 juillet au 10 août",
+    "date_debut": "2024-07-27",
+    "date_fin": "2024-08-10",
     "Lieu": "Arena Paris Nord et Stade Roland-Garros",
+    "Capacite": 15000,
     "Remises_de_médailles": ["6, 7, 8, 9 et 10 août"]
   },
   {
     "Discipline": "Breaking",
-    "Dates": "9 au 10 août",
+    "date_debut": "2024-08-09",
+    "date_fin": "2024-08-10",
     "Lieu": "La Concorde",
+    "Capacite": 5000,
     "Remises_de_médailles": "Lors de toutes les sessions"
   },
   {
     "Discipline": "Canoë slalom",
-    "Dates": "27 juillet au 5 août",
+    "date_debut": "2024-07-27",
+    "date_fin": "2024-08-05",
     "Lieu": "Stade nautique de Vaires-sur-Marne",
+    "Capacite": 5000,
     "Remises_de_médailles": ["28, 29 et 31 juillet", "1er et 5 août"]
   },
   {
     "Discipline": "Canoë sprint",
-    "Dates": "6 au 10 août",
+    "date_debut": "2024-08-06",
+    "date_fin": "2024-08-10",
     "Lieu": "Stade nautique de Vaires-sur-Marne",
+    "Capacite": 5000,
     "Remises_de_médailles": ["8, 9 et 10 août"]
   },
   {
     "Discipline": "Cyclisme sur piste",
-    "Dates": "5 au 11 août",
+    "date_debut": "2024-08-05",
+    "date_fin": "2024-08-11",
     "Lieu": "Vélodrome national de Saint-Quentin-en-Yvelines",
+    "Capacite": 5000,
     "Remises_de_médailles": "Lors de toutes les sessions"
   },
   {
     "Discipline": "Cyclisme sur route",
-    "Dates": "27 juillet au 4 août",
+    "date_debut": "2024-07-27",
+    "date_fin": "2024-08-04",
     "Lieu": "Pont d’Iéna, aux Invalides et au pont Alexandre III",
+    "Capacite": 20000,
     "Remises_de_médailles": "Lors de toutes les sessions"
   },
   {
     "Discipline": "Escalade sportive",
-    "Dates": "5 au 10 août",
+    "date_debut": "2024-08-05",
+    "date_fin": "2024-08-10",
     "Lieu": "Site d’escalade du Bourget",
+    "Capacite": 5000,
     "Remises_de_médailles": ["7, 8, 9 et 10 août"]
   },
   {
     "Discipline": "Escrime",
-    "Dates": "27 juillet au 4 août",
+    "date_debut": "2024-07-27",
+    "date_fin": "2024-08-04",
     "Lieu": "Grand Palais",
+    "Capacite": 10000,
     "Remises_de_médailles": "Lors de toutes les sessions"
   },
   {
     "Discipline": "Escrime fauteuil",
-    "Dates": "3 au 7 septembre",
+    "date_debut": "2024-09-03",
+    "date_fin": "2024-09-07",
     "Lieu": "Grand Palais",
+    "Capacite": 10000,
     "Remises_de_médailles": "Lors de toutes les sessions"
   },
   {
     "Discipline": "Football",
-    "Dates": "24 juillet au 10 août",
+    "date_debut": "2024-07-24",
+    "date_fin": "2024-08-10",
     "Lieu": "Parc des Princes, Stade de Nantes, Stade de Bordeaux, Stade de Marseille, Stade de Nice, Stade Geoffroy-Guichard et Stade de Lyon",
+    "Capacite": 60000,
     "Remises_de_médailles": ["8, 9 et 10 août"]
   },
   {
     "Discipline": "Golf",
-    "Dates": "1er au 10 août",
+    "date_debut": "2024-08-01",
+    "date_fin": "2024-08-10",
     "Lieu": "Golf National",
+    "Capacite": 20000,
     "Remises_de_médailles": ["4 et 10 août"]
   },
   {
     "Discipline": "Gymnastique artistique",
-    "Dates": "27 juillet au 5 août",
+    "date_debut": "2024-07-27",
+    "date_fin": "2024-08-05",
     "Lieu": "Arena Bercy",
+    "Capacite": 15000,
     "Remises_de_médailles": ["29, 30 et 31 juillet", "1er, 3, 4 et 5 août"]
   },
   {
     "Discipline": "Gymnastique rythmique",
-    "Dates": "8 au 10 août",
+    "date_debut": "2024-08-08",
+    "date_fin": "2024-08-10",
     "Lieu": "Arena Porte de la Chapelle",
+    "Capacite": 10000,
     "Remises_de_médailles": ["9 et 10 août"]
   },
   {
     "Discipline": "Haltérophilie",
-    "Dates": "7 au 11 août",
+    "date_debut": "2024-08-07",
+    "date_fin": "2024-08-11",
     "Lieu": "Arena Paris Sud 6",
+    "Capacite": 8000,
     "Remises_de_médailles": "Lors de toutes les sessions"
   },
   {
     "Discipline": "Handball",
-    "Dates": "25 juillet au 11 août",
+    "date_debut": "2024-07-25",
+    "date_fin": "2024-08-11",
     "Lieu": "Stade Pierre Mauroy et Arena Paris Sud 6",
+    "Capacite": 30000,
     "Remises_de_médailles": ["10 et 11 août"]
   },
   {
     "Discipline": "Hockey",
-    "Dates": "27 juillet au 9 août",
+    "date_debut": "2024-07-27",
+    "date_fin": "2024-08-09",
     "Lieu": "Stade Yves-du-Manoir",
+    "Capacite": 10000,
     "Remises_de_médailles": ["8 et 9 août"]
   },
   {
     "Discipline": "Judo",
-    "Dates": "27 juillet au 3 août",
+    "date_debut": "2024-07-27",
+    "date_fin": "2024-08-03",
     "Lieu": "Arena Champ de Mars",
+    "Capacite": 12000,
     "Remises_de_médailles": "Lors de toutes les sessions"
   },
   {
     "Discipline": "Lutte",
-    "Dates": "5 au 11 août",
+    "date_debut": "2024-08-05",
+    "date_fin": "2024-08-11",
     "Lieu": "Arena Champ de Mars",
+    "Capacite": 12000,
     "Remises_de_médailles": ["6, 7, 8, 9, 10 et 11 août"]
   },
   {
     "Discipline": "Natation",
-    "Dates": "27 juillet au 4 août",
+    "date_debut": "2024-07-27",
+    "date_fin": "2024-08-04",
     "Lieu": "Paris La Défense Arena",
+    "Capacite": 20000,
     "Remises_de_médailles": "Lors de toutes les sessions"
   },
   {
     "Discipline": "Natation artistique",
-    "Dates": "5 au 10 août",
+    "date_debut": "2024-08-05",
+    "date_fin": "2024-08-10",
     "Lieu": "Centre Aquatique",
+    "Capacite": 8000,
     "Remises_de_médailles": ["7 et 10 août"]
   },
   {
     "Discipline": "Natation marathon",
-    "Dates": "8 au 9 août",
+    "date_debut": "2024-08-08",
+    "date_fin": "2024-08-09",
     "Lieu": "Pont Alexandre III",
+    "Capacite": 10000,
     "Remises_de_médailles": "Lors de toutes les sessions"
   },
   {
     "Discipline": "Pentathlon moderne",
-    "Dates": "8 au 11 août",
+    "date_debut": "2024-08-08",
+    "date_fin": "2024-08-11",
     "Lieu": "Château de Versailles et Arena Paris Nord",
+    "Capacite": 15000,
     "Remises_de_médailles": ["10 et 11 août"]
   },
   {
     "Discipline": "Plongeon",
-    "Dates": "27 juillet au 10 août",
+    "date_debut": "2024-07-27",
+    "date_fin": "2024-08-10",
     "Lieu": "Centre Aquatique",
+    "Capacite": 8000,
     "Remises_de_médailles": ["27, 29 et 31 juillet", "2, 6, 8, 9 et 10 août"]
   },
   {
     "Discipline": "Rugby",
-    "Dates": "24 au 30 juillet",
+    "date_debut": "2024-07-24",
+    "date_fin": "2024-07-30",
     "Lieu": "Stade de France",
+    "Capacite": 80000,
     "Remises_de_médailles": ["27 et 30 juillet"]
   },
   {
     "Discipline": "Skateboard",
-    "Dates": "27 juillet au 7 août",
+    "date_debut": "2024-07-27",
+    "date_fin": "2024-08-07",
     "Lieu": "La Concorde",
+    "Capacite": 5000,
     "Remises_de_médailles": "Lors de toutes les sessions"
   },
   {
     "Discipline": "Sports Equestres",
-    "Dates": "27 juillet au 6 août",
+    "date_debut": "2024-07-27",
+    "date_fin": "2024-08-06",
     "Lieu": "Château de Versailles",
+    "Capacite": 10000,
     "Remises_de_médailles": ["29 juillet", "2, 3, 4 et 6 août"]
   },
   {
     "Discipline": "Surf",
-    "Dates": "27 au 30 juillet",
+    "date_debut": "2024-07-27",
+    "date_fin": "2024-07-30",
     "Lieu": "Teahupo’o, à Tahiti",
+    "Capacite": 1000,
     "Remises_de_médailles": ["30 juillet"]
   },
   {
     "Discipline": "Taekwondo",
-    "Dates": "7 au 10 août",
+    "date_debut": "2024-08-07",
+    "date_fin": "2024-08-10",
     "Lieu": "Grand Palais",
+    "Capacite": 10000,
     "Remises_de_médailles": "Lors de toutes les sessions"
   },
   {
     "Discipline": "Tennis",
-    "Dates": "27 juillet au 4 août",
+    "date_debut": "2024-07-27",
+    "date_fin": "2024-08-04",
     "Lieu": "Stade Roland-Garros",
+    "Capacite": 15000,
     "Remises_de_médailles": ["2, 3 et 4 août"]
   },
   {
     "Discipline": "Tennis de table",
-    "Dates": "27 juillet au 10 août",
+    "date_debut": "2024-07-27",
+    "date_fin": "2024-08-10",
     "Lieu": "Arena Paris Sud 4",
+    "Capacite": 8000,
     "Remises_de_médailles": ["30 juillet", "3, 4, 9 et 10 août"]
   },
   {
     "Discipline": "Tir",
-    "Dates": "27 juillet au 5 août",
+    "date_debut": "2024-07-27",
+    "date_fin": "2024-08-05",
     "Lieu": "Centre national de tir de Châteauroux",
+    "Capacite": 5000,
     "Remises_de_médailles": "Lors de toutes les sessions"
   },
   {
     "Discipline": "Tir à l’arc",
-    "Dates": "25 juillet au 4 août",
+    "date_debut": "2024-07-25",
+    "date_fin": "2024-08-04",
     "Lieu": "Aux Invalides",
+    "Capacite": 5000,
     "Remises_de_médailles": ["28 et 29 juillet", "2, 3 et 4 août"]
   },
   {
     "Discipline": "Trampoline",
-    "Dates": "2 août",
+    "date_debut": "2024-08-02",
+    "date_fin": "2024-08-02",
     "Lieu": "Arena Bercy",
+    "Capacite": 10000,
     "Remises_de_médailles": "Lors de cette session"
   },
   {
     "Discipline": "Triathlon",
-    "Dates": "30 juillet au 5 août",
+    "date_debut": "2024-07-30",
+    "date_fin": "2024-08-05",
     "Lieu": "Pont Alexandre III",
+    "Capacite": 5000,
     "Remises_de_médailles": "Lors de toutes les sessions"
   },
   {
     "Discipline": "Voile",
-    "Dates": "28 juillet au 8 août",
+    "date_debut": "2024-07-28",
+    "date_fin": "2024-08-08",
     "Lieu": "Marina de Marseille",
+    "Capacite": 10000,
     "Remises_de_médailles": ["1, 2, 6, 7 et 8 août"]
   },
   {
     "Discipline": "Volleyball",
-    "Dates": "27 juillet au 11 août",
+    "date_debut": "2024-07-27",
+    "date_fin": "2024-08-11",
     "Lieu": "Arena Paris Sud 1",
+    "Capacite": 20000,
     "Remises_de_médailles": ["9, 10 et 11 août"]
   },
   {
     "Discipline": "Volleyball de plage",
-    "Dates": "27 juillet au 10 août",
+    "date_debut": "2024-07-27",
+    "date_fin": "2024-08-10",
     "Lieu": "Stade Tour Eiffel",
+    "Capacite": 5000,
     "Remises_de_médailles": ["9 et 10 août"]
   },
   {
     "Discipline": "VTT",
-    "Dates": "28 au 29 juillet",
+    "date_debut": "2024-07-28",
+    "date_fin": "2024-07-29",
     "Lieu": "Colline d’Elancourt",
+    "Capacite": 5000,
     "Remises_de_médailles": "Lors de toutes les sessions"
   },
   {
     "Discipline": "Waterpolo",
-    "Dates": "27 juillet au 11 août",
+    "date_debut": "2024-07-27",
+    "date_fin": "2024-08-11",
     "Lieu": "Centre Aquatique et Paris La Défense Arena",
+    "Capacite": 10000,
     "Remises_de_médailles": ["10 et 11 août"]
   }
 ]

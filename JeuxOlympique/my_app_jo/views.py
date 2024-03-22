@@ -1,23 +1,10 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
-from .models import Offre, Commande, Competitions,List_competition,Lieu_des_competions
-import secrets
-from django import forms
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
-from django.contrib.auth import logout
-
-class InscriptionForm(UserCreationForm):
-    """
-    class inscriptionform
-    """
-    email = forms.EmailField()
-
-    class Meta:
-        model = User
-        fields = ['username', 'email', 'password1', 'password2']
+from .forms import InscriptionForm, CommandeForm
+from django.contrib.auth.decorators import login_required
+from .models import Offre, Commande, Competitions, User
 
 def home(request):
     return render(request, 'home.html', {})
@@ -27,35 +14,30 @@ def choisir_ticket(request):
     return render(request, 'choisir_ticket.html', {'offres': offres})
 
 def inscription(request):
-    """
-    function pour inscription
-    """
     if request.method == 'POST':
         form = InscriptionForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
-            # Générer un token et l'associer à l'utilisateur
-            user.token = secrets.token_hex(16)  # Générer un token de 16 octets
+            user.set_password(form.cleaned_data['password1'])
             user.save()
-            email = form.cleaned_data.get('email')
-            messages.success(request, f'Félicitations, {email} ! Votre compte a été créé avec succès.')
-            return redirect('connexion')
+            login(request, user)
+            messages.success(request, f'Félicitations, {user.email} ! Votre compte a été créé avec succès.')
+            return redirect('choisir_ticket')
     else:
         form = InscriptionForm()
+        
     return render(request, 'inscription.html', {'form': form})
-
+        
 def connexion(request):
-    """
-    fonction pour la connrxion utilisateur
-    """
     if request.method == 'POST':
         form = AuthenticationForm(request, request.POST)
         if form.is_valid():
-            email = form.cleaned_data.get('username')  
+            username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
-            user = authenticate(request, username=email, password=password)
+            user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
+                messages.success(request, "Vous êtes maintenant connecté.")
                 return redirect('choisir_ticket')
             else:
                 messages.error(request, "L'adresse e-mail ou le mot de passe est incorrect.")
@@ -64,40 +46,29 @@ def connexion(request):
     return render(request, 'connexion.html', {'form': form})
 
 def deconnexion(request):
-    """
-    fonction de deconnexion
-    """
     logout(request)
     return redirect('home')
 
+@login_required
 def passer_commande(request, offre_id):
+    offre = Offre.objects.get(pk_Offre=offre_id)
+
     if request.method == 'POST':
-        offre = Offre.objects.get(pk_Offre=offre_id)
-        quantite = request.POST.get('quantite')
-        competition_id = request.POST.get('competition')
-        competition = Competitions.objects.get(pk_typ_competition=competition_id)  # Convertir en objet Competition
-        montant_total = offre.Prix * int(quantite)
-        user = request.user
-        commande = Commande.objects.create(
-            quantite=quantite,
-            MontantTotal=montant_total,
-            pk_Offre=offre,
-            pk_Utilisateur=user,
-            pk_Competition=competition
-        )
-
-        # Gestion du panier
-        panier = request.session.get('panier', [])
-        panier.append({
-            'offre_id': offre_id,
-            'quantite': quantite,
-            'competition_id': competition_id
-        })
-        request.session['panier'] = panier
-        request.session.modified = True
-
-        return render(request, 'confirmation_commande.html', {'commande': commande})
+        form = CommandeForm(request.POST)
+        if form.is_valid():
+            quantite = form.cleaned_data['quantite']
+            montant_total = offre.Prix * quantite
+            commande = Commande.objects.create(
+                quantite=quantite,
+                MontantTotal=montant_total,
+                pk_Offre=offre,
+                pk_Utilisateur=request.user,
+                pk_Competition=offre.pk_typ_competition
+            )
+            commande.pk_Billet.generer_cles()
+            messages.success(request, "La commande a été passée avec succès!")
+            return redirect('confirmation_commande')
     else:
-        offre = Offre.objects.get(pk_Offre=offre_id)
-        competitions = Competitions.objects.all()
-        return render(request, 'passer_commande.html', {'offre': offre, 'competitions': competitions})
+        form = CommandeForm()
+
+    return render(request, 'passer_commande.html', {'offre': offre, 'form': form})

@@ -1,14 +1,10 @@
-<!-- choisir_ticket.html -->
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Choisir un ticket</title>
-</head>
-<body>
+{% extends 'base.html' %}
+
+{% block title %}Choisissez un ticket{% endblock %}
+
+{% block content %}
     <h1>Choisissez un ticket :</h1>
-    <ul>
+    {# <ul>
         {% for offre in offres %}
             <li>
                 <p>Type: {{ offre.Type }}</p>
@@ -16,12 +12,18 @@
                 <p>Prix: {{ offre.Prix }}</p>
                 <form action="{% url 'passer_commande' offre.pk_Offre %}" method="post">
                     {% csrf_token %}
+                    <input type="hidden" name="pk_typ_competition" value="{{ offre.pk_typ_competition.pk_date_competition }}">
                     <label for="quantite">Quantité:</label>
                     <input type="number" name="quantite" id="quantite" value="1" min="1">
                     <button type="submit">Acheter</button>
                 </form>
             </li>
         {% endfor %}
-    </ul>
-</body>
-</html>
+    </ul> #}
+    {% for offre in offres %}
+    <p>{{ offre.Type }} - {{ offre.Prix }}</p>
+    <a href="{% url 'passer_commande' offre.pk_Offre %}">Passer la commande</a>
+
+{% endfor %}
+{% endblock %}
+
