@@ -3,27 +3,31 @@
 {% block title %}Choisissez un ticket{% endblock %}
 
 {% block content %}
-    <h1>Choisissez un ticket :</h1>
-    {# <ul>
-        {% for offre in offres %}
-            <li>
-                <p>Type: {{ offre.Type }}</p>
-                <p>Nombre de personnes: {{ offre.NombrePersonnes }}</p>
-                <p>Prix: {{ offre.Prix }}</p>
-                <form action="{% url 'passer_commande' offre.pk_Offre %}" method="post">
-                    {% csrf_token %}
-                    <input type="hidden" name="pk_typ_competition" value="{{ offre.pk_typ_competition.pk_date_competition }}">
-                    <label for="quantite">Quantité:</label>
-                    <input type="number" name="quantite" id="quantite" value="1" min="1">
-                    <button type="submit">Acheter</button>
-                </form>
-            </li>
-        {% endfor %}
-    </ul> #}
-    {% for offre in offres %}
-    <p>{{ offre.Type }} - {{ offre.Prix }}</p>
-    <a href="{% url 'passer_commande' offre.pk_Offre %}">Passer la commande</a>
+    <h1>Choisir un ticket</h1>
 
-{% endfor %}
+    <form method="POST">
+        {% csrf_token %}
+        <label for="competitions">Choisir une compétition :</label>
+        <select name="competitions" id="competitions">
+            {% for competition in competitions %}
+                <option value="{{ competition.pk_typ_competition }}">{{ competition.Nom }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Afficher les offres</button>
+    </form>
+
+    {% if offres %}
+        <h2>Offres disponibles :</h2>
+        <ul>
+            {% for offre in offres %}
+                <li>
+                    <strong>Offre: </strong> {{ offre.type }}<br>
+                    <strong>Nombre de personnes: </strong> {{ offre.nombre_personnes }}<br>
+                    <strong>Prix: </strong> {{ offre.prix }}<br>
+                </li>
+            {% empty %}
+                <li>Aucune offre disponible pour le moment.</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 {% endblock %}
-

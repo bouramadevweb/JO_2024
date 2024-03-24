@@ -4,15 +4,26 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
 from .forms import InscriptionForm, CommandeForm
 from django.contrib.auth.decorators import login_required
-from .models import Offre, Commande, Competitions, User
+from .models import Offre, Commande, Competitions, User ,List_competition
 
 def home(request):
     return render(request, 'home.html', {})
 
-def choisir_ticket(request):
-    offres = Offre.objects.all()
-    return render(request, 'choisir_ticket.html', {'offres': offres})
+from django.shortcuts import render
+from .models import Offre, Competitions
 
+def choisir_ticket(request):
+    if request.method == 'POST':
+        competition_id = request.POST.get('competitions')
+        if competition_id:
+            offres = Offre.objects.filter(competition_id=competition_id)
+        else:
+            offres = None
+    else:
+        offres = None
+
+    competitions = Competitions.objects.all()
+    return render(request, 'choisir_ticket.html', {'offres': offres, 'competitions': competitions})
 def inscription(request):
     if request.method == 'POST':
         form = InscriptionForm(request.POST)

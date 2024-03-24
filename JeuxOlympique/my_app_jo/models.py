@@ -30,9 +30,10 @@ class Dates_commandes(models.Model):
 
 class List_competition(models.Model):
     pk_list_competition = models.CharField(max_length=150, primary_key=True)
+    nom =models.CharField(max_length=150)
 
     def __str__(self):
-        return f'{self.pk_list_competition}'
+        return f'{self.pk_list_competition} ,{self.nom}'
 
 class Lieu_des_competions(models.Model):
     # Définir le champ pour la clé primaire AutoField
@@ -50,7 +51,7 @@ class Lieu_des_competions(models.Model):
     def save(self, *args, **kwargs):
         # Si l'objet n'a pas encore de clé primaire, créez-en une en utilisant les valeurs des champs spécifiés
         if not self.pk:
-            self.pk_lieu = f"{self.Nom}_{self.Capacite}_{self.Discipline.pk}"
+            self.pk_lieu = f"{self.Ville}_{self.Nom}_{self.Capacite}_{self.Discipline.pk_list_competition}"
         super().save(*args, **kwargs)
     
     def __str__(self):
@@ -74,23 +75,33 @@ class Dates_Competions(models.Model):
 
 
 class Competitions(models.Model):
-    pk_typ_competition = models.AutoField(primary_key=True)
+    pk_typ_competition = models.CharField(primary_key=True)
     Nom = models.CharField(max_length=250)
     pk_list_competition = models.ForeignKey(List_competition, on_delete=models.CASCADE)
     pk_date_competition = models.ForeignKey(Dates_Competions, on_delete=models.CASCADE)
     pk_lieu = models.ForeignKey(Lieu_des_competions, on_delete=models.CASCADE)
+    def save(self, *args, **kwargs):
+        # Concaténer les champs pour former la clé primaire
+        self.pk_typ_competition = f"{self.pk_lieu}{self.pk_list_competition}_{self.pk_date_competition}"
+        super().save(*args, **kwargs)
     def __str__(self):
-        return f'{self.Nom}, {self.pk_list_competition}, {self.pk_date_competition}, {self.pk_lieu}'
+        return f'{self.Nom}, {self.pk_typ_competition}, {self.pk_date_competition}, {self.pk_lieu}'
     
 class Offre(models.Model):
-    pk_Offre = models.CharField(max_length=50, primary_key=True)
-    Type = models.CharField(max_length=250)
-    NombrePersonnes = models.IntegerField()
-    Prix = models.FloatField()
-    pk_typ_competition = models.ForeignKey(Competitions, on_delete=models.CASCADE)  # Modifiez cette ligne
+    TYPE_CHOICES = [
+        ('One', 'One'),
+        ('Duo', 'Duo'),
+        ('Famille', 'Famille'),
+    ]
+
+    pk_Offre = models.CharField(max_length=2000, primary_key=True)
+    type = models.CharField(max_length=10, choices=TYPE_CHOICES)
+    nombre_personnes = models.IntegerField()
+    prix = models.FloatField()
+    competition = models.ForeignKey(Competitions, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'{self.pk_Offre}, {self.Type}, {self.Prix}, {self.pk_typ_competition}'
+        return f'{self.pk_Offre}, {self.type}, {self.prix}, {self.competition.Nom}'
 
 
 class Billet(models.Model):
@@ -145,6 +156,7 @@ class ODS(models.Model):
     date_debut = models.DateField()
     date_fin = models.DateField()
     lieu = models.CharField(max_length=250)
+    ville = models.CharField(max_length=250)
     capacite = models.TextField()  # Utilisez un TextField pour stocker les listes
     remises_de_medailles = models.CharField(max_length=250, blank=True)
 

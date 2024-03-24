@@ -4,6 +4,7 @@
     "date_debut": "2024-08-01",
     "date_fin": "2024-08-11",
     "Lieu": "Stade de France",
+    "Ville": "Saint-Denis",
     "Capacite": "80000",
     "Remises_de_médailles": "À chaque session"
   },
@@ -12,6 +13,7 @@
     "date_debut": "2024-07-27",
     "date_fin": "2024-08-03",
     "Lieu": "Stade nautique de Vaires-sur-Marne",
+    "Ville": "Vaires-sur-Marne",
     "Capacite": "5000",
     "Remises_de_médailles": ["31 juillet", "1er", "2 et 3 août"]
   },
@@ -20,6 +22,7 @@
     "date_debut": "2024-07-27",
     "date_fin": "2024-08-05",
     "Lieu": "Arena Porte de la Chapelle",
+    "Ville": "Paris",
     "Capacite": "10000",
     "Remises_de_médailles": ["2", "3", "4 et 5 août"]
   },
@@ -28,6 +31,7 @@
     "date_debut": "2024-07-27",
     "date_fin": "2024-08-11",
     "Lieu": "Stade Pierre Mauroy",
+    "Ville": "Villeneuve-d'Ascq",
     "Capacite": "30000 ",
     "Remises_de_médailles": ["10 et 11 août"]
   },
@@ -36,6 +40,7 @@
     "date_debut": "2024-07-27",
     "date_fin": "2024-08-11",
     "Lieu": "Arena Bercy",
+    "Ville": "Paris",
     "Capacite": "40000",
     "Remises_de_médailles": ["10 et 11 août"]
   },
@@ -44,6 +49,7 @@
     "date_debut": "2024-07-30",
     "date_fin": "2024-08-05",
     "Lieu": "La Concorde",
+    "Ville": "Paris",
     "Capacite": "5000",
     "Remises_de_médailles": ["5 août"]
   },
@@ -52,6 +58,7 @@
     "date_debut": "2024-07-30",
     "date_fin": "2024-07-31",
     "Lieu": "La Concorde",
+    "Ville": "Paris",
     "Capacite": "5000",
     "Remises_de_médailles": ["31 juillet"]
   },
@@ -60,6 +67,7 @@
     "date_debut": "2024-08-01",
     "date_fin": "2024-08-02",
     "Lieu": "Stade BMX de Saint-Quentin-en-Yvelines",
+    "Ville": "Saint-Quentin-en-Yvelines",
     "Capacite": "3000",
     "Remises_de_médailles": ["2 août"]
   },
@@ -67,7 +75,8 @@
     "Discipline": "Boxe",
     "date_debut": "2024-07-27",
     "date_fin": "2024-08-10",
-    "Lieu": " Stade Roland-Garros",
+    "Lieu": "Stade Roland-Garros",
+    "Ville": "Paris",
     "Capacite": "15000",
     "Remises_de_médailles": ["6, 7, 8, 9 et 10 août"]
   },
@@ -76,6 +85,7 @@
     "date_debut": "2024-07-27",
     "date_fin": "2024-08-10",
     "Lieu": "Arena Paris Nord",
+    "Ville": "Paris",
     "Capacite": "25000",
     "Remises_de_médailles": ["6, 7, 8, 9 et 10 août"]
   },
@@ -84,6 +94,7 @@
     "date_debut": "2024-08-09",
     "date_fin": "2024-08-10",
     "Lieu": "La Concorde",
+    "Ville": "Paris",
     "Capacite": "5000",
     "Remises_de_médailles": "Lors de toutes les sessions"
   },
@@ -92,6 +103,7 @@
     "date_debut": "2024-07-27",
     "date_fin": "2024-08-05",
     "Lieu": "Stade nautique de Vaires-sur-Marne",
+    "Ville": "Vaires-sur-Marne",
     "Capacite": "5000",
     "Remises_de_médailles": ["28, 29 et 31 juillet", "1er et 5 août"]
   },
@@ -100,6 +112,7 @@
     "date_debut": "2024-08-06",
     "date_fin": "2024-08-10",
     "Lieu": "Stade nautique de Vaires-sur-Marne",
+    "Ville": "Vaires-sur-Marne",
     "Capacite": "5000",
     "Remises_de_médailles": ["8, 9 et 10 août"]
   },
@@ -108,6 +121,7 @@
     "date_debut": "2024-08-05",
     "date_fin": "2024-08-11",
     "Lieu": "Vélodrome national de Saint-Quentin-en-Yvelines",
+    "Ville": "Saint-Quentin-en-Yvelines",
     "Capacite": "5000",
     "Remises_de_médailles": "Lors de toutes les sessions"
   },
@@ -116,6 +130,7 @@
     "date_debut": "2024-07-27",
     "date_fin": "2024-08-04",
     "Lieu": "Pont d’Iéna",
+    "Ville": "Paris",
     "Capacite": "20000",
     "Remises_de_médailles": "Lors de toutes les sessions"
   },
@@ -123,7 +138,9 @@
     "Discipline": "Cyclisme sur route",
     "date_debut": "2024-07-27",
     "date_fin": "2024-08-04",
-    "Lieu": " Aux Invalides",
+    "Lieu": "Aux Invalides",
+   
+"Ville": "Paris",
     "Capacite": "20000",
     "Remises_de_médailles": "Lors de toutes les sessions"
   },
@@ -131,7 +148,8 @@
     "Discipline": "Cyclisme sur route",
     "date_debut": "2024-07-27",
     "date_fin": "2024-08-04",
-    "Lieu": " Au pont Alexandre III",
+    "Lieu": "Au pont Alexandre III",
+    "Ville": "Paris",
     "Capacite": "20000",
     "Remises_de_médailles": "Lors de toutes les sessions"
   },
@@ -140,6 +158,7 @@
     "date_debut": "2024-08-05",
     "date_fin": "2024-08-10",
     "Lieu": "Site d’escalade du Bourget",
+    "Ville": "Le Bourget",
     "Capacite": "5000",
     "Remises_de_médailles": ["7, 8, 9 et 10 août"]
   },
@@ -148,6 +167,7 @@
     "date_debut": "2024-07-27",
     "date_fin": "2024-08-04",
     "Lieu": "Grand Palais",
+    "Ville": "Paris",
     "Capacite": "10000",
     "Remises_de_médailles": "Lors de toutes les sessions"
   },
@@ -156,6 +176,7 @@
     "date_debut": "2024-09-03",
     "date_fin": "2024-09-07",
     "Lieu": "Grand Palais",
+    "Ville": "Paris",
     "Capacite": "10000",
     "Remises_de_médailles": "Lors de toutes les sessions"
   },
@@ -164,6 +185,7 @@
     "date_debut": "2024-07-24",
     "date_fin": "2024-08-10",
     "Lieu": "Parc des Princes",
+    "Ville": "Paris",
     "Capacite": "60000",
     "Remises_de_médailles": ["8, 9 et 10 août"]
   },
@@ -172,6 +194,7 @@
     "date_debut": "2024-07-24",
     "date_fin": "2024-08-10",
     "Lieu": " Stade de Nantes",
+    "Ville": "Nantes",
     "Capacite": "50000",
     "Remises_de_médailles": ["8, 9 et 10 août"]
   },
@@ -180,6 +203,7 @@
     "date_debut": "2024-07-24",
     "date_fin": "2024-08-10",
     "Lieu": "  Stade de Bordeaux",
+    "Ville": "Bordeaux",
     "Capacite": "42000",
     "Remises_de_médailles": ["8, 9 et 10 août"]
   },
@@ -188,6 +212,7 @@
     "date_debut": "2024-07-24",
     "date_fin": "2024-08-10",
     "Lieu": "   Stade de Marseille",
+    "Ville": "Marseille",
     "Capacite":  "67000",
     "Remises_de_médailles": ["8, 9 et 10 août"]
   },
@@ -196,6 +221,7 @@
     "date_debut": "2024-07-24",
     "date_fin": "2024-08-10",
     "Lieu": " Stade de Nice",
+    "Ville": "Nice",
     "Capacite": "35500",
     "Remises_de_médailles": ["8, 9 et 10 août"]
   },
@@ -204,6 +230,7 @@
     "date_debut": "2024-07-24",
     "date_fin": "2024-08-10",
     "Lieu": " Stade Geoffroy-Guichard ",
+    "Ville": "Saint-Étienne",
     "Capacite": "42000",
     "Remises_de_médailles": ["8, 9 et 10 août"]
   },
@@ -212,6 +239,7 @@
     "date_debut": "2024-07-24",
     "date_fin": "2024-08-10",
     "Lieu": " Stade de Lyon",
+    "Ville": "Lyon",
     "Capacite":  "59186",
     "Remises_de_médailles": ["8, 9 et 10 août"]
   },
@@ -220,7 +248,8 @@
     "date_debut": "2024-08-01",
     "date_fin": "2024-08-10",
     "Lieu": "Golf National",
-    "Capacite": 20000,
+    "Ville": "Guyancourt",
+    "Capacite": "20000",
     "Remises_de_médailles": ["4 et 10 août"]
   },
   {
@@ -228,7 +257,8 @@
     "date_debut": "2024-07-27",
     "date_fin": "2024-08-05",
     "Lieu": "Arena Bercy",
-    "Capacite": 15000,
+    "Ville": "Paris",
+    "Capacite": "15000",
     "Remises_de_médailles": ["29, 30 et 31 juillet", "1er, 3, 4 et 5 août"]
   },
   {
@@ -236,7 +266,8 @@
     "date_debut": "2024-08-08",
     "date_fin": "2024-08-10",
     "Lieu": "Arena Porte de la Chapelle",
-    "Capacite": 10000,
+    "Ville": "Paris",
+    "Capacite": "10000",
     "Remises_de_médailles": ["9 et 10 août"]
   },
   {
@@ -244,6 +275,7 @@
     "date_debut": "2024-08-07",
     "date_fin": "2024-08-11",
     "Lieu": "Arena Paris Sud 6",
+    "Ville": "Paris",
     "Capacite": "8000",
     "Remises_de_médailles": "Lors de toutes les sessions"
   },
@@ -252,6 +284,7 @@
     "date_debut": "2024-07-25",
     "date_fin": "2024-08-11",
     "Lieu": "Stade Pierre Mauroy ",
+    "Ville": "Lille",
     "Capacite": "30000",
     "Remises_de_médailles": ["10 et 11 août"]
   },
@@ -260,6 +293,7 @@
     "date_debut": "2024-07-25",
     "date_fin": "2024-08-11",
     "Lieu": "Arena Paris Sud 6",
+    "Ville": "Paris",
     "Capacite": "35000",
     "Remises_de_médailles": ["10 et 11 août"]
   },
@@ -268,6 +302,7 @@
     "date_debut": "2024-07-27",
     "date_fin": "2024-08-09",
     "Lieu": "Stade Yves-du-Manoir",
+    "Ville": "Colombes",
     "Capacite": "10000",
     "Remises_de_médailles": ["8 et 9 août"]
   },
@@ -276,14 +311,16 @@
     "date_debut": "2024-07-27",
     "date_fin": "2024-08-03",
     "Lieu": "Arena Champ de Mars",
+    "Ville": "Paris",
     "Capacite": "12000",
     "Remises_de_médailles": "Lors de toutes les sessions"
   },
-  {
+   {
     "Discipline": "Lutte",
     "date_debut": "2024-08-05",
     "date_fin": "2024-08-11",
     "Lieu": "Arena Champ de Mars",
+    "Ville": "Paris",
     "Capacite": "12000",
     "Remises_de_médailles": ["6, 7, 8, 9, 10 et 11 août"]
   },
@@ -292,6 +329,7 @@
     "date_debut": "2024-07-27",
     "date_fin": "2024-08-04",
     "Lieu": "Paris La Défense Arena",
+    "Ville": "Nanterre",
     "Capacite": "20000",
     "Remises_de_médailles": "Lors de toutes les sessions"
   },
@@ -300,6 +338,7 @@
     "date_debut": "2024-08-05",
     "date_fin": "2024-08-10",
     "Lieu": "Centre Aquatique",
+    "Ville": "Saint-Denis",
     "Capacite": "8000",
     "Remises_de_médailles": ["7 et 10 août"]
   },
@@ -308,6 +347,7 @@
     "date_debut": "2024-08-08",
     "date_fin": "2024-08-09",
     "Lieu": "Pont Alexandre III",
+    "Ville": "Paris",
     "Capacite": "10000",
     "Remises_de_médailles": "Lors de toutes les sessions"
   },
@@ -316,6 +356,7 @@
     "date_debut": "2024-08-08",
     "date_fin": "2024-08-11",
     "Lieu": "Château de Versailles ",
+    "Ville": "Versailles",
     "Capacite": "15000",
     "Remises_de_médailles": ["10 et 11 août"]
   },
@@ -324,6 +365,7 @@
     "date_debut": "2024-08-08",
     "date_fin": "2024-08-11",
     "Lieu": " Arena Paris Nord",
+    "Ville": "Paris",
     "Capacite": "20000",
     "Remises_de_médailles": ["10 et 11 août"]
   },
@@ -332,6 +374,7 @@
     "date_debut": "2024-07-27",
     "date_fin": "2024-08-10",
     "Lieu": "Centre Aquatique",
+    "Ville": "Saint-Denis",
     "Capacite": "8000",
     "Remises_de_médailles": ["27, 29 et 31 juillet", "2, 6, 8, 9 et 10 août"]
   },
@@ -340,6 +383,7 @@
     "date_debut": "2024-07-24",
     "date_fin": "2024-07-30",
     "Lieu": "Stade de France",
+    "Ville": "Saint-Denis",
     "Capacite": "80000",
     "Remises_de_médailles": ["27 et 30 juillet"]
   },
@@ -348,6 +392,7 @@
     "date_debut": "2024-07-27",
     "date_fin": "2024-08-07",
     "Lieu": "La Concorde",
+    "Ville": "Paris",
     "Capacite": "5000",
     "Remises_de_médailles": "Lors de toutes les sessions"
   },
@@ -356,6 +401,7 @@
     "date_debut": "2024-07-27",
     "date_fin": "2024-08-06",
     "Lieu": "Château de Versailles",
+    "Ville": "Versailles",
     "Capacite": "10000",
     "Remises_de_médailles": ["29 juillet", "2, 3, 4 et 6 août"]
   },
@@ -364,6 +410,7 @@
     "date_debut": "2024-07-27",
     "date_fin": "2024-07-30",
     "Lieu": "Teahupo’o, à Tahiti",
+    "Ville": "Teahupo’o",
     "Capacite": "1000",
     "Remises_de_médailles": ["30 juillet"]
   },
@@ -372,6 +419,7 @@
     "date_debut": "2024-08-07",
     "date_fin": "2024-08-10",
     "Lieu": "Grand Palais",
+    "Ville": "Paris",
     "Capacite": "10000",
     "Remises_de_médailles": "Lors de toutes les sessions"
   },
@@ -380,6 +428,7 @@
     "date_debut": "2024-07-27",
     "date_fin": "2024-08-04",
     "Lieu": "Stade Roland-Garros",
+    "Ville": "Paris",
     "Capacite": "15000",
     "Remises_de_médailles": ["2, 3 et 4 août"]
   },
@@ -388,6 +437,7 @@
     "date_debut": "2024-07-27",
     "date_fin": "2024-08-10",
     "Lieu": "Arena Paris Sud 4",
+    "Ville": "Paris",
     "Capacite": "8000",
     "Remises_de_médailles": ["30 juillet", "3, 4, 9 et 10 août"]
   },
@@ -396,6 +446,7 @@
     "date_debut": "2024-07-27",
     "date_fin": "2024-08-05",
     "Lieu": "Centre national de tir de Châteauroux",
+    "Ville": "Châteauroux",
     "Capacite": "5000",
     "Remises_de_médailles": "Lors de toutes les sessions"
   },
@@ -404,6 +455,7 @@
     "date_debut": "2024-07-25",
     "date_fin": "2024-08-04",
     "Lieu": "Aux Invalides",
+    "Ville": "Paris",
     "Capacite": "5000",
     "Remises_de_médailles": ["28 et 29 juillet", "2, 3 et 4 août"]
   },
@@ -412,6 +464,7 @@
     "date_debut": "2024-08-02",
     "date_fin": "2024-08-02",
     "Lieu": "Arena Bercy",
+    "Ville": "Paris",
     "Capacite": "10000",
     "Remises_de_médailles": "Lors de cette session"
   },
@@ -420,6 +473,7 @@
     "date_debut": "2024-07-30",
     "date_fin": "2024-08-05",
     "Lieu": "Pont Alexandre III",
+    "Ville": "Paris",
     "Capacite": "5000",
     "Remises_de_médailles": "Lors de toutes les sessions"
   },
@@ -428,6 +482,7 @@
     "date_debut": "2024-07-28",
     "date_fin": "2024-08-08",
     "Lieu": "Marina de Marseille",
+    "Ville": "Marseille",
     "Capacite": "10000",
     "Remises_de_médailles": ["1, 2, 6, 7 et 8 août"]
   },
@@ -436,6 +491,7 @@
     "date_debut": "2024-07-27",
     "date_fin": "2024-08-11",
     "Lieu": "Arena Paris Sud 1",
+    "Ville": "Paris",
     "Capacite": "20000",
     "Remises_de_médailles": ["9, 10 et 11 août"]
   },
@@ -444,6 +500,7 @@
     "date_debut": "2024-07-27",
     "date_fin": "2024-08-10",
     "Lieu": "Stade Tour Eiffel",
+    "Ville": "Paris",
     "Capacite": "5000",
     "Remises_de_médailles": ["9 et 10 août"]
   },
@@ -452,6 +509,7 @@
     "date_debut": "2024-07-28",
     "date_fin": "2024-07-29",
     "Lieu": "Colline d’Elancourt",
+    "Ville": "Elancourt",
     "Capacite": "5000",
     "Remises_de_médailles": "Lors de toutes les sessions"
   },
@@ -459,7 +517,8 @@
     "Discipline": "Waterpolo",
     "date_debut": "2024-07-27",
     "date_fin": "2024-08-11",
-    "Lieu": "Centre Aquatique" ,
+    "Lieu": "Centre Aquatique",
+    "Ville": "Saint-Denis",
     "Capacite": "10000",
     "Remises_de_médailles": ["10 et 11 août"]
   },
@@ -468,7 +527,11 @@
     "date_debut": "2024-07-27",
     "date_fin": "2024-08-11",
     "Lieu": "Paris La Défense Arena",
+    "Ville": "Nanterre",
     "Capacite": "15000",
     "Remises_de_médailles": ["10 et 11 août"]
   }
+
+
+  
 ]
