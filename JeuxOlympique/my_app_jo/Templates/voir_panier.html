@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Panier{% endblock %}
+
+{% block content %}
+    <h1>Votre panier</h1>
+    <ul>
+        {% for offre in offres %}
+            <li>
+                <strong>Offre: </strong> {{ offre.type }}<br>
+                <strong>Nombre de personnes: </strong> {{ offre.nombre_personnes }}<br>
+                <strong>Prix unitaire: </strong> {{ offre.prix }}<br>
+            </li>
+        {% empty %}
+            <li>Votre panier est vide.</li>
+        {% endfor %}
+    </ul>
+     <a href="{% url 'home' %}">Retour à l'accueil</a>
+{% endblock %}

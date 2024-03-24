@@ -101,7 +101,7 @@ class Offre(models.Model):
     competition = models.ForeignKey(Competitions, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'{self.pk_Offre}, {self.type}, {self.prix}, {self.competition.Nom}'
+        return f'{self.pk_Offre}, {self.type}, {self.prix}, {self.competition.pk_typ_competition}'
 
 
 class Billet(models.Model):
