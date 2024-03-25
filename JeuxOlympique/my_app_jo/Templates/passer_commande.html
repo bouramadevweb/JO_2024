@@ -1,18 +1,8 @@
 <!-- passer_commande.html -->
 {% extends 'base.html' %}
 
-{% block title %} {% endblock %}
+<form method="POST" action="{% url 'passer_commande' offre.pk_Offre %}">
+    {% csrf_token %}
+    <button type="submit">Passer la commande</button>
+</form>
 
-{% block content %}
-    <h1>Passer une commande</h1>
-    <!-- Afficher les détails de l'offre -->
-    <p>Offre: {{ offre }}</p>
-    <!-- Afficher le formulaire de commande -->
-    <form method="post">
-        {% csrf_token %}
-        <!-- Afficher les champs du formulaire -->
-        {{ form.as_p }}
-        <!-- Bouton de soumission du formulaire -->
-        <button type="submit">Passer la commande</button>
-    </form>
-{% endblock %}

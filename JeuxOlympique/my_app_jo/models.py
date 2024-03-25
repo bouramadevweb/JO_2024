@@ -101,7 +101,7 @@ class Offre(models.Model):
     competition = models.ForeignKey(Competitions, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'{self.pk_Offre}, {self.type}, {self.prix}, {self.competition.pk_typ_competition}'
+        return f'{self.pk_Offre}, {self.type}, {self.prix}, {self.competition.Nom}'
 
 
 class Billet(models.Model):
@@ -113,12 +113,14 @@ class Billet(models.Model):
     def __str__(self):
         return f'Billet {self.pk_Billet} pour {self.pk_typ_competition}'
 
+    
     def generer_cles(self):
         """
         Génère les clés de sécurité pour le billet électronique.
         """
         self.Cledebilletelectroniquesecurisee = self.generer_cle()
-        self.ClefUtilisateur = self.pk_typ_competition.pk_Utilisateur.ClefGeneree
+        self.ClefUtilisateur = self.pk_Utilisateur.ClefGeneree
+
         self.save()
 
     def generer_cle(self):
@@ -138,18 +140,24 @@ class Commande(models.Model):
     # Mettez à jour le champ pk_Utilisateur pour utiliser le modèle utilisateur personnalisé
     pk_Utilisateur = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)  # Utilisez le modèle utilisateur personnalisé
     pk_Billet = models.ForeignKey(Billet, on_delete=models.CASCADE)
+    est_validee = models.BooleanField(default=False)
 
     def __str__(self):
-        return f'Commande {self.pk_Commande} pour {self.quantite} billet(s)'
+        return f'Commande {self.pk_Commande} pour {self.quantite} billet(s) {self.pk_Offre.type}'
 
+    
     def save(self, *args, **kwargs):
-        if not self.pk_Billet_id:
-            billet = Billet.objects.create(pk_typ_competition=self.pk_Competition)
+        if not self.pk_Billet_id :
+            billet = Billet.objects.create(pk_typ_competition=self.pk_Offre.competition)
             billet.Cledebilletelectroniquesecurisee = billet.generer_cle()
-            billet.ClefUtilisateur = self.pk_Utilisateur.clefgeneree
+            billet.ClefUtilisateur = self.pk_Utilisateur.ClefGeneree
             billet.save()
             self.pk_Billet = billet
-        super().save(*args, **kwargs)
+            super().save(*args, **kwargs)
+
+    
+        
+          
 
 class ODS(models.Model):
     discipline = models.CharField(max_length=250)

@@ -6,101 +6,81 @@ from .forms import InscriptionForm, CommandeForm
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
-from .models import Offre, Commande, Competitions, User ,List_competition
+from .models import Offre, Commande, Competitions, User ,List_competition,Billet
 from django.http import JsonResponse
 from django.contrib import messages
-import json
+from django.contrib.auth.decorators import login_required
+from django.db import transaction
 
 def home(request):
     return render(request, 'home.html', {})
+
 
 from django.shortcuts import render
 from .models import Offre, Competitions
 
 def choisir_ticket(request):
-    if request.method == 'POST':
-        competition_id = request.POST.get('Competitions')
-        if competition_id:
-            offres = Offre.objects.filter(competition_id=competition_id)
-        else:
-            offres = None
+    # Sélectionner la première compétition disponible
+    competitions = Competitions.objects.select_related('pk_lieu').all()
+    if competitions:
+        competition_id = competitions.first().pk_typ_competition
+        offres = Offre.objects.filter(competition_id=competition_id)
     else:
         offres = None
 
-    competitions = Competitions.objects.select_related('pk_lieu').all()
     return render(request, 'choisir_ticket.html', {'offres': offres, 'competitions': competitions})
 
-
-
-
-# def ajouter_au_panier(request):
-#     if request.method == 'POST':
-#         offre_ids = request.POST.getlist('offre_id')
-#         if offre_ids:
-#             # Vérifier si le panier existe dans la session, sinon le créer
-#             panier = request.session.get('panier', [])
-#             # Ajouter les offres au panier si elles ne sont pas déjà présentes
-#             for offre_id in offre_ids:
-#                 if offre_id not in panier:
-#                     panier.append(offre_id)
-#             request.session['panier'] = panier
-#             return JsonResponse({'success': True})
-#         else:
-#             return JsonResponse({'success': False, 'message': "ID d'offre manquant"})
-#     else:
-#         return JsonResponse({'success': False, 'message': "La requête doit être de type POST"})
-def get_offres(request):
-    competition_id = request.GET.get('competition_id')
-    if competition_id:
-        offres = Offre.objects.filter(competition_id=competition_id).values('pk_Offre', 'type', 'nombre_personnes', 'prix')
-        return JsonResponse(list(offres), safe=False)
-    else:
-        return JsonResponse({'error': 'ID de compétition manquant'}, status=400)
-
-from django.http import JsonResponse
-from .models import Offre
-
-# def ajouter_au_panier(request):
-#     if request.method == 'POST':
-#         data = json.loads(request.body)
-#         offre_ids = data.get('offre_ids', [])
-#         if offre_ids:
-#             panier = request.session.get('panier', [])
-#             for offre_id in offre_ids:
-#                 if offre_id not in panier:
-#                     panier.append(offre_id)
-#             request.session['panier'] = panier
-#             return JsonResponse({'success': True})
-#         else:
-#             return JsonResponse({'success': False, 'message': "Aucune offre sélectionnée."})
-#     else:
-#         return JsonResponse({'success': False, 'message': "La requête doit être de type POST."})
+@login_required
 def ajouter_au_panier(request):
     if request.method == 'POST':
-        # Récupérer les données de la requête AJAX
-        data = request.POST  # Pour les données de formulaire POST
-        # ou
-        # data = json.loads(request.body)  # Pour les données JSON
+        offre_ids = request.POST.getlist('offre_id')
+        quantites = {offre_id: int(request.POST.get(f'quantite_{offre_id}', 0)) for offre_id in offre_ids}
+        
+        # Vérifier la validité de la commande
+        if not offre_ids or any(quantites[offre_id] <= 0 for offre_id in offre_ids):
+            messages.error(request, "Veuillez sélectionner au moins une offre et spécifier une quantité valide.")
+            return redirect('choisir_ticket')
 
-        # Traitez les données et ajoutez-les au panier
-        # Exemple :
-        offre_id = data.get('offre_id')
-        # Ajoutez l'offre_id au panier...
+        # Créer la commande
+        try:
+            with transaction.atomic():
+                for offre_id, quantite in quantites.items():
+                    offre = Offre.objects.get(pk=offre_id)
+                    # Valider la disponibilité des offres ou d'autres critères si nécessaire
+                    if quantite <= 0:
+                        continue  # Ignorer les quantités nulles ou négatives
+                    commande = Commande.objects.create(
+                        offre=offre,
+                        quantite=quantite,
+                        MontantTotal=offre.prix * quantite,
+                        pk_Utilisateur=request.user
+                    )
 
-        # Retournez une réponse JSON indiquant le succès
-        return JsonResponse({'success': True})
+                    # Générer le billet
+                    billet = Billet.objects.create(
+                        pk_typ_competition=offre.competition
+                        # Autres champs du billet
+                    )
+                    commande.pk_Billet = billet
+                    commande.save()
+
+                    print(f"Billet généré pour la commande {commande.pk_Commande}")
+
+                messages.success(request, "Les offres ont été ajoutées au panier.")
+                return redirect('voir_panier')
+        except Exception as e:
+            messages.error(request, f"Une erreur s'est produite lors de la validation de la commande : {str(e)}")
+            return redirect('choisir_ticket')
+
     else:
-        # Si la requête n'est pas de type POST, retournez une réponse avec un message d'erreur
-        return JsonResponse({'success': False, 'message': 'La requête doit être de type POST'})
+        return redirect('choisir_ticket')
+
+
+@login_required
 def voir_panier(request):
-    # Récupérer les éléments du panier depuis la session de l'utilisateur
-    panier = request.session.get('panier', [])
+    commandes = Commande.objects.filter(pk_Utilisateur=request.user)
+    return render(request, 'voir_panier.html', {'commandes': commandes})
 
-    # Récupérer les offres correspondant aux identifiants dans le panier
-    offres = Offre.objects.filter(pk_Offre__in=panier)
-
-    return render(request, 'voir_panier.html', {'panier': panier, 'offres': offres})
- 
 def inscription(request):
     if request.method == 'POST':
         form = InscriptionForm(request.POST)

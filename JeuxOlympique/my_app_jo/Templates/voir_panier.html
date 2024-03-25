@@ -1,20 +1,18 @@
 {% extends 'base.html' %}
-{% load static %}
-
 {% block title %}Panier{% endblock %}
 
 {% block content %}
-    <h1>Votre panier</h1>
+    <h1>Panier</h1>
     <ul>
-        {% for offre in offres %}
+        {% for commande in commandes %}
             <li>
-                <strong>Offre: </strong> {{ offre.type }}<br>
-                <strong>Nombre de personnes: </strong> {{ offre.nombre_personnes }}<br>
-                <strong>Prix unitaire: </strong> {{ offre.prix }}<br>
+                <strong>Compétition:</strong> {{ commande.pk_Offre.competition.Nom }}<br>
+                <strong>Offre:</strong> {{ commande.pk_Offre.type }}<br>
+                <strong>Nombre de personnes:</strong> {{ commande.quantite }}<br>
+                <strong>Prix unitaire:</strong> {{ commande.pk_Offre.prix }}<br>
+                <strong>Prix total:</strong> {{ commande.MontantTotal }}<br>
             </li>
-        {% empty %}
-            <li>Votre panier est vide.</li>
         {% endfor %}
     </ul>
-     <a href="{% url 'home' %}">Retour à l'accueil</a>
+    
 {% endblock %}

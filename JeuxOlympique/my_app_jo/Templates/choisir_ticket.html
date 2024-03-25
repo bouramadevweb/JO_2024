@@ -1,37 +1,35 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block title %}Choisissez un ticket{% endblock %}
 
 {% block content %}
     <h1>Choisir un ticket</h1>
 
-    <form method="POST" id="choisir-ticket-form">
+    <form method="POST" action="{% url 'ajouter_au_panier' %}">
         {% csrf_token %}
         <label for="competitions">Choisir une compétition :</label>
         <select name="competitions" id="competitions">
             {% for competition in competitions %}
-                <option value="{{ competition.pk_typ_competition }}">{{ competition.Nom }} - Lieu: {{ competition.pk_lieu.Nom }} ({{ competition.pk_lieu.Ville }})</option>
+            <option value="{{ competition.pk_typ_competition }}">{{ competition.Nom }} - Lieu: {{ competition.pk_lieu.Nom }} ({{ competition.pk_lieu.Ville }})</option>
             {% endfor %}
         </select>
         <br><br>
         <h2>Offres disponibles :</h2>
         <ul>
             {% for offre in offres %}
-                <li>
-                    <input type="checkbox" name="offre_id" value="{{ offre.pk_Offre }}" data-prix="{{ offre.prix }}" onchange="calculerTotal()">
+                <div>
+                    <input type="checkbox" name="offre_id" value="{{ offre.pk_Offre }}">
                     <strong>Offre: </strong> {{ offre.type }}<br>
                     <strong>Nombre de personnes: </strong> {{ offre.nombre_personnes }}<br>
                     <strong>Prix unitaire: </strong> {{ offre.prix }}<br>
                     <label for="quantite_{{ offre.pk_Offre }}">Quantité :</label>
-                    <input type="number" name="quantite_{{ offre.pk_Offre }}" id="quantite_{{ offre.pk_Offre }}" value="0" min="0" max="{{ offre.nombre_personnes }}" onchange="calculerTotal()">
+                    <input type="number" name="quantite_{{ offre.pk_Offre }}" id="quantite_{{ offre.pk_Offre }}" value="0" min="0" max="{{ offre.nombre_personnes }}">
                     <br>
-                </li>
+                </div>
             {% empty %}
                 <li>Aucune offre disponible pour le moment.</li>
             {% endfor %}
         </ul>
-        <br>
-        <strong>Total : </strong><span id="total">0</span> €<br>
         <br>
         <div>
             <button type="submit">Ajouter au panier</button>
@@ -43,68 +41,4 @@
         <button type="submit">Voir le panier</button>
     </form>
 
-    <script>
-        document.getElementById('choisir-ticket-form').onsubmit = function(event) {
-            event.preventDefault(); // Empêcher le formulaire de se soumettre normalement
-            ajouterAuPanier();
-        };
-
-        function ajouterAuPanier() {
-            var offresSelectionnees = [];
-            var offres = document.getElementsByName('offre_id');
-            for (var i = 0; i < offres.length; i++) {
-                if (offres[i].checked) {
-                    offresSelectionnees.push(offres[i].value);
-                }
-            }
-            var csrftoken = getCookie('csrftoken');
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", "/ajouter-au-panier/", true);
-            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-            xhr.setRequestHeader("X-CSRFToken", csrftoken);
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4) {
-                    if (xhr.status === 200) {
-                        var response = JSON.parse(xhr.responseText);
-                        if (response.success) {
-                            alert("Les offres ont été ajoutées au panier avec succès !");
-                            window.location.href = "/panier/";
-                        } else {
-                            alert("Erreur: " + response.message);
-                        }
-                    } else {
-                        alert("Une erreur s'est produite lors de l'ajout au panier.");
-                    }
-                }
-            };
-            xhr.send(JSON.stringify({ offres: offresSelectionnees }));
-        }
-
-        function calculerTotal() {
-            var total = 0;
-            var offres = document.getElementsByName('offre_id');
-            for (var i = 0; i < offres.length; i++) {
-                if (offres[i].checked) {
-                    var quantite = parseInt(document.getElementById('quantite_' + offres[i].value).value);
-                    total += parseFloat(quantite) * parseFloat(offres[i].getAttribute('data-prix'));
-                }
-            }
-            document.getElementById('total').innerText = total.toFixed(2);
-        }
-
-        function getCookie(name) {
-            var cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                var cookies = document.cookie.split(';');
-                for (var i = 0; i < cookies.length; i++) {
-                    var cookie = cookies[i].trim();
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
-        }
-    </script>
 {% endblock %}
