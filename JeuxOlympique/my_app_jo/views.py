@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
-from .forms import InscriptionForm, CommandeForm
+from .forms import InscriptionForm, CommandeForm,ModifierCommandeForm
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
@@ -10,6 +10,7 @@ from .models import Offre, Commande, Competitions, User ,List_competition,Billet
 from django.http import JsonResponse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404
 from django.db import transaction
 
 def home(request):
@@ -20,7 +21,7 @@ from django.shortcuts import render
 from .models import Offre, Competitions
 
 def choisir_ticket(request):
-    # Sélectionner la première compétition disponible
+    # Sélectionner la compétition disponible
     competitions = Competitions.objects.select_related('pk_lieu').all()
     if competitions:
         competition_id = competitions.first().pk_typ_competition
@@ -33,6 +34,8 @@ def choisir_ticket(request):
 @login_required
 def ajouter_au_panier(request):
     if request.method == 'POST':
+        print("Données POST reçues :", request.POST)
+        
         offre_ids = request.POST.getlist('offre_id')
         quantites = {offre_id: int(request.POST.get(f'quantite_{offre_id}', 0)) for offre_id in offre_ids}
         
@@ -50,36 +53,55 @@ def ajouter_au_panier(request):
                     if quantite <= 0:
                         continue  # Ignorer les quantités nulles ou négatives
                     commande = Commande.objects.create(
-                        offre=offre,
+                        pk_Offre=offre,
                         quantite=quantite,
                         MontantTotal=offre.prix * quantite,
                         pk_Utilisateur=request.user
                     )
 
-                    # Générer le billet
-                    billet = Billet.objects.create(
-                        pk_typ_competition=offre.competition
-                        # Autres champs du billet
-                    )
-                    commande.pk_Billet = billet
-                    commande.save()
+                    # Générer le billet si la commande est validée
+                    if commande.est_validee:
+                        commande.save()  # Appel de la méthode pour générer le billet
 
-                    print(f"Billet généré pour la commande {commande.pk_Commande}")
+                        print(f"Billet généré pour la commande {commande.pk_Commande}")
 
                 messages.success(request, "Les offres ont été ajoutées au panier.")
                 return redirect('voir_panier')
         except Exception as e:
             messages.error(request, f"Une erreur s'est produite lors de la validation de la commande : {str(e)}")
+            print(f"Erreur lors de la validation de la commande : {str(e)}")
             return redirect('choisir_ticket')
 
     else:
         return redirect('choisir_ticket')
-
-
 @login_required
 def voir_panier(request):
     commandes = Commande.objects.filter(pk_Utilisateur=request.user)
     return render(request, 'voir_panier.html', {'commandes': commandes})
+@login_required
+def valider_commande(request):
+    if request.method == 'POST':
+        commandes_a_valider = Commande.objects.filter(pk_Utilisateur=request.user, est_validee=False)
+        commandes_a_valider.update(est_validee=True)  # Marquer toutes les commandes comme validées
+        messages.success(request, "Vos commandes ont été validées avec succès.")
+    return redirect('voir_panier')
+
+@login_required
+def modifier_commande(request, commande_id):
+    commande = get_object_or_404(Commande, pk=commande_id)
+    
+    if request.method == 'POST':
+        form = ModifierCommandeForm(request.POST, instance=commande)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "La commande a été modifiée avec succès.")
+            return redirect('voir_panier')
+    else:
+        form = ModifierCommandeForm(instance=commande)
+    
+    return render(request, 'modifier_commande.html', {'form': form, 'commande': commande})
+
+
 
 def inscription(request):
     if request.method == 'POST':

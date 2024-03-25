@@ -8,10 +8,10 @@ urlpatterns = [
     path('choisir_ticket/', views.choisir_ticket, name='choisir_ticket'),
     path('ajouter_au_panier/',views.ajouter_au_panier,name='ajouter_au_panier'),
     path('voir_panier/', views.voir_panier, name='voir_panier'),
-    # path('valider_commande/',views.valider_commande,name='valider_commande'),
-    # path('get_offres/', views.get_offres, name='get_offres'),
+    path('modifier_commande/<int:commande_id>/',views.modifier_commande, name='modifier_commande'),
+    path('valider_commande/',views.valider_commande,name='valider_commande'),
     path('connexion/', views.connexion, name='connexion'),
     path('inscription/', views.inscription, name='inscription'),
     path('passer_commande/<str:offre_id>/', views.passer_commande, name='passer_commande'),
-     path('deconnexion/', views.deconnexion, name='deconnexion'),
+    path('deconnexion/', views.deconnexion, name='deconnexion'),
 ]

@@ -2,6 +2,7 @@
 {% block title %}Panier{% endblock %}
 
 {% block content %}
+<div>
     <h1>Panier</h1>
     <ul>
         {% for commande in commandes %}
@@ -11,8 +12,16 @@
                 <strong>Nombre de personnes:</strong> {{ commande.quantite }}<br>
                 <strong>Prix unitaire:</strong> {{ commande.pk_Offre.prix }}<br>
                 <strong>Prix total:</strong> {{ commande.MontantTotal }}<br>
+                 <a href="{% url 'modifier_commande' commande.pk_Commande %}">Modifier</a>
             </li>
         {% endfor %}
     </ul>
-    
+        <div>
+
+            <form action="{% url 'valider_commande' %}" method="post">
+                {% csrf_token %}
+                <button type="submit">Valider la commande</button>
+            </form>
+        </div>
+    </div>
 {% endblock %}

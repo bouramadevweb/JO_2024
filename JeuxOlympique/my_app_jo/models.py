@@ -147,7 +147,7 @@ class Commande(models.Model):
 
     
     def save(self, *args, **kwargs):
-        if not self.pk_Billet_id :
+        if not self.pk_Billet_id:
             billet = Billet.objects.create(pk_typ_competition=self.pk_Offre.competition)
             billet.Cledebilletelectroniquesecurisee = billet.generer_cle()
             billet.ClefUtilisateur = self.pk_Utilisateur.ClefGeneree
