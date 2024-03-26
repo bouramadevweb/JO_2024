@@ -2,26 +2,31 @@
 {% block title %}Panier{% endblock %}
 
 {% block content %}
-<div>
+<div class="container">
     <h1>Panier</h1>
-    <ul>
+    <ul class="list-group">
         {% for commande in commandes %}
-            <li>
+            <li class="list-group-item">
                 <strong>Compétition:</strong> {{ commande.pk_Offre.competition.Nom }}<br>
                 <strong>Offre:</strong> {{ commande.pk_Offre.type }}<br>
-                <strong>Nombre de personnes:</strong> {{ commande.quantite }}<br>
+                <strong>Quantite:</strong> {{ commande.quantite }}<br>
                 <strong>Prix unitaire:</strong> {{ commande.pk_Offre.prix }}<br>
                 <strong>Prix total:</strong> {{ commande.MontantTotal }}<br>
-                 <a href="{% url 'modifier_commande' commande.pk_Commande %}">Modifier</a>
-            </li>
+                <div class="btn-group" role="group" aria-label="Actions">
+                    <form action="{% url 'valider_commande' %}" method="post" class="btn-group" role="group" aria-label="Valider">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-success mr-2">Valider</button>
+                    </form>
+                    <a class="btn btn-warning mr-2" href="{% url 'modifier_commande' commande.pk_Commande %}">Modifier</a>
+                    <form method="POST" action="{% url 'supprimer_commande' commande.pk_Commande %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger mr-2">Supprimer</button>
+                    </form>
+                    
+                </li>
+            </div>
         {% endfor %}
     </ul>
-        <div>
-
-            <form action="{% url 'valider_commande' %}" method="post">
-                {% csrf_token %}
-                <button type="submit">Valider la commande</button>
-            </form>
-        </div>
-    </div>
+        
+</div>
 {% endblock %}

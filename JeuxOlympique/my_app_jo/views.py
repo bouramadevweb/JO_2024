@@ -20,42 +20,55 @@ def home(request):
 from django.shortcuts import render
 from .models import Offre, Competitions
 
+
 def choisir_ticket(request):
-    # Sélectionner la compétition disponible
-    competitions = Competitions.objects.select_related('pk_lieu').all()
-    if competitions:
-        competition_id = competitions.first().pk_typ_competition
+    if request.method == 'GET' and 'competition' in request.GET:
+        # Récupérer l'ID de la compétition sélectionnée par l'utilisateur
+        competition_id = request.GET.get('competition')
+
+        # Sélectionner les offres pour la compétition sélectionnée
         offres = Offre.objects.filter(competition_id=competition_id)
+
+        # Sélectionner toutes les compétitions disponibles
+        competitions = Competitions.objects.select_related('pk_lieu').all()
+        
+        return render(request, 'choisir_ticket.html', {'offres': offres, 'competitions': competitions})
     else:
-        offres = None
-
-    return render(request, 'choisir_ticket.html', {'offres': offres, 'competitions': competitions})
-
+        # Si aucune compétition n'a été sélectionnée, afficher toutes les compétitions disponibles
+        competitions = Competitions.objects.select_related('pk_lieu').all()
+        return render(request, 'choisir_ticket.html', {'competitions': competitions})
 @login_required
 def ajouter_au_panier(request):
     if request.method == 'POST':
         print("Données POST reçues :", request.POST)
         
+        # Récupérer les données des offres sélectionnées
         offre_ids = request.POST.getlist('offre_id')
         quantites = {offre_id: int(request.POST.get(f'quantite_{offre_id}', 0)) for offre_id in offre_ids}
         
-        # Vérifier la validité de la commande
+        # Vérifier la validité des données reçues
         if not offre_ids or any(quantites[offre_id] <= 0 for offre_id in offre_ids):
             messages.error(request, "Veuillez sélectionner au moins une offre et spécifier une quantité valide.")
             return redirect('choisir_ticket')
 
-        # Créer la commande
         try:
             with transaction.atomic():
+                # Créer les commandes pour les offres sélectionnées
                 for offre_id, quantite in quantites.items():
-                    offre = Offre.objects.get(pk=offre_id)
-                    # Valider la disponibilité des offres ou d'autres critères si nécessaire
                     if quantite <= 0:
                         continue  # Ignorer les quantités nulles ou négatives
+                    
+                    # Récupérer l'offre correspondante
+                    offre = Offre.objects.get(pk=offre_id)
+                    
+                    # Calculer le montant total
+                    montant_total = (offre.prix) * quantite
+                    
+                    # Créer la commande avec le montant total calculé
                     commande = Commande.objects.create(
                         pk_Offre=offre,
                         quantite=quantite,
-                        MontantTotal=offre.prix * quantite,
+                        MontantTotal=montant_total,
                         pk_Utilisateur=request.user
                     )
 
@@ -74,6 +87,7 @@ def ajouter_au_panier(request):
 
     else:
         return redirect('choisir_ticket')
+
 @login_required
 def voir_panier(request):
     commandes = Commande.objects.filter(pk_Utilisateur=request.user)
@@ -89,20 +103,42 @@ def valider_commande(request):
 @login_required
 def modifier_commande(request, commande_id):
     commande = get_object_or_404(Commande, pk=commande_id)
+    competitions = Competitions.objects.select_related('pk_lieu').all()
+    offres = None
     
     if request.method == 'POST':
-        form = ModifierCommandeForm(request.POST, instance=commande)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "La commande a été modifiée avec succès.")
-            return redirect('voir_panier')
+        # Traiter le formulaire de modification
+        competition_id = request.POST.get('competition')
+        type_offre_id = request.POST.get('type_offre')
+        quantite = int(request.POST.get('quantite'))
+
+        offre = Offre.objects.get(pk=type_offre_id)
+        montant_total = offre.prix * quantite
+
+        # Mettre à jour la commande
+        commande.pk_Offre = offre
+        commande.quantite = quantite
+        commande.MontantTotal = montant_total
+        commande.save()
+
+        messages.success(request, "La commande a été modifiée avec succès.")
+        return redirect('voir_panier')
     else:
-        form = ModifierCommandeForm(instance=commande)
-    
-    return render(request, 'modifier_commande.html', {'form': form, 'commande': commande})
+        # Pré-sélectionner la compétition et l'offre actuelles de la commande
+        competition_actuelle = commande.pk_Offre.competition.pk_typ_competition
+        offres = Offre.objects.filter(competition_id=competition_actuelle)
 
-
-
+        return render(request, 'modifier_commande.html', {
+            'commande': commande,
+            'offres': offres,
+            'competitions': competitions
+        })
+def supprimer_commande(request, commande_id):
+    commande = Commande.objects.get(pk=commande_id)
+    commande.delete()
+    messages.success(request, "La commande a été supprimée avec succès.")
+    return redirect('voir_panier')   
+ 
 def inscription(request):
     if request.method == 'POST':
         form = InscriptionForm(request.POST)

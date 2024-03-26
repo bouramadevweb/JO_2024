@@ -1,44 +1,67 @@
 {% extends 'base.html' %}
-{% load static %}
-{% block title %}Choisissez un ticket{% endblock %}
+{% block title %}Choisir un ticket{% endblock %}
 
 {% block content %}
+<div class="container">
     <h1>Choisir un ticket</h1>
-
-    <form method="POST" action="{% url 'ajouter_au_panier' %}">
-        {% csrf_token %}
-        <label for="competitions">Choisir une compétition :</label>
-        <select name="competitions" id="competitions">
-            {% for competition in competitions %}
-            <option value="{{ competition.pk_typ_competition }}">{{ competition.Nom }} - Lieu: {{ competition.pk_lieu.Nom }} ({{ competition.pk_lieu.Ville }})</option>
-            {% endfor %}
-        </select>
-        <br><br>
-        <h2>Offres disponibles :</h2>
-        <ul>
-            {% for offre in offres %}
-                <div>
-                    <input type="checkbox" name="offre_id" value="{{ offre.pk_Offre }}">
-                    <strong>Offre: </strong> {{ offre.type }}<br>
-                    <strong>Nombre de personnes: </strong> {{ offre.nombre_personnes }}<br>
-                    <strong>Prix unitaire: </strong> {{ offre.prix }}<br>
-                    <label for="quantite_{{ offre.pk_Offre }}">Quantité :</label>
-                    <input type="number" name="quantite_{{ offre.pk_Offre }}" id="quantite_{{ offre.pk_Offre }}" value="0" min="0" max="{{ offre.nombre_personnes }}">
-                    <br>
-                </div>
-            {% empty %}
-                <li>Aucune offre disponible pour le moment.</li>
-            {% endfor %}
-        </ul>
-        <br>
-        <div>
-            <button type="submit">Ajouter au panier</button>
+    <form id="choix-competition-form" method="GET">
+        <div class="form-group">
+            <label for="competition">Sélectionner une compétition :</label>
+            <select class="form-control" id="competition" name="competition">
+                <option value="">-- Sélectionner une compétition --</option>
+                {% for competition in competitions %}
+                    <option value="{{ competition.pk_typ_competition }}">{{ competition.Nom }} - Lieu: {{ competition.pk_lieu.Nom }} ({{ competition.pk_lieu.Ville }})</option>
+                {% endfor %}
+            </select>
         </div>
     </form>
 
-    <form method="POST" action="{% url 'voir_panier' %}">
+    {% if offres %}
+    <h2>Offres disponibles :</h2>
+    <form method="POST" action="{% url 'ajouter_au_panier' %}">
         {% csrf_token %}
-        <button type="submit">Voir le panier</button>
+        <div class="row">
+            {% for offre in offres %}
+            <div class="col-md-4">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ offre.type }} {{ offre.competition.Nom }} - {{ offre.nombre_personnes }} personnes</h5>
+                        <p class="card-text">Prix unitaire : {{ offre.prix }}</p>
+                        <input type="checkbox" name="offre_id" value="{{ offre.pk_Offre }}">
+                        <label for="quantite{{ offre.pk_Offre }}">Quantité :</label>
+                        <input type="number" class="form-control" id="quantite{{ offre.pk_Offre }}" name="quantite_{{ offre.pk_Offre }}" min="0" value="0">
+                        <input type="hidden" name="montant_total_{{ offre.pk_Offre }}" value="{{ offre.prix }}">
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <button type="submit" class="btn btn-primary">Valider la commande</button>
     </form>
+    {% else %}
+    <p>Aucune offre disponible pour la compétition sélectionnée.</p>
+    {% endif %}
+</div>
 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Capturer le changement de sélection de la compétition
+    document.getElementById('competition').addEventListener('change', function() {
+        document.getElementById('choix-competition-form').submit();
+    });
+});
+document.addEventListener('DOMContentLoaded', function() {
+    var quantiteInputs = document.querySelectorAll('.quantite-input');
+
+    quantiteInputs.forEach(function(input) {
+        input.addEventListener('change', function() {
+            var quantite = parseInt(this.value);
+            var prix = parseFloat(this.getAttribute('data-prix'));
+            var montantTotalInput = document.getElementById('montant_total_' + this.getAttribute('id').replace('quantite', ''));
+            var montantTotal = quantite * prix;
+            montantTotalInput.value = montantTotal.toFixed(2); // Fixer le nombre de décimales à 2
+        });
+    });
+});
+</script>
 {% endblock %}

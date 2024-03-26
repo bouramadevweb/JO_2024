@@ -1,13 +1,77 @@
 {% extends 'base.html' %}
-{% load crispy_forms_tags %}
 
-{% block title %}Modifier Commande{% endblock %}
+{% block title %}Modifier commande{% endblock %}
 
 {% block content %}
-    <h1>Modifier Commande</h1>
 
-    <form method="POST">
-        {% csrf_token %}
-        {% crispy form %}
-    </form>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form method="POST" action="">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="competition">Compétition :</label>
+                    <select class="form-control" name="competition" id="competition">
+                        {% for competition in competitions %}
+                            <option value="{{ competition.pk_typ_competition }}" {% if competition.pk_typ_competition == commande.pk_Offre.competition.pk_typ_competition %}selected{% endif %}>{{ competition.Nom }} - Lieu: {{ competition.pk_lieu.Nom }} ({{ competition.pk_lieu.Ville }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="type_offre">Type d'offre :</label>
+                    <select class="form-control" name="type_offre" id="type_offre">
+                        {% for offre in offres %}
+                            <option value="{{ offre.pk_Offre }}" {% if offre.pk_Offre == commande.pk_Offre.pk_Offre %}selected{% endif %}>{{ offre.type }}  {{offre.nombre_personnes}} personnes </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="quantite">Quantité :</label>
+                    <input class="form-control" type="number" name="quantite" id="quantite" value="{{ commande.quantite }}" min="1">
+                </div>
+                
+                <div class="form-group">
+                    <label for="MontantTotal">Montant Total :</label>
+                    <input class="form-control" type="number" name="MontantTotal" id="MontantTotal" value="{{ commande.MontantTotal }}" min="0" disabled="True">
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Capturer le changement de sélection de la compétition
+    document.getElementById('competition').addEventListener('change', function() {
+        // Si l'utilisateur sélectionne une compétition différente, vous pouvez choisir de soumettre automatiquement le formulaire ou non
+        // Dans cet exemple, le formulaire ne sera pas soumis automatiquement, laissant à l'utilisateur le contrôle total
+        // this.form.submit();
+        
+        // Mettre à jour les offres disponibles en fonction de la compétition sélectionnée
+        var competitionId = this.value;
+        fetch('/get_offres/?competition_id=' + competitionId)
+            .then(response => response.json())
+            .then(data => {
+                // Supprimer toutes les options actuelles dans la liste déroulante des offres
+                var selectOffre = document.getElementById('type_offre');
+                selectOffre.innerHTML = '';
+                
+                // Ajouter les nouvelles options basées sur les données récupérées
+                data.forEach(offre => {
+                    var option = document.createElement('option');
+                    option.value = offre.pk_Offre;
+                    option.text = offre.type + ' ' + offre.nombre_personnes + ' personnes';
+                    selectOffre.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Une erreur s\'est produite lors de la récupération des offres :', error));
+    });
+});
+</script>
+
 {% endblock %}
