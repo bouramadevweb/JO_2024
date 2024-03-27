@@ -1,77 +1,67 @@
 {% extends 'base.html' %}
-
-{% block title %}Modifier commande{% endblock %}
+{% block title %}Modifier{% endblock %}
 
 {% block content %}
-
 <div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <form method="POST" action="">
-                {% csrf_token %}
-                
-                <div class="form-group">
-                    <label for="competition">Compétition :</label>
-                    <select class="form-control" name="competition" id="competition">
-                        {% for competition in competitions %}
-                            <option value="{{ competition.pk_typ_competition }}" {% if competition.pk_typ_competition == commande.pk_Offre.competition.pk_typ_competition %}selected{% endif %}>{{ competition.Nom }} - Lieu: {{ competition.pk_lieu.Nom }} ({{ competition.pk_lieu.Ville }})</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label for="type_offre">Type d'offre :</label>
-                    <select class="form-control" name="type_offre" id="type_offre">
-                        {% for offre in offres %}
-                            <option value="{{ offre.pk_Offre }}" {% if offre.pk_Offre == commande.pk_Offre.pk_Offre %}selected{% endif %}>{{ offre.type }}  {{offre.nombre_personnes}} personnes </option>
-                        {% endfor %}
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label for="quantite">Quantité :</label>
-                    <input class="form-control" type="number" name="quantite" id="quantite" value="{{ commande.quantite }}" min="1">
-                </div>
-                
-                <div class="form-group">
-                    <label for="MontantTotal">Montant Total :</label>
-                    <input class="form-control" type="number" name="MontantTotal" id="MontantTotal" value="{{ commande.MontantTotal }}" min="0" disabled="True">
-                </div>
-                
-                <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
-            </form>
+    <h1>Choisir pour modifier</h1>
+    <form id="choix-competition-form" method="GET">
+        <div class="form-group">
+            <label for="competition">Sélectionner une compétition :</label>
+            <select class="form-control" id="competition" name="competition">
+                <option value="">-- Sélectionner une compétition --</option>
+                {% for competition in competitions %}
+                    <option value="{{ competition.pk_typ_competition }}">{{ competition.Nom }} - Lieu: {{ competition.pk_lieu.Nom }} ({{ competition.pk_lieu.Ville }})</option>
+                {% endfor %}
+            </select>
         </div>
-    </div>
+    </form>
+
+    {% if offres %}
+    <h2>Offres disponibles :</h2>
+    <form method="POST" action="">
+        {% csrf_token %}
+        <div class="row">
+            {% for offre in offres %}
+            <div class="col-md-4">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ offre.type }} {{ offre.competition.Nom }} - {{ offre.nombre_personnes }} personnes</h5>
+                        <p class="card-text">Prix unitaire : {{ offre.prix }}</p>
+                        <input type="checkbox" name="offre_id" value="{{ offre.pk_Offre }}">
+                        <label for="quantite{{ offre.pk_Offre }}">Quantité :</label>
+                        <input type="number" class="form-control quantite-input" id="quantite{{ offre.pk_Offre }}" name="quantite_{{ offre.pk_Offre }}" min="0" value="{{ offre.quantite }}">
+                        <input type="hidden" name="montant_total_{{ offre.pk_Offre }}" value="{{ offre.prix }}">
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <button type="submit" class="btn btn-primary">Valider la commande</button>
+    </form>
+    {% else %}
+    <p>Aucune offre disponible pour la compétition sélectionnée.</p>
+    {% endif %}
 </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Capturer le changement de sélection de la compétition
     document.getElementById('competition').addEventListener('change', function() {
-        // Si l'utilisateur sélectionne une compétition différente, vous pouvez choisir de soumettre automatiquement le formulaire ou non
-        // Dans cet exemple, le formulaire ne sera pas soumis automatiquement, laissant à l'utilisateur le contrôle total
-        // this.form.submit();
-        
-        // Mettre à jour les offres disponibles en fonction de la compétition sélectionnée
-        var competitionId = this.value;
-        fetch('/get_offres/?competition_id=' + competitionId)
-            .then(response => response.json())
-            .then(data => {
-                // Supprimer toutes les options actuelles dans la liste déroulante des offres
-                var selectOffre = document.getElementById('type_offre');
-                selectOffre.innerHTML = '';
-                
-                // Ajouter les nouvelles options basées sur les données récupérées
-                data.forEach(offre => {
-                    var option = document.createElement('option');
-                    option.value = offre.pk_Offre;
-                    option.text = offre.type + ' ' + offre.nombre_personnes + ' personnes';
-                    selectOffre.appendChild(option);
-                });
-            })
-            .catch(error => console.error('Une erreur s\'est produite lors de la récupération des offres :', error));
+        document.getElementById('choix-competition-form').submit();
+    });
+});
+document.addEventListener('DOMContentLoaded', function() {
+    var quantiteInputs = document.querySelectorAll('.quantite-input');
+
+    quantiteInputs.forEach(function(input) {
+        input.addEventListener('change', function() {
+            var quantite = parseInt(this.value);
+            var prix = parseFloat(this.getAttribute('data-prix'));
+            var montantTotalInput = document.getElementById('montant_total_' + this.getAttribute('id').replace('quantite', ''));
+            var montantTotal = quantite * prix;
+            montantTotalInput.value = montantTotal.toFixed(2); // Fixer le nombre de décimales à 2
+        });
     });
 });
 </script>
-
 {% endblock %}

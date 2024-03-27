@@ -12,6 +12,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django.db import transaction
+from django.http import JsonResponse
 
 def home(request):
     return render(request, 'home.html', {})
@@ -102,37 +103,56 @@ def valider_commande(request):
 
 @login_required
 def modifier_commande(request, commande_id):
-    commande = get_object_or_404(Commande, pk=commande_id)
+    # Sélectionner toutes les compétitions disponibles
     competitions = Competitions.objects.select_related('pk_lieu').all()
-    offres = None
-    
-    if request.method == 'POST':
-        # Traiter le formulaire de modification
-        competition_id = request.POST.get('competition')
-        type_offre_id = request.POST.get('type_offre')
-        quantite = int(request.POST.get('quantite'))
 
-        offre = Offre.objects.get(pk=type_offre_id)
+    # Récupérer l'ID de la compétition sélectionnée par l'utilisateur (s'il y en a une)
+    competition_id = request.POST.get('competition')
+    
+    # Sélectionner les offres en fonction de la compétition sélectionnée, ou toutes les offres si aucune compétition n'est sélectionnée
+    if competition_id:
+        offres = Offre.objects.filter(pk=Offre.competition)
+    else:
+        offres = Offre.objects.all()
+    
+    commande = get_object_or_404(Commande, pk=commande_id)
+
+    if request.method == 'POST':
+        print(request.POST)
+        
+        type_offre_id = request.POST.get('type_offre')
+        
+        # Vérifier si la quantité est présente dans les données POST
+        if 'quantite' in request.POST:
+            quantite = int(request.POST['quantite'])
+        else:
+            quantite = 0  # Valeur par défaut si la quantité n'est pas fournie
+        
+        # Gérer le cas où aucune offre n'existe pour l'ID donné
+        try:
+            offre = Offre.objects.get(pk=type_offre_id)
+        except Offre.DoesNotExist:
+            messages.error(request, "L'offre sélectionnée n'existe pas.")
+            return redirect('modifier_commande', commande_id=commande_id)
+
         montant_total = offre.prix * quantite
 
-        # Mettre à jour la commande
-        commande.pk_Offre = offre
-        commande.quantite = quantite
-        commande.MontantTotal = montant_total
-        commande.save()
+        Commande.objects.filter(pk=commande_id).update(
+            pk_Offre=offre.pk_Offre,
+            quantite=quantite,
+            MontantTotal=montant_total
+        )
 
         messages.success(request, "La commande a été modifiée avec succès.")
         return redirect('voir_panier')
     else:
-        # Pré-sélectionner la compétition et l'offre actuelles de la commande
-        competition_actuelle = commande.pk_Offre.competition.pk_typ_competition
-        offres = Offre.objects.filter(competition_id=competition_actuelle)
-
         return render(request, 'modifier_commande.html', {
             'commande': commande,
             'offres': offres,
-            'competitions': competitions
+            'competitions': competitions,
+            'selected_competition_id': competition_id  # Passer l'ID de la compétition sélectionnée au modèle
         })
+    
 def supprimer_commande(request, commande_id):
     commande = Commande.objects.get(pk=commande_id)
     commande.delete()
@@ -198,3 +218,24 @@ def passer_commande(request, offre_id):
         form = CommandeForm()
 
     return render(request, 'passer_commande.html', {'offre': offre, 'form': form})
+def get_offres(request):
+    if request.method == 'GET' and 'competition_id' in request.GET:
+        competition_id = request.GET.get('competition_id')
+        
+        # Sélectionner les offres pour la compétition spécifiée
+        offres = Offre.objects.filter(competition_id=competition_id)
+        
+        # Construire une liste de dictionnaires représentant les offres
+        offres_data = []
+        for offre in offres:
+            offres_data.append({
+                'pk_Offre': offre.pk_Offre,
+                'type': offre.type,
+                'nombre_personnes': offre.nombre_personnes,
+                # Ajoutez d'autres champs d'offre si nécessaire
+            })
+        
+        return JsonResponse(offres_data, safe=False)
+    else:
+        # Si la requête n'est pas valide, renvoyer une réponse d'erreur
+        return JsonResponse({'error': 'Paramètres de requête invalides'}, status=400)
