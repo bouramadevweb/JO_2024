@@ -40,14 +40,14 @@
                 {% endif %}
 
                 <!-- Lien pour tous les utilisateurs -->
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'choisir_ticket' %}">Choisir Ticket</a>
-                </li>
-
+                
                 <!-- Lien pour les utilisateurs connectés -->
                 {% if user.is_authenticated %}
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Panier d'achat</a>
+                    <a class="nav-link" href="{% url 'choisir_ticket' %}">Choisir Ticket</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'voir_panier' %}">Panier d'achat</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'deconnexion' %}">Déconnexion</a>

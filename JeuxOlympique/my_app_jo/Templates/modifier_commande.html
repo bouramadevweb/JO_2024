@@ -17,8 +17,8 @@
     </form>
 
     {% if offres %}
-    <h2>Offres disponibles :</h2>
-    <form method="POST" action="">
+    <h2>Modifier votre offre  :</h2>
+    <form method="POST" action="{% url 'modifier_commande' commande.pk_Commande %}">
         {% csrf_token %}
         <div class="row">
             {% for offre in offres %}
@@ -41,6 +41,24 @@
     {% else %}
     <p>Aucune offre disponible pour la compétition sélectionnée.</p>
     {% endif %}
+
+    <div class="container">
+    <h1>Modifier la commande</h1>
+    <form method="POST">
+        {% csrf_token %}
+        <label for="offre">Sélectionner une offre :</label>
+        <select name="offre_id" id="offre">
+            {% for offre in offres %}
+                <option value="{{ offre.pk_Offre }}">{{ offre.type }} - {{ offre.competition.Nom }} - {{ offre.nombre_personnes }} personnes</option>
+            {% endfor %}
+        </select>
+        <br>
+        <label for="quantite">Quantité :</label>
+        <input type="number" name="quantite" id="quantite" min="1" value="{{ commande.quantite }}">
+        <br>
+        <button type="submit">Valider</button>
+    </form>
+</div>
 </div>
 
 <script>

@@ -8,7 +8,6 @@ from django.conf import settings
 class User(AbstractUser):
     Nom = models.CharField(max_length=150)
     Prenom = models.CharField(max_length=150)
-    AdresseEmail = models.EmailField(max_length=50, unique=True)
     Date_de_Naissance = models.DateField()
     ClefGeneree = models.CharField(max_length=50, default=secrets.token_hex(16))
 

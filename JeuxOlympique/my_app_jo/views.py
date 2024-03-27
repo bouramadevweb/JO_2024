@@ -11,6 +11,7 @@ from django.http import JsonResponse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
+from django.http import HttpResponse
 from django.db import transaction
 from django.http import JsonResponse
 
@@ -22,6 +23,7 @@ from django.shortcuts import render
 from .models import Offre, Competitions
 
 
+@login_required
 def choisir_ticket(request):
     if request.method == 'GET' and 'competition' in request.GET:
         # Récupérer l'ID de la compétition sélectionnée par l'utilisateur
@@ -103,49 +105,44 @@ def valider_commande(request):
 
 @login_required
 def modifier_commande(request, commande_id):
-    # Sélectionner toutes les compétitions disponibles
-    competitions = Competitions.objects.select_related('pk_lieu').all()
-
-    # Récupérer l'ID de la compétition sélectionnée par l'utilisateur (s'il y en a une)
-    competition_id = request.POST.get('competition')
-    
-    # Sélectionner les offres en fonction de la compétition sélectionnée, ou toutes les offres si aucune compétition n'est sélectionnée
-    if competition_id:
-        offres = Offre.objects.filter(pk=Offre.competition)
-    else:
-        offres = Offre.objects.all()
-    
+    # Récupérer la commande correspondante
     commande = get_object_or_404(Commande, pk=commande_id)
 
     if request.method == 'POST':
-        print(request.POST)
-        
-        type_offre_id = request.POST.get('type_offre')
-        
-        # Vérifier si la quantité est présente dans les données POST
-        if 'quantite' in request.POST:
-            quantite = int(request.POST['quantite'])
-        else:
-            quantite = 0  # Valeur par défaut si la quantité n'est pas fournie
-        
-        # Gérer le cas où aucune offre n'existe pour l'ID donné
-        try:
-            offre = Offre.objects.get(pk=type_offre_id)
-        except Offre.DoesNotExist:
-            messages.error(request, "L'offre sélectionnée n'existe pas.")
-            return redirect('modifier_commande', commande_id=commande_id)
+        # Traitement des requêtes POST
+        type_offre_id = request.POST.get('offre_id')
+        quantite = int(request.POST.get('quantite'))
 
+        # Récupérer l'offre correspondante
+        offre = get_object_or_404(Offre, pk=type_offre_id)
+
+        # Calculer le montant total de la commande
         montant_total = offre.prix * quantite
 
+        # Mettre à jour la commande avec les nouvelles données
         Commande.objects.filter(pk=commande_id).update(
             pk_Offre=offre.pk_Offre,
             quantite=quantite,
             MontantTotal=montant_total
         )
 
-        messages.success(request, "La commande a été modifiée avec succès.")
+        # Rediriger vers une autre vue après la modification
         return redirect('voir_panier')
     else:
+        # Traitement des requêtes GET
+        # Récupérer l'ID de la compétition sélectionnée par l'utilisateur (s'il y en a une)
+        competition_id = request.GET.get('competition')
+
+        # Sélectionner toutes les compétitions disponibles
+        competitions = Competitions.objects.select_related('pk_lieu').all()
+
+        # Sélectionner les offres en fonction de la compétition sélectionnée, ou toutes les offres si aucune compétition n'est sélectionnée
+        if competition_id:
+            offres = Offre.objects.filter(competition_id=competition_id)
+        else:
+            offres = Offre.objects.all()
+
+        # Rendre le template avec les données nécessaires
         return render(request, 'modifier_commande.html', {
             'commande': commande,
             'offres': offres,
