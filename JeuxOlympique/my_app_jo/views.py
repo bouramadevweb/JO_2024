@@ -2,28 +2,23 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
-from .forms import InscriptionForm, CommandeForm,ModifierCommandeForm
-from django.http import JsonResponse
+from .forms import InscriptionForm
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from .models import Offre, Commande, Competitions, User ,List_competition,Billet
-from django.http import JsonResponse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
-from django.http import HttpResponse
 from django.db import transaction
-from django.http import JsonResponse
+from django.shortcuts import render
+from .models import Offre, Competitions
 
 def home(request):
     return render(request, 'home.html', {})
 
 
-from django.shortcuts import render
-from .models import Offre, Competitions
 
 
-@login_required
 def choisir_ticket(request):
     if request.method == 'GET' and 'competition' in request.GET:
         # Récupérer l'ID de la compétition sélectionnée par l'utilisateur
@@ -76,10 +71,10 @@ def ajouter_au_panier(request):
                     )
 
                     # Générer le billet si la commande est validée
-                    if commande.est_validee:
-                        commande.save()  # Appel de la méthode pour générer le billet
+                    # if commande.est_validee:
+                    #     commande.save()  # Appel de la méthode pour générer le billet
 
-                        print(f"Billet généré pour la commande {commande.pk_Commande}")
+                    print(f"Billet généré pour la commande {commande.pk_Commande}")
 
                 messages.success(request, "Les offres ont été ajoutées au panier.")
                 return redirect('voir_panier')
@@ -96,12 +91,19 @@ def voir_panier(request):
     commandes = Commande.objects.filter(pk_Utilisateur=request.user)
     return render(request, 'voir_panier.html', {'commandes': commandes})
 @login_required
-def valider_commande(request):
+
+def valider_commande(request, commande_id):
     if request.method == 'POST':
-        commandes_a_valider = Commande.objects.filter(pk_Utilisateur=request.user, est_validee=False)
-        commandes_a_valider.update(est_validee=True)  # Marquer toutes les commandes comme validées
-        messages.success(request, "Vos commandes ont été validées avec succès.")
+        # Mettre à jour la commande spécifique à valider dans la base de données
+        Commande.objects.filter(pk=commande_id, 
+                                pk_Utilisateur=request.user,
+                                  est_validee=False).update(est_validee=True)
+        
+        messages.success(request, "Votre commande a été validée avec succès.")
     return redirect('voir_panier')
+
+
+
 
 @login_required
 def modifier_commande(request, commande_id):
@@ -192,47 +194,3 @@ def deconnexion(request):
     logout(request)
     return redirect('home')
 
-@login_required
-def passer_commande(request, offre_id):
-    offre = Offre.objects.get(pk_Offre=offre_id)
-
-    if request.method == 'POST':
-        form = CommandeForm(request.POST)
-        if form.is_valid():
-            quantite = form.cleaned_data['quantite']
-            montant_total = offre.Prix * quantite
-            commande = Commande.objects.create(
-                quantite=quantite,
-                MontantTotal=montant_total,
-                pk_Offre=offre,
-                pk_Utilisateur=request.user,
-                pk_Competition=offre.pk_typ_competition
-            )
-            commande.pk_Billet.generer_cles()
-            messages.success(request, "La commande a été passée avec succès!")
-            return redirect('confirmation_commande')
-    else:
-        form = CommandeForm()
-
-    return render(request, 'passer_commande.html', {'offre': offre, 'form': form})
-def get_offres(request):
-    if request.method == 'GET' and 'competition_id' in request.GET:
-        competition_id = request.GET.get('competition_id')
-        
-        # Sélectionner les offres pour la compétition spécifiée
-        offres = Offre.objects.filter(competition_id=competition_id)
-        
-        # Construire une liste de dictionnaires représentant les offres
-        offres_data = []
-        for offre in offres:
-            offres_data.append({
-                'pk_Offre': offre.pk_Offre,
-                'type': offre.type,
-                'nombre_personnes': offre.nombre_personnes,
-                # Ajoutez d'autres champs d'offre si nécessaire
-            })
-        
-        return JsonResponse(offres_data, safe=False)
-    else:
-        # Si la requête n'est pas valide, renvoyer une réponse d'erreur
-        return JsonResponse({'error': 'Paramètres de requête invalides'}, status=400)

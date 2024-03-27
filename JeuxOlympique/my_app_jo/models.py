@@ -19,7 +19,7 @@ class User(AbstractUser):
         abstract = False
 
     def __str__(self):
-        return f'{self.Nom}, {self.Prenom}, {self.AdresseEmail}'
+        return f'{self.Nom}, {self.Prenom}'
 
 class Dates_commandes(models.Model):
     pk_date = models.DateTimeField(primary_key=True)
@@ -74,7 +74,7 @@ class Dates_Competions(models.Model):
 
 
 class Competitions(models.Model):
-    pk_typ_competition = models.CharField(primary_key=True)
+    pk_typ_competition = models.CharField(max_length=1000,primary_key=True)
     Nom = models.CharField(max_length=250)
     pk_list_competition = models.ForeignKey(List_competition, on_delete=models.CASCADE)
     pk_date_competition = models.ForeignKey(Dates_Competions, on_delete=models.CASCADE)

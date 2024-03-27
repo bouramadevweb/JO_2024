@@ -16,7 +16,7 @@
                     <p class="card-text"><strong>Prix unitaire:</strong> {{ commande.pk_Offre.prix }}</p>
                     <p class="card-text"><strong>Prix total:</strong> {{ commande.MontantTotal }}</p>
                     <div class="btn-group" role="group" aria-label="Actions">
-                        <form action="{% url 'valider_commande' %}" method="post">
+                        <form action="{% url 'valider_commande' commande.pk_Commande %}" method="post">
                             {% csrf_token %}
                             <button type="submit" class="btn btn-success mr-2">Valider</button>
                         </form>
