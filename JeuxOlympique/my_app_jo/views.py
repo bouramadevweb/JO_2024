@@ -12,9 +12,16 @@ from django.shortcuts import get_object_or_404
 from django.db import transaction
 from django.shortcuts import render
 from .models import Offre, Competitions
+from django.http import HttpResponse
+import qrcode, base64
+from io import BytesIO
+
+ 
+
 
 def home(request):
-    return render(request, 'home.html', {})
+    competitions = Competitions.objects.all()
+    return render(request, 'home.html', {'competitions': competitions})
 
 
 
@@ -69,11 +76,8 @@ def ajouter_au_panier(request):
                         MontantTotal=montant_total,
                         pk_Utilisateur=request.user
                     )
-
-                    # Générer le billet si la commande est validée
-                    # if commande.est_validee:
-                    #     commande.save()  # Appel de la méthode pour générer le billet
-
+                    
+                    
                     print(f"Billet généré pour la commande {commande.pk_Commande}")
 
                 messages.success(request, "Les offres ont été ajoutées au panier.")
@@ -90,45 +94,30 @@ def ajouter_au_panier(request):
 def voir_panier(request):
     commandes = Commande.objects.filter(pk_Utilisateur=request.user)
     return render(request, 'voir_panier.html', {'commandes': commandes})
-@login_required
-
-def valider_commande(request, commande_id):
-    if request.method == 'POST':
-        # Mettre à jour la commande spécifique à valider dans la base de données
-        Commande.objects.filter(pk=commande_id, 
-                                pk_Utilisateur=request.user,
-                                  est_validee=False).update(est_validee=True)
-        
-        messages.success(request, "Votre commande a été validée avec succès.")
-    return redirect('voir_panier')
 
 @login_required
-def payer_commande(request, command_id):
+def payer_commande(request, commande_id):
     # Récupérer la commande spécifique à payer
-    commande = Commande.objects.get(pk=command_id, pk_Utilisateur=request.user, est_validee=False)
+    commande = Commande.objects.filter(pk=commande_id, pk_Utilisateur=request.user, est_validee=False).first()
     
     if request.method == 'POST':
         # Simulation du paiement
         if commande:
-            # Marquer la commande comme validée (simulant un paiement réussi)
-            commande.est_validee = True
-            commande.save()
-
-            # Afficher un message de confirmation
-            messages.success(request, "Le paiement a été simulé avec succès.")
-
-            # Rediriger vers une autre vue après le paiement
-            return redirect('voir_panier')
+            # Début de la transaction pour garantir l'intégrité des données
+            with transaction.atomic():
+                # Mettre à jour la commande comme validée dans la base de données
+                Commande.objects.filter(pk=commande_id, pk_Utilisateur=request.user, est_validee=False).update(est_validee=True)
+                Billet.objects.filter(pk=commande.pk_Billet_id).update(est_validee=True)
+                
+                # Rediriger vers la page de détails du billet avec l'ID du billet comme argument
+                return redirect('details_billet', billet_id=commande.pk_Billet_id)
         else:
             messages.error(request, "La commande n'existe pas ou a déjà été validée.")
             return redirect('voir_panier')
     else:
         # Passer le montant total comme contexte vers le modèle HTML
-        montant_total = commande.MontantTotal  # Assurez-vous d'adapter cela à votre modèle de données
-        return render(request, 'payer_commande.html', {'command_id': command_id, 'montant_total': montant_total})
-
-
-
+        montant_total = commande.MontantTotal if commande else 0  # Assurez-vous d'adapter cela à votre modèle de données
+        return render(request, 'payer_commande.html', {'commande_id': commande_id , 'montant_total': montant_total})
 @login_required
 def modifier_commande(request, commande_id):
     # Récupérer la commande correspondante
@@ -180,8 +169,55 @@ def supprimer_commande(request, commande_id):
     commande = Commande.objects.get(pk=commande_id)
     commande.delete()
     messages.success(request, "La commande a été supprimée avec succès.")
-    return redirect('voir_panier')   
+    return redirect('voir_panier')  
  
+def details_billet(request, billet_id):
+    billet = get_object_or_404(Billet, pk=billet_id)
+    
+    # Récupérer la commande associée au billet
+    commande = billet.commande_set.first()
+    
+    # Vérifier si une commande existe
+    if commande:
+        # Récupérer le montant total de la commande
+        montant_total_commande = commande.MontantTotal
+        
+        # Récupérer le type d'offre
+        type_offre = commande.pk_Offre.type
+        
+        # Récupérer le nom de l'utilisateur
+        nom_utilisateur = commande.pk_Utilisateur.username
+
+    else:
+        montant_total_commande = None
+        type_offre = None
+        nom_utilisateur = None
+    
+    # Concaténer la clef utilisateur et la clef de billet pour former le contenu du QR code
+    qr_content = f"{billet.ClefUtilisateur}{billet.Cledebilletelectroniquesecurisee}"
+    
+    # Générer le QR code
+    qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)
+    qr.add_data(qr_content)
+    qr.make(fit=True)
+    img = qr.make_image(fill_color="black", back_color="white")
+    
+    # Enregistrer le QR code dans un buffer
+    buffer = BytesIO()
+    img.save(buffer, 'PNG')
+    qr_image = base64.b64encode(buffer.getvalue()).decode()
+    
+    # Renvoyer le rendu de la page avec le billet, le QR code, et les informations supplémentaires
+    return render(request, 'details_billet.html', {'billet': billet, 'qr_image': qr_image, 
+                                                   'montant_total_commande': montant_total_commande,
+                                                   'type_offre': type_offre,
+                                                   'nom_utilisateur': nom_utilisateur})
+#Competition
+def lister_competitions(request):
+    competitions = Competitions.objects.all()
+    return render(request, 'lister_competitions.html', {'competitions': competitions})
+
+ #   
 def inscription(request):
     if request.method == 'POST':
         form = InscriptionForm(request.POST)

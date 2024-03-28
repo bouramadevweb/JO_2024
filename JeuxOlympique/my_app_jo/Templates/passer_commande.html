@@ -1,8 +1,0 @@
-<!-- passer_commande.html -->
-{% extends 'base.html' %}
-
-<form method="POST" action="{% url 'passer_commande' offre.pk_Offre %}">
-    {% csrf_token %}
-    <button type="submit">Passer la commande</button>
-</form>
-

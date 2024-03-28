@@ -14,7 +14,7 @@ for ods_entry in ODS.objects.all():
         continue
 
     # Supprimer les espaces dans la valeur de pk_list_competition
-    pk_list_competition = remove_spaces(list_competition_instance.pk_list_competition)
+    # pk_list_competition = remove_spaces(list_competition_instance.pk_list_competition)
 
     # Récupérer les instances de Lieu_des_competions associées à cet enregistrement ODS
     lieu_competition_instances = Lieu_des_competions.objects.filter(Nom=ods_entry.lieu)
@@ -26,7 +26,7 @@ for ods_entry in ODS.objects.all():
     # Parcourir toutes les instances de Lieu_des_competions
     for lieu_competition_instance in lieu_competition_instances:
         # Créer une instance de Dates_Competions avec les valeurs appropriées
-        pk_date_competition = f"{pk_list_competition}_{remove_spaces(lieu_competition_instance.Nom)}_{ods_entry.date_debut}_{ods_entry.date_fin}"
+        pk_date_competition = f"{remove_spaces(lieu_competition_instance.Nom)}_{ods_entry.date_debut}_{ods_entry.date_fin}"
         date_competition = Dates_Competions(
             pk_date_competition=remove_spaces(pk_date_competition),
             date_debut=ods_entry.date_debut,

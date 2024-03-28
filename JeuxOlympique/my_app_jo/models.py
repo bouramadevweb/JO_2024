@@ -8,7 +8,6 @@ from django.conf import settings
 class User(AbstractUser):
     Nom = models.CharField(max_length=150)
     Prenom = models.CharField(max_length=150)
-    Date_de_Naissance = models.DateField()
     ClefGeneree = models.CharField(max_length=50, default=secrets.token_hex(16))
 
     class Meta:
@@ -20,6 +19,7 @@ class User(AbstractUser):
 
     def __str__(self):
         return f'{self.Nom}, {self.Prenom}'
+
 
 class Dates_commandes(models.Model):
     pk_date = models.DateTimeField(primary_key=True)
@@ -105,29 +105,22 @@ class Offre(models.Model):
 
 class Billet(models.Model):
     pk_Billet = models.AutoField(primary_key=True)
-    Cledebilletelectroniquesecurisee = models.CharField(max_length=50, unique=True)  # Clé de sécurité générée lors de la création du billet électronique
-    ClefUtilisateur = models.CharField(max_length=50)  # Clé associée à l'utilisateur pour sécuriser le billet
-    pk_typ_competition = models.ForeignKey(Competitions, on_delete=models.CASCADE)
+    Cledebilletelectroniquesecurisee = models.CharField(max_length=50, unique=True)
+    ClefUtilisateur = models.CharField(max_length=50)
+    pk_typ_competition = models.ForeignKey('Competitions', on_delete=models.CASCADE)
+    est_validee = models.BooleanField(default=False)
 
     def __str__(self):
         return f'Billet {self.pk_Billet} pour {self.pk_typ_competition}'
 
-    
-    def generer_cles(self):
-        """
-        Génère les clés de sécurité pour le billet électronique.
-        """
-        self.Cledebilletelectroniquesecurisee = self.generer_cle()
-        self.ClefUtilisateur = self.pk_Utilisateur.ClefGeneree
-
-        self.save()
-
     def generer_cle(self):
-        """
-        Génère une clé de sécurité aléatoire.
-        """
         alphabet = string.ascii_letters + string.digits
         return ''.join(secrets.choice(alphabet) for i in range(20))
+
+    def save(self, *args, **kwargs):
+        if not self.Cledebilletelectroniquesecurisee:
+            self.Cledebilletelectroniquesecurisee = self.generer_cle()
+        super().save(*args, **kwargs)
 
 
 class Commande(models.Model):
@@ -136,28 +129,22 @@ class Commande(models.Model):
     MontantTotal = models.FloatField()
     pk_date = models.DateTimeField(auto_now_add=True)
     pk_Offre = models.ForeignKey(Offre, on_delete=models.CASCADE)
-    # Mettez à jour le champ pk_Utilisateur pour utiliser le modèle utilisateur personnalisé
-    pk_Utilisateur = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)  # Utilisez le modèle utilisateur personnalisé
+    pk_Utilisateur = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     pk_Billet = models.ForeignKey(Billet, on_delete=models.CASCADE)
     est_validee = models.BooleanField(default=False)
 
     def __str__(self):
         return f'Commande {self.pk_Commande} pour {self.quantite} billet(s) {self.pk_Offre.type}'
 
-    
     def save(self, *args, **kwargs):
         if not self.pk_Billet_id:
             billet = Billet.objects.create(pk_typ_competition=self.pk_Offre.competition)
-            billet.Cledebilletelectroniquesecurisee = billet.generer_cle()
             billet.ClefUtilisateur = self.pk_Utilisateur.ClefGeneree
             billet.save()
             self.pk_Billet = billet
-            super().save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     
-        
-          
-
 class ODS(models.Model):
     discipline = models.CharField(max_length=250)
     date_debut = models.DateField()

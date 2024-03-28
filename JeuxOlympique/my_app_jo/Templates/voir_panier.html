@@ -7,30 +7,29 @@
     <h1 class="mt-5 mb-4">Panier</h1>
     <div class="row">
         {% for commande in commandes %}
-        <div class="col-md-6 mb-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Compétition: {{ commande.pk_Offre.competition.Nom }}</h5>
-                    <p class="card-text"><strong>Offre:</strong> {{ commande.pk_Offre.type }}</p>
-                    <p class="card-text"><strong>Quantité:</strong> {{ commande.quantite }}</p>
-                    <p class="card-text"><strong>Prix unitaire:</strong> {{ commande.pk_Offre.prix }}</p>
-                    <p class="card-text"><strong>Prix total:</strong> {{ commande.MontantTotal }}</p>
-                    <div class="btn-group" role="group" aria-label="Actions">
-                        <form action="{% url 'valider_commande' commande.pk_Commande %}" method="post">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-success mr-2">Valider</button>
-                        </form>
-                        <a class="btn btn-warning mr-2" href="{% url 'modifier_commande' commande.pk_Commande %}">Modifier</a>
-                        <form method="POST" action="{% url 'supprimer_commande' commande.pk_Commande %}">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-danger mr-2">Supprimer</button>
-                        </form>
-                        <a href="{% url 'payer_commande' command_id=commande.pk_Commande %}" class="btn btn-success">Payer la commande</a>
+            {% if not commande.est_validee %}
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Compétition: {{ commande.pk_Offre.competition.Nom }}</h5>
+                        <p class="card-text"><strong>Offre:</strong> {{ commande.pk_Offre.type }}</p>
+                        <p class="card-text"><strong>Quantité:</strong> {{ commande.quantite }}</p>
+                        <p class="card-text"><strong>Prix unitaire:</strong> {{ commande.pk_Offre.prix }}</p>
+                        <p class="card-text"><strong>Prix total:</strong> {{ commande.MontantTotal }}</p>
+                        <div class="btn-group" role="group" aria-label="Actions">
+                            
+                            <a class="btn btn-warning mr-2" href="{% url 'modifier_commande' commande.pk_Commande %}">Modifier</a>
+                            <form method="POST" action="{% url 'supprimer_commande' commande.pk_Commande %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger mr-2">Supprimer</button>
+                            </form>
+                            <a href="{% url 'payer_commande' commande.pk_Commande %}" class="btn btn-success">Payer la commande</a>
 
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+            {% endif %}
         {% endfor %}
     </div>
 </div>

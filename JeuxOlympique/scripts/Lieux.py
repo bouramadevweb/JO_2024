@@ -7,14 +7,18 @@ try:
 
         # Assurez-vous que la discipline existe
         if competition_entry.discipline:
-            # Récupérer l'instance de List_competition associée à la discipline
-            discipline_instance, created = List_competition.objects.get_or_create(
-                pk_list_competition=competition_entry.discipline,
-                defaults={'nom': competition_entry.discipline}
-            )
+            # Récupérer l'instance de List_competition associée à la discipline s'il existe
+            try:
+                discipline_instance = List_competition.objects.get(pk_list_competition=competition_entry.discipline)
+            except List_competition.DoesNotExist:
+                # Si l'instance n'existe pas, créez une nouvelle instance
+                discipline_instance = List_competition.objects.create(
+                    pk_list_competition=competition_entry.discipline,
+                    nom=competition_entry.discipline
+                )
 
             # Supprimer les espaces dans le nom du lieu pour créer pk_lieu
-            pk_lieu = competition_entry.lieu.replace(' ', '')
+            pk_lieu = competition_entry.lieu.replace(' ', '_')
 
             # Créer un lieu de compétition en associant la discipline
             lieu_competition = Lieu_des_competions(
@@ -25,13 +29,6 @@ try:
                 Ville=competition_entry.ville
             )
             lieu_competition.save()
-
-            if created:
-                print(f"Données insérées pour {lieu_competition.Nom} avec une nouvelle discipline associée.")
-            else:
-                print(f"Données insérées pour {lieu_competition.Nom}")
-        else:
-            print("Aucune discipline n'a été trouvée pour ce lieu de compétition.")
 
     print("Fin d'insertion des données pour les lieux de compétitions")
 except IntegrityError as e:
