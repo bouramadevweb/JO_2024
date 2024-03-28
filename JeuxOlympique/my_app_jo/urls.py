@@ -10,6 +10,7 @@ urlpatterns = [
     path('voir_panier/', views.voir_panier, name='voir_panier'),
     path('modifier_commande/<int:commande_id>/', views.modifier_commande, name='modifier_commande'),
     path('valider_commande/<int:commande_id>/',views.valider_commande,name='valider_commande'),
+    path('payer_panier/<int:command_id>/', views.payer_panier, name='payer_panier'),
     path('supprimer_commande/<int:commande_id>/',views.supprimer_commande,name='supprimer_commande'),
     path('connexion/', views.connexion, name='connexion'),
     path('inscription/', views.inscription, name='inscription'),
