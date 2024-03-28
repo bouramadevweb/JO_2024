@@ -9,7 +9,7 @@
                 <div class="card">
                     <div class="card-body">
                         <h1 class="card-title text-center mb-4">Paiement par carte bancaire</h1>
-                        <form method="post" action="{% url 'payer_panier' command_id=command_id %}" id="payment-form">
+                        <form method="post" action="{% url 'payer_commande' command_id=command_id %}" id="payment-form">
                             {% csrf_token %}
                             <div class="form-group">
                                 <label for="card_number">Numéro de carte :</label>

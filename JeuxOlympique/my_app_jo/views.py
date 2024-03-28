@@ -103,12 +103,11 @@ def valider_commande(request, commande_id):
     return redirect('voir_panier')
 
 @login_required
-@login_required
-def payer_panier(request, command_id):
+def payer_commande(request, command_id):
+    # Récupérer la commande spécifique à payer
+    commande = Commande.objects.get(pk=command_id, pk_Utilisateur=request.user, est_validee=False)
+    
     if request.method == 'POST':
-        # Récupérer la commande spécifique à payer
-        commande = Commande.objects.get(pk=command_id, pk_Utilisateur=request.user, est_validee=False)
-        
         # Simulation du paiement
         if commande:
             # Marquer la commande comme validée (simulant un paiement réussi)
@@ -124,8 +123,9 @@ def payer_panier(request, command_id):
             messages.error(request, "La commande n'existe pas ou a déjà été validée.")
             return redirect('voir_panier')
     else:
-        # Afficher une page de confirmation de paiement
-        return render(request, 'payer_panier.html', {'command_id': command_id})
+        # Passer le montant total comme contexte vers le modèle HTML
+        montant_total = commande.MontantTotal  # Assurez-vous d'adapter cela à votre modèle de données
+        return render(request, 'payer_commande.html', {'command_id': command_id, 'montant_total': montant_total})
 
 
 

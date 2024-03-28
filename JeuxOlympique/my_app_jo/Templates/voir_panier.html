@@ -25,7 +25,7 @@
                             {% csrf_token %}
                             <button type="submit" class="btn btn-danger mr-2">Supprimer</button>
                         </form>
-                        <a href="{% url 'payer_panier' command_id=commande.pk_Commande %}" class="btn btn-success">Payer la commande</a>
+                        <a href="{% url 'payer_commande' command_id=commande.pk_Commande %}" class="btn btn-success">Payer la commande</a>
 
                     </div>
                 </div>
