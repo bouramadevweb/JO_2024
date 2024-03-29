@@ -29,10 +29,17 @@ class Dates_commandes(models.Model):
 
 class List_competition(models.Model):
     pk_list_competition = models.CharField(max_length=150, primary_key=True)
-    nom =models.CharField(max_length=150)
+    nom = models.CharField(max_length=150)
+
+    def save(self, *args, **kwargs):
+        if not self.pk_list_competition:
+            # Supprimer les espaces de la clé primaire
+            self.pk_list_competition = self.pk_list_competition.replace(' ', '')
+        super().save(*args, **kwargs)
 
     def __str__(self):
-        return f'{self.pk_list_competition} ,{self.nom}'
+        return f'{self.pk_list_competition}, {self.nom}'
+
 
 class Lieu_des_competions(models.Model):
     # Définir le champ pour la clé primaire AutoField
@@ -50,7 +57,7 @@ class Lieu_des_competions(models.Model):
     def save(self, *args, **kwargs):
         # Si l'objet n'a pas encore de clé primaire, créez-en une en utilisant les valeurs des champs spécifiés
         if not self.pk:
-            self.pk_lieu = f"{self.Ville}_{self.Nom}_{self.Capacite}_{self.Discipline.pk_list_competition}"
+            self.pk_lieu = "_".join([str(self.Ville),str(self.Nom),str(self.Capacite),str(self.Discipline.pk_list_competition)])
         super().save(*args, **kwargs)
     
     def __str__(self):
@@ -66,7 +73,7 @@ class Dates_Competions(models.Model):
 
     def save(self, *args, **kwargs):
         # Concaténer les champs pour former la clé primaire
-        self.pk_date_competition = f"{self.pk_list_competition}_{self.pk_lieu}_{self.date_debut}_{self.date_fin}"
+        self.pk_date_competition = "_".join([str(self.pk_list_competition),str(self.pk_lieu),str(self.date_debut), str(self.date_fin)])
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -81,8 +88,8 @@ class Competitions(models.Model):
     pk_lieu = models.ForeignKey(Lieu_des_competions, on_delete=models.CASCADE)
     def save(self, *args, **kwargs):
         # Concaténer les champs pour former la clé primaire
-        self.pk_typ_competition = f"{self.pk_lieu}{self.pk_list_competition}_{self.pk_date_competition}"
-        super().save(*args, **kwargs)
+        self.pk_typ_competition ="".join([str(self.pk_lieu),str(self.pk_list_competition),str(self.pk_date_competition)])
+        super().save(*args, **kwargs),
     def __str__(self):
         return f'{self.Nom}, {self.pk_typ_competition}, {self.pk_date_competition}, {self.pk_lieu}'
     
@@ -99,6 +106,10 @@ class Offre(models.Model):
     prix = models.FloatField()
     competition = models.ForeignKey(Competitions, on_delete=models.CASCADE)
 
+    def save(self, *args, **kwargs):
+        if not self.pk_Offre:
+            self.pk_Offre = "_".join([str(self.type), str(self.nombre_personnes), str(self.competition.pk_typ_competition)])
+        super().save(*args, **kwargs)
     def __str__(self):
         return f'{self.pk_Offre}, {self.type}, {self.prix}, {self.competition.Nom}'
 

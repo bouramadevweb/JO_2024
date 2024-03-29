@@ -14,6 +14,7 @@ from django.shortcuts import render
 from .models import Offre, Competitions
 from django.http import HttpResponse
 import qrcode, base64
+from django.db.models import Count, Q
 from io import BytesIO
 
  
@@ -212,6 +213,50 @@ def details_billet(request, billet_id):
                                                    'montant_total_commande': montant_total_commande,
                                                    'type_offre': type_offre,
                                                    'nom_utilisateur': nom_utilisateur})
+def mes_billets(request):
+ 
+    # Récupérer tous les billets avec les informations de commande associées
+    billets_with_qr = []
+
+    billets = Billet.objects.all()
+
+    for billet in billets:
+        # Récupérer la commande associée à ce billet
+        commande = Commande.objects.filter(pk_Billet=billet.pk_Billet).first()
+
+        # Vérifier si une commande existe pour ce billet
+        if commande:
+            # Créer le contenu du QR code avec la clé utilisateur et la clé du billet
+            qr_content = f"{billet.ClefUtilisateur}{billet.Cledebilletelectroniquesecurisee}"
+            
+            # Générer le QR code
+            qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)
+            qr.add_data(qr_content)
+            qr.make(fit=True)
+            img = qr.make_image(fill_color="black", back_color="white")
+
+            # Convertir l'image du QR code en base64
+            buffer = BytesIO()
+            img.save(buffer,"PNG")
+            qr_image = base64.b64encode(buffer.getvalue()).decode()
+
+            # Ajouter le billet avec ses informations et le QR code à la liste
+            billets_with_qr.append({'billet': billet, 'commande': commande, 'qr_image': qr_image})
+
+    return render(request, 'mes_billets.html', {'billets_with_qr': billets_with_qr})
+
+def generate_qr_code(content):
+    qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)
+    qr.add_data(content)
+    qr.make(fit=True)
+    img = qr.make_image(fill_color="black", back_color="white")
+
+    buffer = BytesIO()
+    img.save(buffer, 'PNG')
+    qr_image = base64.b64encode(buffer.getvalue()).decode()
+
+    return qr_image
+
 #Competition
 def lister_competitions(request):
     competitions = Competitions.objects.all()
@@ -253,4 +298,10 @@ def connexion(request):
 def deconnexion(request):
     logout(request)
     return redirect('home')
+#admin
+def ventes_par_offre(request):
+    ventes_par_offre = Offre.objects.annotate(nombre_ventes=Count('commande')).filter(commande__est_validee=True, commande__pk_Billet__est_validee=True)
 
+    
+    
+    return render(request, 'admin/ventes_par_offre.html', {'ventes_par_offre': ventes_par_offre})

@@ -18,7 +18,7 @@ try:
                 )
 
             # Supprimer les espaces dans le nom du lieu pour créer pk_lieu
-            pk_lieu = competition_entry.lieu.replace(' ', '_')
+            pk_lieu = competition_entry.lieu.replace(' ','')
 
             # Créer un lieu de compétition en associant la discipline
             lieu_competition = Lieu_des_competions(

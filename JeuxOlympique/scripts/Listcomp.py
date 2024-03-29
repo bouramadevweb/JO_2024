@@ -6,7 +6,7 @@ try:
         print(f"Insertion des données pour {competition_entry.discipline}")
        
         # Création d'une instance de List_competition avec la discipline de ODS
-        pk_list_competition = competition_entry.discipline.replace(" ", "_")  # Supprimer tous les espaces
+        pk_list_competition = competition_entry.discipline.replace(" ", "")  # Supprimer tous les espaces
 
         list_competition_entry = List_competition(
             pk_list_competition=pk_list_competition,
