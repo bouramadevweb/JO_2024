@@ -5,16 +5,14 @@ from django.contrib import messages
 from .forms import InscriptionForm
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
-from .models import Offre, Commande, Competitions, User ,List_competition,Billet
+from .models import Offre, Commande, Competitions, User ,List_competition,Billet,Competitions,Offre
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django.db import transaction
 from django.shortcuts import render
-from .models import Offre, Competitions
-from django.http import HttpResponse
 import qrcode, base64
-from django.db.models import Count, Q
+from django.db.models import Count, Sum,Q
 from io import BytesIO
 
  
@@ -300,8 +298,15 @@ def deconnexion(request):
     return redirect('home')
 #admin
 def ventes_par_offre(request):
-    ventes_par_offre = Offre.objects.annotate(nombre_ventes=Count('commande')).filter(commande__est_validee=True, commande__pk_Billet__est_validee=True)
-
-    
+    # Récupérer les offres avec le nombre de ventes pour chaque offre
+    ventes_par_offre = Offre.objects.annotate(
+        nombre_ventes=Count('commande', filter=Q(commande__est_validee=True)),
+        quantite_vendue=Sum('commande__quantite', filter=Q(commande__est_validee=True))
+    ).filter(
+        commande__est_validee=True  # Commande validée
+    ).annotate(
+        montant_total_ventes=Sum('commande__MontantTotal')  # Calcul du montant total des ventes pour chaque offre
+    )
+     
     
     return render(request, 'admin/ventes_par_offre.html', {'ventes_par_offre': ventes_par_offre})

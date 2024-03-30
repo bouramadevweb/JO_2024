@@ -34,6 +34,9 @@
                     <a class="nav-link" href="{% url 'home' %}">home</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" href="{% url 'ventes_par_offre' %}">vente par offre</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="{% url 'mes_billets' %}">Billet</a>
                 </li>
                 {% if not user.is_authenticated %}

@@ -75,7 +75,7 @@ class Dates_Competions(models.Model):
         # Concaténer les champs pour former la clé primaire
         self.pk_date_competition = "_".join([str(self.pk_list_competition),str(self.pk_lieu),str(self.date_debut), str(self.date_fin)])
         super().save(*args, **kwargs)
-
+    
     def __str__(self):
         return f'{self.pk_date_competition},{self.date_debut} ,{self.date_fin},{self.Remises_de_medailles}'
 

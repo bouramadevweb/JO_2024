@@ -6,24 +6,26 @@
 
 {% block content %}
 <div class="container mt-4">
-        <h1 class="mb-4">Ventes par Offre</h1>
-        <div class="table-responsive">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Offre</th>
-                        <th>Nombre de Ventes</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for offre in ventes_par_offre %}
-                    <tr>
-                        <td>{{ offre.type }}</td>
-                        <td>{{ offre.nombre_ventes }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+    <h1 class="mb-4">Ventes par Offre</h1>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Offre</th>
+                    <th>Nombre de Ventes</th>
+                    <th>Quantité Vendue</th> <!-- Nouvelle colonne -->
+                </tr>
+            </thead>
+            <tbody>
+                {% for offre in ventes_par_offre %}
+                <tr>
+                    <td>{{ offre.type }}</td>
+                    <td>{{ offre.nombre_ventes }}</td>
+                    <td>{{ offre.quantite_vendue }}</td> <!-- Affichage de la quantité vendue -->
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
+</div>
 {% endblock %}
