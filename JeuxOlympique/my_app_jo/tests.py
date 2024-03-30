@@ -1,6 +1,7 @@
 from django.test import TestCase,Client
-from .models import Competitions ,Lieu_des_competions,List_competition,Dates_Competions
+from .models import Competitions ,Lieu_des_competions,List_competition,Dates_Competions,Offre
 from datetime import datetime
+from django.utils import timezone
 
 from django.urls import reverse
 
@@ -116,21 +117,26 @@ class DatesCompetionsCRUDTestCase(TestCase):
         self.assertEqual(saved_dates_competions.pk_date_competition, new_dates_competions.pk_date_competition)
 
     def test_read_dates_competions(self):
-    # Récupérer l'instance de Dates_Competions créée dans setUp
-        retrieved_dates_competions = Dates_Competions.objects.get(pk_date_competition='Football_Paris_Stade_2024-08-01_2024-08-11')
+        # Récupérer l'instance créée dans setUp
+        retrieved_dates_competions = self.dates_competions
 
-    # Vérifier si l'instance récupérée a les attributs attendus
+        # Vérifier si l'instance récupérée a les attributs attendus
         self.assertEqual(retrieved_dates_competions.date_debut, datetime(2024, 8, 1))
         self.assertEqual(retrieved_dates_competions.date_fin, datetime(2024, 8, 11))
-        self.assertEqual(retrieved_dates_competions.pk_list_competition, self.list_competition)
-        self.assertEqual(retrieved_dates_competions.pk_lieu, self.lieu_des_competions)
+        self.assertEqual(retrieved_dates_competions.pk_list_competition.pk_list_competition, 'Football')  # Vérifier la clé primaire de la compétition
+        self.assertEqual(retrieved_dates_competions.pk_lieu.pk_lieu, 'Paris_Stade_10000_Football')  # Vérifier la clé primaire du lieu
         self.assertEqual(retrieved_dates_competions.Remises_de_medailles, 'Some medals')
-
 
     def test_update_dates_competions(self):
         # Modifier l'instance de Dates_Competions
         self.dates_competions.Remises_de_medailles = 'Some new medals'
         self.dates_competions.save()
+
+        # Récupérer l'instance mise à jour à partir de la base de données
+        updated_dates_competions = Dates_Competions.objects.get(pk_date_competition=self.dates_competions.pk_date_competition)
+
+        # Vérifier si la mise à jour a été effectuée avec succès
+        self.assertEqual(updated_dates_competions.Remises_de_medailles, 'Some new medals')
 
     def test_delete_dates_competions(self):
         # Supprimer l'instance de Dates_Competions
@@ -138,4 +144,72 @@ class DatesCompetionsCRUDTestCase(TestCase):
 
         # Vérifier si l'instance a été supprimée avec succès
         with self.assertRaises(Dates_Competions.DoesNotExist):
-            Dates_Competions.objects.get(pk_date_competition='Football_Paris_Stade_2024-08-01_2024-08-11')            
+            Dates_Competions.objects.get(pk_date_competition='Football_Paris_Stade_2024-08-01_2024-08-11')
+
+class CompetitionsCRUDTestCase(TestCase):
+    def setUp(self):
+        # Création des instances nécessaires pour les tests
+        self.list_competition = List_competition.objects.create(pk_list_competition='Football', nom='Football')
+        self.lieu_des_competions = Lieu_des_competions.objects.create(pk_lieu='Paris_Stade_10000_Football', Nom='Stade de Paris', Ville='Paris', Capacite=10000, Discipline=self.list_competition)
+        self.dates_competions = Dates_Competions.objects.create(pk_date_competition='Football_Paris_Stade_2024-08-01_2024-08-11', date_debut=datetime(2024, 8, 1), date_fin=datetime(2024, 8, 11), pk_list_competition=self.list_competition, pk_lieu=self.lieu_des_competions, Remises_de_medailles='Some medals')
+
+    def test_competitions_CRUD(self):
+    # Test de création
+        new_competition = Competitions.objects.create(
+        Nom='Test Competition',
+        pk_list_competition=self.list_competition,
+        pk_date_competition=self.dates_competions,
+        pk_lieu=self.lieu_des_competions
+       )
+        self.assertIsNotNone(new_competition.pk_typ_competition)
+
+    # Test de lecture
+        retrieved_competition = Competitions.objects.get(pk_typ_competition=new_competition.pk_typ_competition)
+        self.assertEqual(retrieved_competition.Nom, 'Test Competition')
+
+    # Test de mise à jour
+        Competitions.objects.filter(pk_typ_competition=new_competition.pk_typ_competition).update(Nom='Updated Competition')
+
+    # Récupérer à nouveau l'objet mis à jour
+        updated_competition = Competitions.objects.get(pk_typ_competition=new_competition.pk_typ_competition)
+        self.assertEqual(updated_competition.Nom, 'Updated Competition')
+
+    # Test de suppression
+        updated_competition.delete()
+        with self.assertRaises(Competitions.DoesNotExist):
+            Competitions.objects.get(pk_typ_competition=new_competition.pk_typ_competition)
+
+class OffreCRUDTestCase(TestCase):
+    def setUp(self):
+        # Création des instances 
+        self.list_competition = List_competition.objects.create(pk_list_competition='Football', nom='Football')
+        self.lieu_des_competions = Lieu_des_competions.objects.create(pk_lieu='Paris_Stade_10000_Football', Nom='Stade de Paris', Ville='Paris', Capacite=10000, Discipline=self.list_competition)
+        self.dates_competions = Dates_Competions.objects.create(pk_date_competition='Football_Paris_Stade_2024-08-01_2024-08-11', date_debut=datetime(2024, 8, 1), date_fin=datetime(2024, 8, 11), pk_list_competition=self.list_competition, pk_lieu=self.lieu_des_competions, Remises_de_medailles='Some medals')
+        self.competition = Competitions.objects.create(Nom='Test Competition', pk_list_competition=self.list_competition, pk_date_competition=self.dates_competions, pk_lieu=self.lieu_des_competions)
+
+    def test_offre_CRUD(self):
+        # Test de création
+        new_offre = Offre.objects.create(
+            type='One',
+            nombre_personnes=1,
+            prix=10.0,
+            competition=self.competition
+        )
+        self.assertIsNotNone(new_offre.pk_Offre)
+
+        # Test de lecture
+        retrieved_offre = Offre.objects.get(pk_Offre=new_offre.pk_Offre)
+        self.assertEqual(retrieved_offre.type, 'One')
+
+        # Test de mise à jour
+        retrieved_offre.type = 'Duo'
+        retrieved_offre.save()
+
+        # Récupérer à nouveau l'objet mis à jour
+        updated_offre = Offre.objects.get(pk_Offre=new_offre.pk_Offre)
+        self.assertEqual(updated_offre.type, 'Duo')
+
+        # Test de suppression
+        updated_offre.delete()
+        with self.assertRaises(Offre.DoesNotExist):
+            Offre.objects.get(pk_Offre=new_offre.pk_Offre)
