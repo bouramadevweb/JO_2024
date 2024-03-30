@@ -22,9 +22,6 @@ def home(request):
     competitions = Competitions.objects.all()
     return render(request, 'home.html', {'competitions': competitions})
 
-
-
-
 def choisir_ticket(request):
     if request.method == 'GET' and 'competition' in request.GET:
         # Récupérer l'ID de la compétition sélectionnée par l'utilisateur
@@ -66,16 +63,23 @@ def ajouter_au_panier(request):
                     offre = Offre.objects.get(pk=offre_id)
                     
                     # Calculer le montant total
-                    montant_total = (offre.prix) * quantite
+                    montant_total = offre.prix * quantite
                     
                     # Créer la commande avec le montant total calculé
                     commande = Commande.objects.create(
-                        pk_Offre=offre,
                         quantite=quantite,
                         MontantTotal=montant_total,
-                        pk_Utilisateur=request.user
+                        pk_Offre=offre,
+                        pk_Utilisateur=request.user,
                     )
                     
+                    # Créer le billet associé à la commande
+                    billet = Billet.objects.create(
+                        ClefUtilisateur=request.user.ClefGeneree,
+                        pk_typ_competition=offre.competition,
+                    )
+                    commande.pk_Billet = billet
+                    commande.save()
                     
                     print(f"Billet généré pour la commande {commande.pk_Commande}")
 

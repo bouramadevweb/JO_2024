@@ -1,9 +1,16 @@
 from django.test import TestCase,Client
-from .models import Competitions ,Lieu_des_competions,List_competition,Dates_Competions,Offre
+from django.test import TestCase, RequestFactory
+from .models import Competitions ,Lieu_des_competions,List_competition,Dates_Competions,Offre,Commande,User,Billet
 from datetime import datetime
 from django.utils import timezone
-
+from my_app_jo.views import choisir_ticket
 from django.urls import reverse
+from django.utils import timezone
+from django.contrib.auth import get_user_model
+from .views import ajouter_au_panier
+
+import string
+import secrets
 
 class ListCompetitionCRUDTestCase(TestCase):
     def setUp(self):
@@ -213,3 +220,108 @@ class OffreCRUDTestCase(TestCase):
         updated_offre.delete()
         with self.assertRaises(Offre.DoesNotExist):
             Offre.objects.get(pk_Offre=new_offre.pk_Offre)
+
+class BilletCRUDTestCase(TestCase):
+
+    def setUp(self):
+        # Créer des instances nécessaires pour Competitions
+        list_competition = List_competition.objects.create(pk_list_competition='comp_1', nom='Competition 1')
+        lieu_competition = Lieu_des_competions.objects.create(pk_lieu='lieu_1', Nom='Lieu 1', Ville='Ville 1', Capacite=100, Discipline=list_competition)
+        date_competition = Dates_Competions.objects.create(pk_date_competition='date_1', date_debut='2024-08-01', date_fin='2024-08-11', pk_list_competition=list_competition, pk_lieu=lieu_competition)
+
+        # Créer une instance de Competitions avec les instances créées ci-dessus
+        self.competition = Competitions.objects.create(pk_typ_competition='competition_1', Nom='Competition 1', pk_list_competition=list_competition, pk_date_competition=date_competition, pk_lieu=lieu_competition)
+
+    def test_billet_creation(self):
+        # Création d'un billet associé à la compétition
+        billet = Billet.objects.create(pk_typ_competition=self.competition)
+        
+        # Vérifier si le billet a été créé avec succès
+        self.assertIsNotNone(billet)
+        self.assertEqual(billet.pk_typ_competition, self.competition)
+        self.assertFalse(billet.est_validee)  
+    def test_billet_update(self):
+    # Créer un billet
+        billet = Billet.objects.create(Cledebilletelectroniquesecurisee='cle_test', ClefUtilisateur='user_key', pk_typ_competition=self.competition)
+
+    # Effectuer la mise à jour du billet
+        billet.ClefUtilisateur = 'new_user_key'
+        billet.save()
+    
+    # Récupérer le billet mis à jour
+        updated_billet = Billet.objects.get(Cledebilletelectroniquesecurisee='cle_test')
+
+    # Vérifier que la mise à jour a été effectuée correctement
+        self.assertEqual(updated_billet.ClefUtilisateur, 'new_user_key')    
+    def test_billet_deletion(self):
+    # Créer un billet
+        billet = Billet.objects.create(Cledebilletelectroniquesecurisee='cle_test', ClefUtilisateur='user_key', pk_typ_competition=self.competition)
+
+    # Vérifier que le billet existe
+        billet_exists = Billet.objects.filter(Cledebilletelectroniquesecurisee='cle_test').exists()
+        self.assertTrue(billet_exists)
+
+    # Supprimer le billet
+        billet.delete()
+
+    # Vérifier que le billet n'existe plus
+        billet_exists_after_deletion = Billet.objects.filter(Cledebilletelectroniquesecurisee='cle_test').exists()
+        self.assertFalse(billet_exists_after_deletion)    
+
+
+class CommandeCRUDTestCase(TestCase):
+    def setUp(self):
+        # Créer des instances nécessaires pour les tests
+        self.user = get_user_model().objects.create_user(username='testuser', email='test@example.com', password='password')
+        self.list_competition = List_competition.objects.create(pk_list_competition='Football', nom='Football')
+        self.lieu_des_competions = Lieu_des_competions.objects.create(pk_lieu='Paris_Stade_10000_Football', Nom='Stade de Paris', Ville='Paris', Capacite=10000, Discipline=self.list_competition)
+        self.dates_competions = Dates_Competions.objects.create(pk_date_competition='Football_Paris_Stade_2024-08-01_2024-08-11', date_debut=timezone.now(), date_fin=timezone.now(), pk_list_competition=self.list_competition, pk_lieu=self.lieu_des_competions, Remises_de_medailles='Some medals')
+        self.competition = Competitions.objects.create(Nom='Test Competition', pk_list_competition=self.list_competition, pk_date_competition=self.dates_competions, pk_lieu=self.lieu_des_competions)
+        self.offre = Offre.objects.create(type='One', nombre_personnes=1, prix=10.0, competition=self.competition)
+        self.billet = Billet.objects.create(pk_typ_competition=self.competition)
+        
+    def test_commande_creation(self):
+        # Création d'une commande
+        commande = Commande.objects.create(
+            quantite=1,
+            MontantTotal=10.0,
+            pk_Offre=self.offre,
+            pk_Utilisateur=self.user,
+            pk_Billet=self.billet,
+            est_validee=False
+        )
+        
+        # Vérification de la création réussie
+        self.assertIsNotNone(commande.pk_Commande)
+        self.assertEqual(commande.pk_Offre, self.offre)
+        self.assertEqual(commande.pk_Utilisateur, self.user)
+        self.assertFalse(commande.est_validee)
+
+    def test_commande_update(self):
+        # Création d'une commande
+        commande = Commande.objects.create(quantite=1, MontantTotal=10.0, pk_Offre=self.offre, pk_Utilisateur=self.user, pk_Billet=self.billet, est_validee=False)
+
+        # Mise à jour de la commande
+        commande.quantite = 2
+        commande.save()
+
+        # Récupération de la commande mise à jour depuis la base de données
+        updated_commande = Commande.objects.get(pk_Commande=commande.pk_Commande)
+
+        # Vérification de la mise à jour
+        self.assertEqual(updated_commande.quantite, 2)
+
+    def test_commande_delete(self):
+        # Création d'une commande
+        commande = Commande.objects.create(quantite=1, MontantTotal=10.0, pk_Offre=self.offre, pk_Utilisateur=self.user, pk_Billet=self.billet, est_validee=False)
+
+        # Vérification que la commande existe
+        commande_exists = Commande.objects.filter(pk_Commande=commande.pk_Commande).exists()
+        self.assertTrue(commande_exists)
+
+        # Suppression de la commande
+        commande.delete()
+
+        # Vérification que la commande n'existe plus
+        commande_exists_after_deletion = Commande.objects.filter(pk_Commande=commande.pk_Commande).exists()
+        self.assertFalse(commande_exists_after_deletion)
