@@ -259,12 +259,7 @@ def generate_qr_code(content):
 
     return qr_image
 
-#Competition
-def lister_competitions(request):
-    competitions = Competitions.objects.all()
-    return render(request, 'lister_competitions.html', {'competitions': competitions})
 
- #   
 def inscription(request):
     if request.method == 'POST':
         form = InscriptionForm(request.POST)

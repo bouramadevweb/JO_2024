@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', function() {
             var prix = parseFloat(this.getAttribute('data-prix'));
             var montantTotalInput = document.getElementById('montant_total_' + this.getAttribute('id').replace('quantite', ''));
             var montantTotal = quantite * prix;
-            montantTotalInput.value = montantTotal.toFixed(2); // Fixer le nombre de décimales à 2
+            montantTotalInput.value = montantTotal.toFixed(2); 
         });
     });
 });
