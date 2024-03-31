@@ -247,17 +247,7 @@ def mes_billets(request):
 
     return render(request, 'mes_billets.html', {'billets_with_qr': billets_with_qr})
 
-def generate_qr_code(content):
-    qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)
-    qr.add_data(content)
-    qr.make(fit=True)
-    img = qr.make_image(fill_color="black", back_color="white")
-
-    buffer = BytesIO()
-    img.save(buffer, 'PNG')
-    qr_image = base64.b64encode(buffer.getvalue()).decode()
-
-    return qr_image
+# 
 
 
 def inscription(request):
