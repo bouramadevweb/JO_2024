@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% load static %}
 {% load bootstrap5 %}
 {% block content %}
@@ -80,11 +81,84 @@
                         {% endfor %}
                     </tbody>
                 </table>
+=======
+{% block content %}
+{% load static %}
+{% block title %}  {% endblock %}
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2">
+            <div class="vertical-menu">
+                <!-- Liste non ordonnée représentant le menu -->
+
+                <bnt class="btn-success">Billet</bnt>
+                <bnt class="btn-success">Commande</bnt>
+                <bnt class="btn-success">lieux</bnt>
+                <bnt class="btn-success">list</bnt>
+                <bnt class="btn-success">dates</bnt>
+                
+            </div>
+        </div>
+        <!-- Colonne de la barre de navigation -->
+
+        <!-- Colonne du contenu principal -->
+        <div class="col-md-10">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card text-center text-white mb-3" id="total-order">
+                            <div class="card-header">
+                                <h5 class="card-title">
+                                    Commande validée
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <h3 class="card-title">
+                                    <!-- Contenu de la carte -->
+                                </h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card text-center text-white mb-3" id="total-order">
+                            <div class="card-header">
+                                <h5 class="card-title">
+                                    Total des Ventes
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <h3 class="card-title">
+                                    <!-- Contenu de la carte -->
+                                </h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card text-center text-white mb-3" id="total-order">
+                            <div class="card-header">
+                                <h5 class="card-title">
+                                    Billet
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <h3 class="card-title">
+                                    <!-- Contenu de la carte -->
+                                </h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+>>>>>>> 8e1c4047e301b530f358f4e15790d00c69dbcbc7
             </div>
         </div>
     </div>
 </div>
 
+<<<<<<< HEAD
 {% endblock %}
 
 <!-- Votre CSS -->
@@ -227,3 +301,32 @@
 
 
 </style>
+=======
+<style>
+    .vertical-menu {
+    width: 100%; /* Largeur maximale */
+}
+
+.vertical-menu ul {
+    list-style-type: none; /* Supprime les puces de la liste */
+    padding: 0; /* Supprime le remplissage par défaut de la liste */
+    margin: 0; /* Supprime la marge par défaut de la liste */
+}
+
+.vertical-menu li a {
+    display: block; /* Affiche les liens comme des blocs pour occuper toute la largeur */
+    padding: 8px 16px; /* Ajoute un peu de remplissage autour des liens */
+    text-decoration: none; /* Supprime la décoration des liens */
+    color: #000; /* Couleur du texte */
+    background-color: #f2f2f2; /* Couleur de fond des éléments de menu */
+    border-radius: 5px; /* Ajoute un peu de coins arrondis aux éléments de menu */
+    margin-bottom: 5px; /* Espacement entre les éléments de menu */
+}
+
+.vertical-menu li a:hover {
+    background-color: #ccc; /* Couleur de fond au survol */
+}
+
+</style>
+{% endblock %}
+>>>>>>> 8e1c4047e301b530f358f4e15790d00c69dbcbc7
