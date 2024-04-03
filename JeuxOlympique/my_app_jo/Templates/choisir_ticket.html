@@ -2,7 +2,7 @@
 {% block title %}Choisir un ticket{% endblock %}
 
 {% block content %}
-<div class="container">
+<div class="container-fluid px-4">
     <h1>Choisir un ticket</h1>
     <form id="choix-competition-form" method="GET">
         <div class="form-group">
@@ -19,49 +19,60 @@
     {% if offres %}
     <h2>Offres disponibles :</h2>
     <form method="POST" action="{% url 'ajouter_au_panier' %}">
-        {% csrf_token %}
-        <div class="row">
-            {% for offre in offres %}
-            <div class="col-md-4">
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ offre.type }} {{ offre.competition.Nom }} - {{ offre.nombre_personnes }} personnes</h5>
-                        <p class="card-text">Prix unitaire : {{ offre.prix }}</p>
-                        <input type="checkbox" name="offre_id" value="{{ offre.pk_Offre }}">
-                        <label for="quantite{{ offre.pk_Offre }}">Quantité :</label>
-                        <input type="number" class="form-control" id="quantite{{ offre.pk_Offre }}" name="quantite_{{ offre.pk_Offre }}" min="0" value="0">
-                        <input type="hidden" name="montant_total_{{ offre.pk_Offre }}" value="{{ offre.prix }}">
-                    </div>
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card mb-3">
+                <div class="card-body">
+                    {% for offre in offres %}
+                    <h5 class="card-title">{{ offre.type }} {{ offre.competition.Nom }} - {{ offre.nombre_personnes }} personnes</h5>
+                    <p class="card-text">Prix unitaire : {{ offre.prix }}</p>
+                    <input type="checkbox" name="offre_id" value="{{ offre.pk_Offre }}">
+                    <label for="quantite{{ offre.pk_Offre }}">Quantité :</label>
+                    <input type="number" class="form-control quantite-input" id="quantite{{ offre.pk_Offre }}" name="quantite_{{ offre.pk_Offre }}" min="0" value="0">
+                    <input type="hidden" name="montant_total_{{ offre.pk_Offre }}" value="{{ offre.prix }}">
+                    <label for="date_debut{{ offre.pk_Offre }}">Date de début :</label>
+                    <input type="date" class="form-control date-debut-input" id="date_debut{{ offre.pk_Offre }}" name="date_debut_{{ offre.pk_Offre }}" value="{{ offre.competition.pk_date_competition.date_debut|date:'Y-m-d' }}" min="{{ offre.competition.pk_date_competition.date_debut|date:'Y-m-d' }}" max="{{ offre.competition.pk_date_competition.date_fin|date:'Y-m-d' }}">
+                    {% endfor %}
+                    
+                    <button type="submit" class="btn btn-primary">Ajouter au panier</button>
                 </div>
             </div>
-            {% endfor %}
         </div>
-        <button type="submit" class="btn btn-primary">Valider la commande</button>
-    </form>
+    </div>
+</form>
+
+
     {% else %}
     <p>Aucune offre disponible pour la compétition sélectionnée.</p>
     {% endif %}
 </div>
-
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Capturer le changement de sélection de la compétition
     document.getElementById('competition').addEventListener('change', function() {
         document.getElementById('choix-competition-form').submit();
     });
-});
-document.addEventListener('DOMContentLoaded', function() {
-    var quantiteInputs = document.querySelectorAll('.quantite-input');
 
+    // Mettre à jour le montant total lorsqu'une quantité change
+    var quantiteInputs = document.querySelectorAll('.quantite-input');
     quantiteInputs.forEach(function(input) {
         input.addEventListener('change', function() {
             var quantite = parseInt(this.value);
-            var prix = parseFloat(this.getAttribute('data-prix'));
-            var montantTotalInput = document.getElementById('montant_total_' + this.getAttribute('id').replace('quantite', ''));
+            var prix = parseFloat(this.parentNode.querySelector('[name^=montant_total]').value);
+            var montantTotalInput = this.parentNode.querySelector('[name^=montant_total]');
             var montantTotal = quantite * prix;
             montantTotalInput.value = montantTotal.toFixed(2); // Fixer le nombre de décimales à 2
         });
     });
+   document.getElementById('ajout-au-panier-form').addEventListener('submit', function() {
+        var inputs = this.querySelectorAll('input');
+        inputs.forEach(function(input) {
+            input.value = ''; // Vider la valeur de l'input
+        });
+    });
 });
+    
+
 </script>
 {% endblock %}

@@ -11,8 +11,13 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django.db import transaction
 from django.shortcuts import render
+from datetime import datetime ,timezone
 import qrcode, base64
 from django.db.models import Count, Sum,Q
+import secrets
+import string
+from django.views.decorators.csrf import requires_csrf_token
+
 from io import BytesIO
 
  
@@ -39,49 +44,70 @@ def choisir_ticket(request):
         competitions = Competitions.objects.select_related('pk_lieu').all()
         return render(request, 'choisir_ticket.html', {'competitions': competitions})
 @login_required
+@requires_csrf_token
 def ajouter_au_panier(request):
     if request.method == 'POST':
-        print("Données POST reçues :", request.POST)
-        
-        # Récupérer les données des offres sélectionnées
-        offre_ids = request.POST.getlist('offre_id')
-        quantites = {offre_id: int(request.POST.get(f'quantite_{offre_id}', 0)) for offre_id in offre_ids}
-        
-        # Vérifier la validité des données reçues
-        if not offre_ids or any(quantites[offre_id] <= 0 for offre_id in offre_ids):
-            messages.error(request, "Veuillez sélectionner au moins une offre et spécifier une quantité valide.")
-            return redirect('choisir_ticket')
-
         try:
+            print("Données POST reçues :", request.POST)
+            
+            # Récupérer les données des offres sélectionnées
+            offre_ids = request.POST.getlist('offre_id')
+            quantites = {offre_id: int(request.POST.get(f'quantite_{offre_id}', 0)) for offre_id in offre_ids}
+            print(offre_ids)
+            print(offre_ids)
+            # Vérifier la validité des données reçues
+            if not offre_ids or any(quantites.get(offre_id, 0) <= 0 for offre_id in offre_ids):
+                messages.error(request, "Veuillez sélectionner au moins une offre et spécifier une quantité valide.")
+                return redirect('choisir_ticket')
+
             with transaction.atomic():
-                # Créer les commandes pour les offres sélectionnées
                 for offre_id, quantite in quantites.items():
                     if quantite <= 0:
-                        continue  # Ignorer les quantités nulles ou négatives
+                        continue
                     
-                    # Récupérer l'offre correspondante
-                    offre = Offre.objects.get(pk=offre_id)
+                    # Vérifier si l'offre existe
+                    offre = Offre.objects.filter(pk=offre_id).first()
+                    if not offre:
+                        messages.error(request, f"L'offre avec l'ID {offre_id} n'existe pas.")
+                        return redirect('choisir_ticket')
                     
-                    # Calculer le montant total
-                    montant_total = offre.prix * quantite
-                    
-                    # Créer la commande avec le montant total calculé
-                    commande = Commande.objects.create(
-                        quantite=quantite,
-                        MontantTotal=montant_total,
-                        pk_Offre=offre,
-                        pk_Utilisateur=request.user,
-                    )
-                    
-                    # Créer le billet associé à la commande
-                    billet = Billet.objects.create(
-                        ClefUtilisateur=request.user.ClefGeneree,
-                        pk_typ_competition=offre.competition,
-                    )
-                    commande.pk_Billet = billet
-                    commande.save()
-                    
-                    print(f"Billet généré pour la commande {commande.pk_Commande}")
+                    # Récupérer la date de début de l'offre seulement si l'offre est sélectionnée
+                    if offre_id in offre_ids:
+                        date_debut_str = request.POST.get(f'date_debut_{offre_id}', None)
+                        if date_debut_str:
+                            date_debut = datetime.strptime(date_debut_str, '%Y-%m-%d').date()
+                        else:
+                            messages.error(request, f"La date de début est manquante pour l'offre {offre_id}.")
+                            return redirect('choisir_ticket')
+
+                        cle_billet = ''.join(secrets.choice(string.ascii_letters + string.digits) for i in range(20))
+                        print(cle_billet)
+                        # Calculer le montant total
+                        montant_total = offre.prix * quantite
+
+                        print(montant_total)
+                        
+                        # Créer la commande avec le montant total calculé
+                        commande = Commande.objects.create(
+                            quantite=quantite,
+                            MontantTotal=montant_total,
+                            pk_Offre=offre,
+                            pk_Utilisateur=request.user,
+                        )
+                        print("Commande créée :", commande)  # Ajouter cette ligne
+                        
+                        # Créer les billets associés uniquement aux offres sélectionnées
+                        billet = Billet.objects.create(
+                            Cledebilletelectroniquesecurisee=cle_billet,
+                            ClefUtilisateur=request.user.ClefGeneree,
+                            pk_typ_competition=offre.competition,
+                            date_valide=date_debut
+                        )
+                        commande.pk_Billet = billet
+                        commande.save()
+                        
+                        print("Billet créé :", billet)  # Ajouter cette ligne
+                        print(f"Commande créée avec succès pour l'offre {offre_id}")
 
                 messages.success(request, "Les offres ont été ajoutées au panier.")
                 return redirect('voir_panier')
@@ -90,8 +116,8 @@ def ajouter_au_panier(request):
             print(f"Erreur lors de la validation de la commande : {str(e)}")
             return redirect('choisir_ticket')
 
-    else:
-        return redirect('choisir_ticket')
+    return redirect('choisir_ticket')
+
 
 @login_required
 def voir_panier(request):
@@ -247,17 +273,7 @@ def mes_billets(request):
 
     return render(request, 'mes_billets.html', {'billets_with_qr': billets_with_qr})
 
-def generate_qr_code(content):
-    qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)
-    qr.add_data(content)
-    qr.make(fit=True)
-    img = qr.make_image(fill_color="black", back_color="white")
-
-    buffer = BytesIO()
-    img.save(buffer, 'PNG')
-    qr_image = base64.b64encode(buffer.getvalue()).decode()
-
-    return qr_image
+# 
 
 
 def inscription(request):

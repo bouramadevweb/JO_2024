@@ -3,24 +3,38 @@ from django.test import TestCase, RequestFactory
 from .models import Competitions ,Lieu_des_competions,List_competition,Dates_Competions,Offre,Commande,User,Billet
 from datetime import datetime
 from django.utils import timezone
+from my_app_jo.views import choisir_ticket
 from django.urls import reverse
 from django.utils import timezone
 from django.contrib.auth import get_user_model
+from .views import ajouter_au_panier
+from django.test import TestCase, RequestFactory
 from django.urls import reverse
 from django.contrib.auth.models import User
+from django.contrib.messages.storage.fallback import FallbackStorage
+from django.contrib import messages
 import qrcode, base64
 from io import BytesIO
 from django.utils import timezone
 from django.contrib.auth import get_user_model
 from .models import Offre, Commande, Billet, Competitions
+from .views import choisir_ticket, ajouter_au_panier
+import string
+import secrets
+
+from django.test import TestCase, RequestFactory
+from django.urls import reverse
+from my_app_jo.models import User  # Assurez-vous d'importer votre modèle utilisateur personnalisé
+from my_app_jo.views import ajouter_au_panier
+from my_app_jo.models import Commande, Billet, Offre, Competitions
+from django.http import QueryDict
+from django.contrib.auth import get_user_model
+from django.contrib.messages.storage.fallback import FallbackStorage
+from my_app_jo.views import voir_panier
 
 
+User = get_user_model()
 class ListCompetitionCRUDTestCase(TestCase):
-    """_summary_
-
-    Args:
-        TestCase (_type_): test CRUD list de competition
-    """
     def setUp(self):
         # Créer une instance de List_competition pour les tests
         self.football_competition = List_competition.objects.create(pk_list_competition='Football', nom='Football')
@@ -53,11 +67,6 @@ class ListCompetitionCRUDTestCase(TestCase):
             List_competition.objects.get(pk_list_competition='Football')
 
 class LieuDesCompetionsCRUDTestCase(TestCase):
-    """_summary_
-
-    Args:
-        TestCase (_type_): Test CRUD lieux de competition
-    """
     def setUp(self):
         # Créer une instance de List_competition pour les tests
         self.list_competition = List_competition.objects.create(pk_list_competition='Football', nom='Football')
@@ -105,11 +114,6 @@ class LieuDesCompetionsCRUDTestCase(TestCase):
             Lieu_des_competions.objects.get(pk_lieu='Paris_Stade_10000_Football')  
 
 class DatesCompetionsCRUDTestCase(TestCase):
-    """_summary_
-
-    Args:
-        TestCase (_type_): Test CRUD Dates de Compétition
-    """
     def setUp(self):
         # Créer des instances de List_competition et Lieu_des_competions pour les tests
         self.list_competition = List_competition.objects.create(pk_list_competition='Football', nom='Football')
@@ -138,7 +142,7 @@ class DatesCompetionsCRUDTestCase(TestCase):
         # Récupérer l'instance nouvellement créée à partir de la base de données
         saved_dates_competions = Dates_Competions.objects.get(pk_date_competition=new_dates_competions.pk_date_competition)
 
-        # Comparer la clé primaire de l'instance nouvellement crée avec la valeur attendue
+        # Comparer la clé primaire de l'instance nouvellement créée avec la valeur attendue
         self.assertEqual(saved_dates_competions.pk_date_competition, new_dates_competions.pk_date_competition)
 
     def test_read_dates_competions(self):
@@ -172,11 +176,6 @@ class DatesCompetionsCRUDTestCase(TestCase):
             Dates_Competions.objects.get(pk_date_competition='Football_Paris_Stade_2024-08-01_2024-08-11')
 
 class CompetitionsCRUDTestCase(TestCase):
-    """_summary_
-
-    Args:
-        TestCase (_type_): test CRUD competition
-    """
     def setUp(self):
         # Création des instances nécessaires pour les tests
         self.list_competition = List_competition.objects.create(pk_list_competition='Football', nom='Football')
@@ -210,11 +209,6 @@ class CompetitionsCRUDTestCase(TestCase):
             Competitions.objects.get(pk_typ_competition=new_competition.pk_typ_competition)
 
 class OffreCRUDTestCase(TestCase):
-    """_summary_
-
-    Args:
-        TestCase (_type_): Test Crud Offre
-    """
     def setUp(self):
         # Création des instances 
         self.list_competition = List_competition.objects.create(pk_list_competition='Football', nom='Football')
@@ -250,11 +244,6 @@ class OffreCRUDTestCase(TestCase):
             Offre.objects.get(pk_Offre=new_offre.pk_Offre)
 
 class BilletCRUDTestCase(TestCase):
-    """_summary_
-
-    Args:
-        TestCase (_type_): test CRUD Billet
-    """
 
     def setUp(self):
         # Créer des instances nécessaires pour Competitions
@@ -303,11 +292,6 @@ class BilletCRUDTestCase(TestCase):
 
 
 class CommandeCRUDTestCase(TestCase):
-    """_summary_
-
-    Args:
-        TestCase (_type_): test CRUD Commande
-    """
     def setUp(self):
         # Créer des instances nécessaires pour les tests
         self.user = get_user_model().objects.create_user(username='testuser', email='test@example.com', password='password')
@@ -365,11 +349,6 @@ class CommandeCRUDTestCase(TestCase):
         self.assertFalse(commande_exists_after_deletion)
 
 class AjouterAuPanierTestCase(TestCase):
-    """_summary_
-
-    Args:
-        TestCase (_type_):test views modifier commande
-    """
     def setUp(self):
         # Créer un utilisateur
         self.user = User.objects.create_user(username='testuser', password='testpassword')
@@ -413,11 +392,6 @@ class AjouterAuPanierTestCase(TestCase):
             self.assertEqual(billet.pk_typ_competition, self.competition)
 
 class VoirPanierTestCase(TestCase):
-    """_summary_
-
-    Args:
-        TestCase (_type_): test views pour voir le panier
-    """
     def setUp(self):
         # Créer un utilisateur
         self.user = User.objects.create_user(username='testuser', password='testpassword')
@@ -453,12 +427,7 @@ class VoirPanierTestCase(TestCase):
         self.assertContains(response, str(self.commande.MontantTotal))
 
 
-class modifierCommandeTestCase(TestCase):
-    """_summary_
-
-    Args:
-        TestCase (_type_): test views modifier Commande
-    """
+class ModifierCommandeTestCase(TestCase):
     def setUp(self):
         # Créer une commande et une offre pour le test
         self.user = User.objects.create_user(username='testuser', password='testpassword')
@@ -494,11 +463,6 @@ class modifierCommandeTestCase(TestCase):
         self.assertEqual(commande_modifiee.MontantTotal, 20.0)
 
 class SupprimerCommandeTestCase(TestCase):
-    """_summary_
-
-    Args:
-        TestCase (_type_): Test CRUD supprimer pour commande
-    """
     def setUp(self):
         # Créer un utilisateur
         self.user = User.objects.create_user(username='testuser', password='testpassword')
@@ -539,11 +503,6 @@ class SupprimerCommandeTestCase(TestCase):
         self.assertEqual(messages[0].message, "La commande a été supprimée avec succès.")   
 
 class SupprimerCommandeTestCase(TestCase):
-    """_summary_
-
-    Args:
-        TestCase (_type_): test de views pour supprimmer une commande
-    """
     def setUp(self):
         # Créer un utilisateur
         self.user = User.objects.create_user(username='testuser', password='testpassword')
@@ -577,13 +536,7 @@ class SupprimerCommandeTestCase(TestCase):
         # Vérifier que la commande a été supprimée de la base de données
         self.assertFalse(Commande.objects.filter(pk=self.commande.pk).exists())
 
-
 class DetailsBilletTestCase(TestCase):
-    """_summary_
-
-    Args:
-        TestCase (_type_): Test pour billet en details
-    """
     def setUp(self):
         self.user = get_user_model().objects.create_user(username='testuser', email='test@example.com', password='password')
         self.list_competition = List_competition.objects.create(pk_list_competition='Football', nom='Football')
@@ -613,7 +566,7 @@ class DetailsBilletTestCase(TestCase):
         self.assertContains(response, str(self.billet.ClefUtilisateur))
         self.assertContains(response, str(self.billet.Cledebilletelectroniquesecurisee))
 
-class inscription_connexion_deconnexionTestCase(TestCase):
+class ViewsTestCase(TestCase):
     def setUp(self):
         # Créer un utilisateur pour les tests
         self.user = User.objects.create_user(username='testuser', password='testpassword')
@@ -658,3 +611,67 @@ class inscription_connexion_deconnexionTestCase(TestCase):
         # Tester la vue ventes_par_offre
         response = self.client.get(reverse('ventes_par_offre'))
         self.assertEqual(response.status_code, 200)
+
+from django.test import TestCase
+from django.urls import reverse, resolve
+from .views import home, choisir_ticket, ajouter_au_panier, voir_panier, \
+    payer_commande, modifier_commande, supprimer_commande, details_billet, \
+    mes_billets, inscription, connexion, deconnexion, ventes_par_offre
+
+class TestUrls(TestCase):
+    def setUp(self):
+        # Créer une instance de RequestFactory
+        self.factory = RequestFactory()
+
+    def test_home_url(self):
+        # Créer une requête GET pour l'URL de la vue home
+        request = self.factory.get(reverse('home'))
+
+        # Appeler la fonction resolve avec l'URL pour obtenir la vue correspondante
+        resolver = resolve('/')
+
+        # Vérifier que la vue correspond à la fonction home
+        self.assertEqual(resolver.func, home)
+
+    def test_choisir_ticket_url(self):
+        # Créer une requête GET pour l'URL de la vue choisir_ticket
+        request = self.factory.get(reverse('choisir_ticket'))
+
+        # Appeler la fonction resolve avec l'URL pour obtenir la vue correspondante
+        resolver = resolve('/choisir_ticket/')
+
+        # Vérifier que la vue correspond à la fonction choisir_ticket
+        self.assertEqual(resolver.func, choisir_ticket)
+
+    def test_ajouter_au_panier_url(self):
+        # Créer une requête GET pour l'URL de la vue ajouter_au_panier
+        request = self.factory.get(reverse('ajouter_au_panier'))
+        
+class VoirPanierTestCase(TestCase):
+    def setUp(self):
+        # Créer un utilisateur fictif
+        self.user = User.objects.create_user(username='testuser', password='testpassword')
+
+    def test_voir_panier(self):
+        # Créer une instance de RequestFactory
+        request_factory = RequestFactory()
+
+        # Créer une requête GET pour la vue voir_panier
+        request = request_factory.get(reverse('voir_panier'))
+
+        # Ajouter l'utilisateur à la requête pour simuler une session utilisateur
+        request.user = self.user
+
+        # Ajouter un message à la session (simulant un message flash)
+        setattr(request, 'session', 'session')
+        messages = FallbackStorage(request)
+        setattr(request, '_messages', messages)
+
+        # Appeler la vue voir_panier en utilisant la requête
+        response = voir_panier(request)
+
+        # Vérifier que la réponse renvoie un code 200 (succès)
+        self.assertEqual(response.status_code, 200) 
+
+# Dans le fichier tests.py
+

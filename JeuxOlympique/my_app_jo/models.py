@@ -126,19 +126,13 @@ class Billet(models.Model):
     ClefUtilisateur = models.CharField(max_length=50)
     pk_typ_competition = models.ForeignKey('Competitions', on_delete=models.CASCADE)
     est_validee = models.BooleanField(default=False)
+    date_dachat = models.DateField(auto_now_add=True)
+    date_valide = models.DateField(null =True)
 
+    
+    
     def __str__(self):
         return f'Billet {self.pk_Billet} pour {self.pk_typ_competition}'
-
-    def generer_cle(self):
-        alphabet = string.ascii_letters + string.digits
-        return ''.join(secrets.choice(alphabet) for i in range(20))
-
-    def save(self, *args, **kwargs):
-        if not self.Cledebilletelectroniquesecurisee:
-            self.Cledebilletelectroniquesecurisee = self.generer_cle()
-        super().save(*args, **kwargs)
-
 
 class Commande(models.Model):
     pk_Commande = models.AutoField(primary_key=True)
@@ -155,11 +149,15 @@ class Commande(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.pk_Billet_id:
-            billet = Billet.objects.create(pk_typ_competition=self.pk_Offre.competition)
+            billet = Billet.objects.create(
+                pk_typ_competition=self.pk_Offre.competition,
+                date_valide=self.pk_Offre.competition.pk_date_competition.date_debut
+            )
             billet.ClefUtilisateur = self.pk_Utilisateur.ClefGeneree
             billet.save()
             self.pk_Billet = billet
         super().save(*args, **kwargs)
+
 
     
 class ODS(models.Model):

@@ -1,4 +1,4 @@
-{% load bootstrap4 %}
+{% load bootstrap5 %}
 
 
 {% load static %}
@@ -40,6 +40,9 @@
                     <a class="nav-link" href="{% url 'mes_billets' %}">Billet</a>
                 </li>
                 {% if not user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'choisir_ticket' %}">choisi ticket</a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'inscription' %}">Inscription</a>
                 </li>

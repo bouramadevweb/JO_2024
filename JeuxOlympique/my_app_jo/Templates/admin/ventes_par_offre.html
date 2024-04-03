@@ -1,19 +1,21 @@
-{% extends 'base.html' %}
+{% extends 'status/status.html' %}
 
 {% block title %}
-    Visualiser les ventes par offre
+
 {% endblock %}
 
 {% block content %}
-<div class="container mt-4">
+<div class="container-fluid  mb-3">
+    {% include 'status/status.html' %}
+    <br>
     <h1 class="mb-4">Ventes par Offre</h1>
-    <div class="table-responsive">
+    <div class="table-responsive mt-n3">
         <table class="table table-striped">
             <thead>
                 <tr>
                     <th>Offre</th>
                     <th>Nombre de Ventes</th>
-                    <th>Quantité Vendue</th> <!-- Nouvelle colonne -->
+                    <th>Quantité Vendue</th>
                 </tr>
             </thead>
             <tbody>
@@ -21,7 +23,7 @@
                 <tr>
                     <td>{{ offre.type }}</td>
                     <td>{{ offre.nombre_ventes }}</td>
-                    <td>{{ offre.quantite_vendue }}</td> <!-- Affichage de la quantité vendue -->
+                    <td>{{ offre.quantite_vendue }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -29,3 +31,4 @@
     </div>
 </div>
 {% endblock %}
+

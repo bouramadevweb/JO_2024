@@ -3,31 +3,45 @@
 
 {% block content %}
 {% block title %}  {% endblock %}
-
-<div class="container">
-    <h1>Bienvenue sur le site des Jeux Olympiques France</h1>
-    <p>Choisissez votre ticket et commencez votre réservation dès maintenant !</p>
-    <h2>Liste des Compétitions</h2>
-
+<div class="container-fluid">
+    <br>
     <div class="row">
-        {% for competition in competitions %}
-            <div class="col-md-7">
-                <div class="card mb-4">
+        <div>
+            <h1>Bienvenue sur le site des Jeux Olympiques France</h1>
+            <p>Choisissez votre ticket et commencez votre réservation dès maintenant !</p>
+            <h2>Liste des Compétitions</h2>
+        </div>
+    </div>
+
+    <!-- Boucle sur chaque compétition -->
+    {% for competition in competitions %}
+    <div class="row">
+        <div class="card mb-3" style="max-width: 800px;">
+            <div class="row no-gutters">
+                <div class="col-md-4">
+                    <img src="https://img.freepik.com/vecteurs-libre/affiche-isometrique-sport-colore_1284-15145.jpg?w=826&t=st=1712014618~exp=1712015218~hmac=d2daffd59b0881cafc5d76bd19743c688ff595e225a6015f3144047711675b23"
+                        class="img-fluid rounded-start" alt="...">
+                </div>
+                <div class="col-md-8">
                     <div class="card-body">
-                        <img src="..." class="img-fluid" class="card-img" alt="...">
                         <h3 class="card-title">{{ competition.Nom }}</h3>
-                        <p class="card-subtitle mb-2 text-muted">{{ competition.pk_lieu }}</p>
-                        <p class="card-text">
-                            <strong>Date de début :</strong> {{ competition.pk_date_competition.date_debut|date:"d/m/Y" }}<br>
-                            <strong>Date de fin :</strong> {{ competition.pk_date_competition.date_fin|date:"d/m/Y" }}<br>
-                            <strong>Date remises de médailles :</strong> {{ competition.pk_date_competition.Remises_de_medailles|default:"Non spécifiée" }}
+                        <p class="card-text">{{ competition.pk_lieu }}.</p>
+                        <p class="card-text"><small class="text-muted"><strong>Date de début :</strong>
+                                {{ competition.pk_date_competition.date_debut|date:'d-m-Y' }}<br>
+                                <strong>Date de fin :</strong> {{ competition.pk_date_competition.date_fin|date:'d-m-Y' }}
+                                <br>
+                                <strong>Date remises de médailles :</strong>
+                                {{ competition.pk_date_competition.Remises_de_medailles|default:"Non spécifiée" }}</small>
                         </p>
                         <button class="btn btn-primary">voir les offres disponible </button>
                     </div>
                 </div>
             </div>
-        {% endfor %}
+        </div>
     </div>
+    {% endfor %}
 </div>
+
+
 {% endblock %}
 
