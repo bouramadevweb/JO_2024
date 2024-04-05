@@ -18,7 +18,7 @@
 
     {% if offres %}
     <h2>Offres disponibles :</h2>
-    <form method="POST" action="{% url 'ajouter_au_panier' %}">
+    <form id="ajout-au-panier-form" method="POST" action="{% url 'ajouter_au_panier' %}">
     {% csrf_token %}
     <div class="row">
         <div class="col-md-3">
@@ -35,7 +35,7 @@
                     <input type="date" class="form-control date-debut-input" id="date_debut{{ offre.pk_Offre }}" name="date_debut_{{ offre.pk_Offre }}" value="{{ offre.competition.pk_date_competition.date_debut|date:'Y-m-d' }}" min="{{ offre.competition.pk_date_competition.date_debut|date:'Y-m-d' }}" max="{{ offre.competition.pk_date_competition.date_fin|date:'Y-m-d' }}">
                     {% endfor %}
                     
-                    <button type="submit" class="btn btn-primary">Ajouter au panier</button>
+                    <button type="submit" class=" ajouter-panier-btn btn btn-primary">Ajouter au panier</button>
                 </div>
             </div>
         </div>
@@ -71,6 +71,24 @@ document.addEventListener('DOMContentLoaded', function() {
             input.value = ''; // Vider la valeur de l'input
         });
     });
+   /* document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('ajouter-panier-btn').addEventListener('click', function() {
+        var form = document.getElementById('ajout-au-panier-form');
+        var formData = new FormData(form);
+
+        var xhr = new XMLHttpRequest();
+        xhr.open(form.method, form.action, true);
+        xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                // La requête AJAX a réussi, vous pouvez mettre à jour la page si nécessaire
+                // Exemple : window.location.reload();
+            }
+        };
+        xhr.send(formData);
+    });
+}); #} */
+
 });
     
 

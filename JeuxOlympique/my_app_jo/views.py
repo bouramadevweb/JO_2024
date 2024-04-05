@@ -45,6 +45,9 @@ def choisir_ticket(request):
         return render(request, 'choisir_ticket.html', {'competitions': competitions})
 @login_required
 @requires_csrf_token
+
+
+
 def ajouter_au_panier(request):
     if request.method == 'POST':
         try:
@@ -80,8 +83,6 @@ def ajouter_au_panier(request):
                             messages.error(request, f"La date de début est manquante pour l'offre {offre_id}.")
                             return redirect('choisir_ticket')
 
-                        cle_billet = ''.join(secrets.choice(string.ascii_letters + string.digits) for i in range(20))
-                        print(cle_billet)
                         # Calculer le montant total
                         montant_total = offre.prix * quantite
 
@@ -97,26 +98,27 @@ def ajouter_au_panier(request):
                         print("Commande créée :", commande)  # Ajouter cette ligne
                         
                         # Créer les billets associés uniquement aux offres sélectionnées
-                        billet = Billet.objects.create(
-                            Cledebilletelectroniquesecurisee=cle_billet,
-                            ClefUtilisateur=request.user.ClefGeneree,
-                            pk_typ_competition=offre.competition,
-                            date_valide=date_debut
-                        )
-                        commande.pk_Billet = billet
-                        commande.save()
-                        
-                        print("Billet créé :", billet)  # Ajouter cette ligne
+                        for _ in range(quantite):
+                            billet = Billet.objects.create(
+                                ClefUtilisateur=request.user.ClefGeneree,
+                                pk_typ_competition=offre.competition,
+                                date_valide=date_debut
+                            )
+                            # Assigner le billet à la commande
+                            commande.pk_Billet = billet
+                            commande.save()
                         print(f"Commande créée avec succès pour l'offre {offre_id}")
 
                 messages.success(request, "Les offres ont été ajoutées au panier.")
-                return redirect('voir_panier')
+                return redirect('voir_panier')  # Redirection vers 'voir_panier' après un ajout réussi au panier
         except Exception as e:
             messages.error(request, f"Une erreur s'est produite lors de la validation de la commande : {str(e)}")
             print(f"Erreur lors de la validation de la commande : {str(e)}")
             return redirect('choisir_ticket')
 
     return redirect('choisir_ticket')
+
+
 
 
 @login_required

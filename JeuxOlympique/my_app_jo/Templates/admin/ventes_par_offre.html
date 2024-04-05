@@ -1,18 +1,9 @@
-{% extends 'status/status.html' %}
 
-{% block title %}
-
-{% endblock %}
+{% include 'status/status.html' %}
+{% block title %}Choisir un ticket{% endblock %}
 
 {% block content %}
-<<<<<<< HEAD
-<div class="container-fluid  mb-3">
-    {% include 'status/status.html' %}
-    <br>
-=======
-{% include 'status/status.html' %}
 <div class="container mt-4">
->>>>>>> 8e1c4047e301b530f358f4e15790d00c69dbcbc7
     <h1 class="mb-4">Ventes par Offre</h1>
     <div class="table-responsive mt-n3">
         <table class="table table-striped">
@@ -36,4 +27,3 @@
     </div>
 </div>
 {% endblock %}
-

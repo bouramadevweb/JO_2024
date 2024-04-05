@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+import uuid
 
 import secrets
 import string
@@ -128,6 +129,12 @@ class Billet(models.Model):
     est_validee = models.BooleanField(default=False)
     date_dachat = models.DateField(auto_now_add=True)
     date_valide = models.DateField(null =True)
+    
+    def save(self, *args, **kwargs):
+        if not self.pk_Billet:
+            # Générer une clé unique sécurisée
+            self.Cledebilletelectroniquesecurisee = uuid.uuid4().hex
+        super().save(*args, **kwargs)
 
     
     
@@ -143,6 +150,8 @@ class Commande(models.Model):
     pk_Utilisateur = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     pk_Billet = models.ForeignKey(Billet, on_delete=models.CASCADE)
     est_validee = models.BooleanField(default=False)
+
+    
 
     def __str__(self):
         return f'Commande {self.pk_Commande} pour {self.quantite} billet(s) {self.pk_Offre.type}'
