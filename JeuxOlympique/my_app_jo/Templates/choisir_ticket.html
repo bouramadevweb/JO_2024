@@ -5,6 +5,8 @@
 <div class="container-fluid px-4">
     <h1>Choisir un ticket</h1>
     <form id="choix-competition-form" method="GET">
+            {% csrf_token %}
+
         <div class="form-group">
             <label for="competition">Sélectionner une compétition :</label>
             <select class="form-control" id="competition" name="competition">

@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_extensions',
     'my_app_jo',
+    'administration',
     'bootstrap5',
 ]
 

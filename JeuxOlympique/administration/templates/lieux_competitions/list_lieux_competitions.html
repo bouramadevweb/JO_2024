@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Liste des lieux de compétitions</title>
+</head>
+<body>
+    <h1>Liste des lieux de compétitions</h1>
+    <a href="{% url 'add_lieu_competition' %}">Ajouter un lieu de compétition</a>
+    <table>
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Ville</th>
+                <th>Capacité</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for lieu in lieux_competitions %}
+            <tr>
+                <td>{{ lieu.Nom }}</td>
+                <td>{{ lieu.Ville }}</td>
+                <td>{{ lieu.Capacite }}</td>
+                <td>
+                    <a href="{% url 'update_lieu_competition' lieu.pk_lieu %}">Modifier</a>
+                    <a href="{% url 'delete_lieu_competition' lieu.pk_lieu %}">Supprimer</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

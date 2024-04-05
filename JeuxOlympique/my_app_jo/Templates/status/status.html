@@ -25,66 +25,9 @@
             <li><a href="#" class="logout"><i class="fas fa-sign-out-alt"></i><span class="nav-item">Déconnexion</span></a></li>
         </ul>
     </nav>
-
-    <!-- Contenu principal -->
-    <div class="row">
-        <div class="col-md-4">
-            <div class="card text-center text-white mb-4">
-                <div class="card-header">
-                    <h5 class="card-title">Commande validée</h5>
-                </div>
-                <div class="card-body">
-                    <h3 class="card-title"><!-- Contenu de la carte --></h3>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card text-center text-white mb-3">
-                <div class="card-header">
-                    <h5 class="card-title">Total des Ventes</h5>
-                </div>
-                <div class="card-body">
-                    <h3 class="card-title"><!-- Contenu de la carte --></h3>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card text-center text-white mb-3">
-                <div class="card-header">
-                    <h5 class="card-title">Billet</h5>
-                </div>
-                <div class="card-body">
-                    <h3 class="card-title"><!-- Contenu de la carte --></h3>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-md-12">
-            <h1 class="mb-1">Ventes par Offre</h1>
-            <div class="table-responsive mt-4">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Offre</th>
-                            <th>Nombre de Ventes</th>
-                            <th>Quantité Vendue</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for offre in ventes_par_offre %}
-                        <tr>
-                            <td>{{ offre.type }}</td>
-                            <td>{{ offre.nombre_ventes }}</td>
-                            <td>{{ offre.quantite_vendue }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
-
+      
+      
+    
 {% endblock %}
 
 <!-- Votre CSS -->

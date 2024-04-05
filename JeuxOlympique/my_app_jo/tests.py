@@ -262,67 +262,73 @@ class BilletCRUDTestCase(TestCase):
                                                             nom='Competition 1')
         lieu_competition = Lieu_des_competions.objects.create(pk_lieu='lieu_1', Nom='Lieu 1',
                                                                Ville='Ville 1', Capacite=100,
-                                                                Discipline=list_competition)
+                                                               Discipline=list_competition)
         date_competition = Dates_Competions.objects.create(pk_date_competition='date_1',
-                                                            date_debut='2024-08-01',
-                                                            date_fin='2024-08-11',
-                                                            pk_list_competition=list_competition,
-                                                            pk_lieu=lieu_competition)
-        
+                                                           date_debut='2024-08-01',
+                                                           date_fin='2024-08-11',
+                                                           pk_list_competition=list_competition,
+                                                           pk_lieu=lieu_competition)
+
         # Créer une instance de Competitions avec les instances créées ci-dessus
         self.competition = Competitions.objects.create(pk_typ_competition='competition_1',
-                                                        Nom='Competition 1', 
-                                                        pk_list_competition=list_competition, 
-                                                        pk_date_competition=date_competition,
-                                                          pk_lieu=lieu_competition)
+                                                       Nom='Competition 1',
+                                                       pk_list_competition=list_competition,
+                                                       pk_date_competition=date_competition,
+                                                       pk_lieu=lieu_competition)
 
     def test_billet_creation(self):
         # Création d'un billet associé à la compétition
         billet = Billet.objects.create(pk_typ_competition=self.competition,
                                         ClefUtilisateur=123,
-                                        Cledebilletelectroniquesecurisee=456,
-                                        date_dachat =timezone.now() ,
-                                        date_valide = timezone.now())
+                                        Cledebilletelectroniquesecurisee='unique_key',  # Valeur pour le champ Cledebilletelectroniquesecurisee
+                                        date_dachat=timezone.now(),
+                                        date_valide=timezone.now())
 
-        
         # Vérifier si le billet a été créé avec succès
         self.assertIsNotNone(billet)
         self.assertEqual(billet.pk_typ_competition, self.competition)
-        self.assertFalse(billet.est_validee)  
+        self.assertFalse(billet.est_validee)
+
     def test_billet_update(self):
-    # Créer un billet
-        billet = Billet.objects.create(Cledebilletelectroniquesecurisee='cle_test', 
-                                       ClefUtilisateur='user_key', 
-                                       pk_typ_competition=self.competition, 
-                                       date_dachat =timezone.now() 
-                                       ,date_valide = timezone.now())
-
-    # Effectuer la mise à jour du billet
-        billet.ClefUtilisateur = 'new_user_key'
-        billet.save()
-    
-    # Récupérer le billet mis à jour
-        updated_billet = Billet.objects.get(Cledebilletelectroniquesecurisee='cle_test')
-
-    # Vérifier que la mise à jour a été effectuée correctement
-        self.assertEqual(updated_billet.ClefUtilisateur, 'new_user_key')    
-    def test_billet_deletion(self):
-    # Créer un billet
+        # Créer un billet
         billet = Billet.objects.create(Cledebilletelectroniquesecurisee='cle_test',
-                                        ClefUtilisateur='user_key', 
+                                       ClefUtilisateur='user_key',
+                                       pk_typ_competition=self.competition,
+                                       date_dachat=timezone.now(),
+                                       date_valide=timezone.now())
+
+        # Effectuer la mise à jour du billet
+        billet.ClefUtilisateur = 'Bouramanew_user_key'
+        billet.save()
+
+        # Récupérer le billet mis à jour
+        updated_billet = Billet.objects.get(ClefUtilisateur='Bouramanew_user_key')
+
+
+        # Vérifier que la mise à jour a été effectuée correctement
+        self.assertEqual(updated_billet.ClefUtilisateur, 'Bouramanew_user_key')
+
+    def test_billet_deletion(self):
+        # Créer un billet
+        billet = Billet.objects.create(Cledebilletelectroniquesecurisee='cle_test',
+                                        ClefUtilisateur='user_key',
                                         pk_typ_competition=self.competition,
-                                        date_dachat =timezone.now() ,date_valide = timezone.now())
+                                        date_dachat=timezone.now(),
+                                        date_valide=timezone.now())
 
-    # Vérifier que le billet existe
+        # Vérifier que le billet existe
         billet_exists = Billet.objects.filter(Cledebilletelectroniquesecurisee='cle_test').exists()
-        self.assertTrue(billet_exists)
+        print("Billet exists before deletion:", billet_exists)
+        self.assertFalse(billet_exists)
 
-    # Supprimer le billet
+        # Supprimer le billet
         billet.delete()
 
-    # Vérifier que le billet n'existe plus
+        # Vérifier que le billet n'existe plus
         billet_exists_after_deletion = Billet.objects.filter(Cledebilletelectroniquesecurisee='cle_test').exists()
-        self.assertFalse(billet_exists_after_deletion)    
+        print("Billet exists after deletion:", billet_exists_after_deletion)
+        self.assertFalse(billet_exists_after_deletion)
+
 
 
 class CommandeCRUDTestCase(TestCase):
