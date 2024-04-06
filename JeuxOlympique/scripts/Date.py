@@ -3,6 +3,9 @@ from my_app_jo.models import Dates_Competions, List_competition, ODS, Lieu_des_c
 def remove_spaces(text):
     return text.replace(' ', '')
 
+def remove_punctuation(text):
+    return text.replace(',', '').replace(';', '')
+
 for ods_entry in ODS.objects.all():
     try:
         list_competition_instance = List_competition.objects.get(pk_list_competition=ods_entry.discipline)
@@ -18,10 +21,10 @@ for ods_entry in ODS.objects.all():
         print(f"Attention : Plusieurs lieux portent le nom '{ods_entry.lieu}' dans la table Lieu_des_competions.")
 
     for lieu_competition_instance in lieu_competition_instances:
-        pk_date_competition = f"{remove_spaces(lieu_competition_instance.Nom)}{ods_entry.date_debut}{ods_entry.date_fin}"
+        pk_date_competition = f"{remove_punctuation(remove_spaces(lieu_competition_instance.Nom))}{ods_entry.date_debut}{ods_entry.date_fin}"
         pk_date_competition = remove_spaces(pk_date_competition.strip())  # Supprimer les espaces et appels à strip()
         date_competition = Dates_Competions(
-            pk_date_competition=pk_date_competition,
+            pk_date_competition=remove_punctuation(pk_date_competition),
             date_debut=ods_entry.date_debut,
             date_fin=ods_entry.date_fin,
             pk_list_competition=list_competition_instance,

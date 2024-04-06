@@ -29,7 +29,7 @@ for ods_entry in ODS.objects.all():
 
             # Supprimer les espaces de la clé primaire pour pk_typ_competition
             pk_typ_competition = "_".join([str(lieu_competition_instance.pk_lieu), str(list_competition_instance.pk_list_competition), str(dates_competition.pk_date_competition)])
-
+            pk_typ_competition = pk_typ_competition.replace(" ", "").replace(",", "").replace(";", "")
             # Créer une instance de Competitions avec les valeurs appropriées
             competition, created = Competitions.objects.get_or_create(
                 Nom=ods_entry.discipline,

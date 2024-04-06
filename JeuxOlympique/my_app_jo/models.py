@@ -61,8 +61,7 @@ class Lieu_des_competions(models.Model):
         # Si l'objet n'a pas encore de clé primaire, créez-en une en utilisant les valeurs des champs spécifiés
         if not self.pk:
             
-            self.pk_lieu = "_".join([str(self.Ville),
-                                    str(self.Nom.strip()),
+            self.pk_lieu = "_".join([str(self.Ville),str(self.Nom.strip()),
                                     str(self.Capacite),
                                     str(self.Discipline.pk_list_competition.strip())])
         super().save(*args, **kwargs)
@@ -102,7 +101,7 @@ class Competitions(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f'{self.Nom}, {self.pk_typ_competition}, {self.pk_date_competition}, {self.pk_lieu}'
+        return f'{self.Nom}'
     
 class Offre(models.Model):
     TYPE_CHOICES = [
