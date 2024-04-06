@@ -1,3 +1,4 @@
+from shlex import join
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 import uuid
@@ -29,14 +30,15 @@ class Dates_commandes(models.Model):
         return f'{self.pk_date}'
 
 class List_competition(models.Model):
-    pk_list_competition = models.CharField(max_length=150, primary_key=True)
+    pk_list_competition = models.CharField(max_length=150, primary_key=True ,unique=True)
     nom = models.CharField(max_length=150)
-
     def save(self, *args, **kwargs):
         if not self.pk_list_competition:
             # Supprimer les espaces de la clé primaire
-            self.pk_list_competition = self.pk_list_competition.replace(' ', '')
+            self.pk_list_competition = self.nom.replace(' ','')
         super().save(*args, **kwargs)
+
+    
 
     def __str__(self):
         return f'{self.pk_list_competition}, {self.nom}'
@@ -58,11 +60,15 @@ class Lieu_des_competions(models.Model):
     def save(self, *args, **kwargs):
         # Si l'objet n'a pas encore de clé primaire, créez-en une en utilisant les valeurs des champs spécifiés
         if not self.pk:
-            self.pk_lieu = "_".join([str(self.Ville),str(self.Nom),str(self.Capacite),str(self.Discipline.pk_list_competition)])
+            
+            self.pk_lieu = "_".join([str(self.Ville),
+                                    str(self.Nom.strip()),
+                                    str(self.Capacite),
+                                    str(self.Discipline.pk_list_competition.strip())])
         super().save(*args, **kwargs)
     
     def __str__(self):
-        return f'{self.Nom}, {self.Ville}, {self.Capacite}'    
+        return f'{self.Nom}, {self.Ville}, {self.Capacite} ,{self.Discipline.nom}'    
 class Dates_Competions(models.Model):
     # Définir le champ pour la clé primaire concaténée
     pk_date_competition = models.CharField(max_length=255, primary_key=True)
@@ -74,7 +80,7 @@ class Dates_Competions(models.Model):
 
     def save(self, *args, **kwargs):
         # Concaténer les champs pour former la clé primaire
-        self.pk_date_competition = "_".join([str(self.pk_list_competition),str(self.pk_lieu),str(self.date_debut), str(self.date_fin)])
+        self.pk_date_competition = "_".join([str(self.pk_list_competition.pk_list_competition),str(self.pk_lieu),str(self.date_debut), str(self.date_fin)])
         super().save(*args, **kwargs)
     
     def __str__(self):
@@ -113,7 +119,7 @@ class Offre(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.pk_Offre:
-            self.pk_Offre = "_".join([str(self.type), str(self.nombre_personnes), str(self.competition.pk_typ_competition)])
+            self.pk_Offre = "_".join([str(self.type.strip()), str(self.nombre_personnes), str(self.competition.pk_typ_competition)])
         super().save(*args, **kwargs)
 
     def __str__(self):

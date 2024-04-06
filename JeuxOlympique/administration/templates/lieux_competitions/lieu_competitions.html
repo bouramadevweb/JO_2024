@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Liste des lieux de compétition</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">Liste des lieux de compétition</h1>
+        <div class="row mt-3">
+            <div class="col-md-6">
+                <h2>Ajouter un lieu de compétition</h2>
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
+                  Ajouter
+                </button>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-12">
+                <table class="table">
+                    <thead class="table-dark">
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Nom</th>
+                            <th scope="col">Ville</th>
+                            <th scope="col">Capacité</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for lieu in lieu_competition %}
+                        <tr>
+                            <td>{{ lieu.pk_lieu }}</td>
+                            <td>{{ lieu.Nom }}</td>
+                            <td>{{ lieu.Ville }}</td>
+                            <td>{{ lieu.Capacite }}</td>
+                            <td>
+                                <!-- Button trigger modal -->
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal{{ lieu.pk_lieu }}">
+                                  Modifier
+                                </button>
+                                <button class="btn btn-danger" type="submit" name="delete">Supprimer</button>
+                            </td>
+                        </tr>
+
+                        <!-- Modal pour modifier le lieu -->
+                        <div class="modal fade" id="editModal{{ lieu.pk_lieu }}" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+                          <div class="modal-dialog">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="editModalLabel">Modifier un lieu de compétition</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                              </div>
+                              <div class="modal-body">
+                                <form action="{% url 'lieu_competition' %}" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="id" value="{{ lieu.pk_lieu }}">
+                                    {{ form.as_p }}
+                                    <button class="btn btn-primary" type="submit" name="update">Modifier</button>
+                                </form>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal pour ajouter un lieu de compétition -->
+    <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addModalLabel">Ajouter un lieu de compétition</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form action="{% url 'lieu_competition' %}" method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button class="btn btn-primary" type="submit" name="add">Ajouter</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,23 +1,27 @@
 from my_app_jo.models import ODS, List_competition
+from django.db import connection
 from django.db import IntegrityError
 
 try:
-    for competition_entry in ODS.objects.all():
-        print(f"Insertion des données pour {competition_entry.discipline}")
-       
-        # Création d'une instance de List_competition avec la discipline de ODS
-        pk_list_competition = competition_entry.discipline.replace(" ", "")  # Supprimer tous les espaces
+    # Récupérer toutes les entrées de List_competition
+    list_competitions = List_competition.objects.all()
 
-        list_competition_entry = List_competition(
-            pk_list_competition=pk_list_competition,
-            nom=competition_entry.discipline
-        )
+    # Pour chaque instance de List_competition, appliquer la mise à jour
+    for competition in list_competitions:
+        # Appliquer la mise à jour en utilisant la méthode save() de l'instance
+        competition.pk_list_competition = competition.pk_list_competition.replace(' ', '')  # Supprimer les espaces
+        competition.save()
 
-        # Enregistrement dans la base de données
-        list_competition_entry.save()
-
-    print('Fin d\'insertion des données de la table List_competitions')
+    print('Mise à jour des données de la table List_competition terminée avec succès.')
 except IntegrityError as e:
     print(f"IntegrityError: {e}")
-else:
-    print('Insertion des données de la table List_competitions terminée avec succès.')
+
+
+# try:
+#     # Exécution de la requête SQL brute pour mettre à jour les données
+#     with connection.cursor() as cursor:
+#         cursor.execute("UPDATE my_app_jo_list_competition SET pk_list_competition = REPLACE(pk_list_competition, ' ', '')")
+
+#     print('Mise à jour des données de la table List_competition terminée avec succès.')
+# except Exception as e:
+#     print(f"Une erreur s'est produite lors de la mise à jour des données : {e}")

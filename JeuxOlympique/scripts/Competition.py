@@ -4,7 +4,7 @@ from my_app_jo.models import Dates_Competions, List_competition, ODS, Lieu_des_c
 for ods_entry in ODS.objects.all():
     # Récupérer l'instance de List_competition associée à cet enregistrement ODS
     try:
-        list_competition_instance = List_competition.objects.get(pk_list_competition=ods_entry.discipline)
+        list_competition_instance = List_competition.objects.get(pk_list_competition=ods_entry.discipline.strip())
     except List_competition.DoesNotExist:
         print(f"La discipline '{ods_entry.discipline}' de l'ODS n'existe pas dans la table List_competition.")
         continue
@@ -27,12 +27,16 @@ for ods_entry in ODS.objects.all():
                 date_fin=ods_entry.date_fin
             )
 
+            # Supprimer les espaces de la clé primaire pour pk_typ_competition
+            pk_typ_competition = "_".join([str(lieu_competition_instance.pk_lieu), str(list_competition_instance.pk_list_competition), str(dates_competition.pk_date_competition)])
+
             # Créer une instance de Competitions avec les valeurs appropriées
             competition, created = Competitions.objects.get_or_create(
                 Nom=ods_entry.discipline,
                 pk_list_competition=list_competition_instance,
                 pk_date_competition=dates_competition,
-                pk_lieu=lieu_competition_instance
+                pk_lieu=lieu_competition_instance,
+                pk_typ_competition=pk_typ_competition.replace(" ", "")
             )
 
             # Afficher un message pour confirmer l'insertion

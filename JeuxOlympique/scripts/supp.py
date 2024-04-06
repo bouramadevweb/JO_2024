@@ -1,0 +1,69 @@
+from django.db import connection
+
+# try:
+#     # Exécution de la requête SQL brute pour mettre à jour les données
+#     with connection.cursor() as cursor:
+#         cursor.execute("UPDATE my_app_jo_list_competition SET pk_list_competition = REPLACE(pk_list_competition, \' \', \'\')")
+
+#     print('Mise à jour des données de la table List_competition terminée avec succès.')
+# except Exception as e:
+#     print(f"Une erreur s'est produite lors de la mise à jour des données : {e}")
+
+
+try:
+    with connection.cursor() as cursor:
+        # Mettre à jour pk_lieu en supprimant les espaces
+        cursor.execute("UPDATE my_app_jo_lieu_des_competions SET pk_lieu = REPLACE(pk_lieu, ' ', '')")
+
+        # Mettre à jour la clé étrangère Discipline en supprimant les espaces
+
+    print('Mise à jour des données de la table Lieu_des_competions terminée avec succès.')
+except Exception as e:
+    print(f"Une erreur s'est produite lors de la mise à jour des données : {e}")
+
+
+
+
+
+try:
+    with connection.cursor() as cursor:
+        # Mettre à jour pk_date_competition en supprimant les espaces
+        cursor.execute("UPDATE my_app_jo_dates_competions SET pk_date_competition = REPLACE(pk_date_competition, ' ', '')")
+
+    print('Mise à jour des données de la table Dates_Competions terminée avec succès.')
+except Exception as e:
+    print(f"Une erreur s'est produite lors de la mise à jour des données : {e}")
+
+
+
+
+# try:
+#     with connection.cursor() as cursor:
+#         # Mettre à jour pk_date_competition en supprimant les espaces
+#         cursor.execute("UPDATE my_app_jo_dates_competions SET pk_date_competition = REPLACE(pk_date_competition, ' ', '')")
+
+#     print('Mise à jour des données de la table Dates_Competions terminée avec succès.')
+# except Exception as e:
+#     print(f"Une erreur s'est produite lors de la mise à jour des données : {e}")
+
+
+try:
+    with connection.cursor() as cursor:
+        # Mettre à jour pk_typ_competition en supprimant les espaces
+        cursor.execute("UPDATE my_app_jo_competitions SET pk_typ_competition = REPLACE(pk_typ_competition, ' ', '')")
+
+    print('Mise à jour des données de la table Competitions terminée avec succès.')
+except Exception as e:
+    print(f"Une erreur s'est produite lors de la mise à jour des données : {e}")
+
+
+
+
+
+# try:
+#     with connection.cursor() as cursor:
+#         cursor.execute('UPDATE "my_app_jo_offre" SET "pk_Offre" = REPLACE("pk_Offre", \' \', \'\')')
+
+#     print('Mise à jour des données de la table Offre terminée avec succès.')
+# except Exception as e:
+#     print(f"Une erreur s'est produite lors de la mise à jour des données : {e}")
