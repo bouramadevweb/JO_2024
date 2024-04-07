@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Liste des compétitions</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  
+   <div class="container-fluid  px-3">
+    <br>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addOffreModal">
+            Ajouter une offre
+        </button>
+
+        <!-- Modal d'ajout d'offre -->
+        <div class="modal fade" id="addOffreModal" tabindex="-1" aria-labelledby="addOffreModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addOffreModalLabel">Ajouter une offre</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="type" class="form-label">Type</label>
+                                <select class="form-select" id="type" name="type">
+                                    <option value="One">One</option>
+                                    <option value="Duo">Duo</option>
+                                    <option value="Famille">Famille</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="nombre_personnes" class="form-label">Nombre de personnes</label>
+                                <input type="number" class="form-control" id="nombre_personnes" name="nombre_personnes">
+                            </div>
+                            <div class="mb-3">
+                                <label for="prix" class="form-label">Prix</label>
+                                <input type="number" step="0.01" class="form-control" id="prix" name="prix">
+                            </div>
+                            <div class="mb-3">
+                                <label for="competition" class="form-label">Compétition</label>
+                                <select class="form-select" id="competition" name="competition">
+                                    {% for competition in competitions %}
+                                    <option value="{{ competition.pk_typ_competition }}">{{ competition.Nom }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary" name="add">Ajouter</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Tableau des offres -->
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Nombre de personnes</th>
+                    <th scope="col">Prix</th>
+                    <th scope="col">Compétition</th>
+                    <th scope="col">Actions</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for offre in offres %}
+                    <tr>
+                        <td>{{ offre.pk_Offre }}</td>
+                        <td>{{ offre.type }}</td>
+                        <td>{{ offre.nombre_personnes }}</td>
+                        <td>{{ offre.prix }}</td>
+                        <td>{{ offre.competition.nom }}</td>
+                        <td>
+                            <!-- Bouton pour modifier une offre -->
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editOffreModal{{ offre.pk_Offre }}">
+                                Modifier
+                            </button>
+                            <!-- Modal de modification d'offre -->
+                            <div class="modal fade" id="editOffreModal{{ offre.pk_Offre }}" tabindex="-1" aria-labelledby="editOffreModalLabel{{ offre.pk_Offre }}" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="editOffreModalLabel{{ offre.pk_Offre }}">Modifier l'offre</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <!-- Formulaire de modification d'offre -->
+                                            <form method="post" action="{% url 'offres' %}">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="id" value="{{ offre.pk_Offre }}">
+                                                <div class="mb-3">
+                                                    <label for="type" class="form-label">Type</label>
+                                                    <select class="form-select" id="type" name="type">
+                                                        <option value="One" {% if offre.type == 'One' %} selected {% endif %}>One</option>
+                                                        <option value="Duo" {% if offre.type == 'Duo' %} selected {% endif %}>Duo</option>
+                                                        <option value="Famille" {% if offre.type == 'Famille' %} selected {% endif %}>Famille</option>
+                                                    </select>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="nombre_personnes" class="form-label">Nombre de personnes</label>
+                                                    <input type="number" class="form-control" id="nombre_personnes" name="nombre_personnes" value="{{ offre.nombre_personnes }}">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="prix" class="form-label">Prix</label>
+                                                    <input type="number" step="0.01" class="form-control" id="prix" name="prix" value="{{ offre.prix }}">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="competition" class="form-label">Compétition</label>
+                                                    <select class="form-select" id="competition" name="competition">
+                                                        {% for competition in competitions %}
+                                                            <option value="{{ competition.pk_typ_competition }}" {% if offre.competition.pk_typ_competition == competition.pk_typ_competition %} selected {% endif %}>{{ competition.Nom }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <button type="submit" class="btn btn-primary" name="update">Modifier</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            </td>
+                            <td>
+                            <!-- Formulaire de suppression d'offre -->
+                            <form method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="id" value="{{ offre.pk_Offre }}">
+                                <button type="submit" class="btn btn-danger" name="delete">Supprimer</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    </body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

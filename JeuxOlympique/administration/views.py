@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from my_app_jo.models import List_competition, Lieu_des_competions, Dates_Competions,Competitions
-from administration.form import ListCompetitionForm, LieuDesCompetionsForm, DatesCompetitionsForm,CompetitionForm
+from my_app_jo.models import List_competition, Lieu_des_competions, Dates_Competions,Competitions,Offre,Commande
+from administration.form import ListCompetitionForm, LieuDesCompetionsForm, DatesCompetitionsForm,CompetitionForm,CommandeForm,OffreForm
 from django.http import HttpResponse
 from django.db.models import Value
 from django.db.models.functions import Replace
@@ -109,3 +109,50 @@ def competitions(request):
         competitions = Competitions.objects.all()
         form = CompetitionForm()
     return render(request, 'competitions/competitions.html', {'competitions': competitions, 'form': form})
+
+def offres(request):
+    if request.method == 'POST':
+        if 'add' in request.POST:
+            form = OffreForm(request.POST)
+            if form.is_valid():
+                form.save()
+        elif 'update' in request.POST:
+            offre_id = request.POST.get('id')
+            offre = get_object_or_404(Offre, pk=offre_id)
+            form = OffreForm(request.POST, instance=offre)
+            if form.is_valid():
+                form.save()
+                return redirect('offres')  # Redirection après modification
+        elif 'delete' in request.POST:
+            offre_id = request.POST.get('id')
+            offre = get_object_or_404(Offre, pk=offre_id)
+            offre.delete()
+        return redirect('offres')  # Redirection après ajout ou suppression
+    else:
+        offres = Offre.objects.all()
+        competitions = Competitions.objects.all()
+
+        form = OffreForm()
+        return render(request, 'offres/offres.html', {'offres': offres,'competitions': competitions , 'form': form})  
+def commandes(request):
+    if request.method == 'POST':
+        if 'add' in request.POST:
+            form = CommandeForm(request.POST)
+            if form.is_valid():
+                form.save()
+        elif 'update' in request.POST:
+            commande_id = request.POST.get('id')
+            commande = get_object_or_404(Commande, pk=commande_id)
+            form = CommandeForm(request.POST, instance=commande)
+            if form.is_valid():
+                form.save()
+                return redirect('commandes')  # Redirection après modification
+        elif 'delete' in request.POST:
+            commande_id = request.POST.get('id')
+            commande = get_object_or_404(Commande, pk=commande_id)
+            commande.delete()
+        return redirect('commandes')  # Redirection après ajout ou suppression
+    else:
+        commandes = Commande.objects.all()
+        form = CommandeForm()
+        return render(request, 'commandes/commandes.html', {'commandes': commandes, 'form': form})    
