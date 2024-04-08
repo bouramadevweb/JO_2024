@@ -1,54 +1,68 @@
-{% extends 'base.html' %}
-{% block title %}Choisir un ticket{% endblock %}
+    {% extends 'base.html' %}
+    {% block title %}Choisir un ticket{% endblock %}
 
-{% block content %}
-<div class="container-fluid px-4">
-<h1>Choisir un ticket</h1>
-<form id="choix-competition-form" method="GET">
-{% csrf_token %}
+    {% block content %}
+    <div class="container">
+    <div class="row justify-content-center">
+    <div class="col-md-8">
+    <h1 class="text-center mb-4">Choisir un ticket</h1>
+    <form id="choix-competition-form" method="GET">
+    {% csrf_token %}
 
-<div class="form-group">
-<label for="competition">Sélectionner une compétition :</label>
-<select class="form-control" id="competition" name="competition">
-<option value="">-- Sélectionner une compétition --</option>
-{% for competition in competitions %}
-<option value="{{ competition.pk_typ_competition }}">{{ competition.Nom }} - Lieu: {{ competition.pk_lieu.Nom }} ({{ competition.pk_lieu.Ville }})</option>
-{% endfor %}
-</select>
-</div>
-</form>
+    <div class="form-group">
+    <label for="competition">Sélectionner une compétition :</label>
+    <select class="form-control" id="competition" name="competition">
+    <option value="">-- Sélectionner une compétition --</option>
+    {% for competition in competitions %}
+    <option value="{{ competition.pk_typ_competition }}">{{ competition.Nom }} - Lieu: {{competition.pk_lieu.Nom }} ({{ competition.pk_lieu.Ville }})</option>
+    {% endfor %}
+    </select>
+    </div>
+    </form>
+    </div>
+    </div>
 
-{% if offres %}
-<h2>Offres disponibles :</h2>
-<form id="ajout-au-panier-form" method="POST" action="{% url 'ajouter_au_panier' %}">
-{% csrf_token %}
-<div class="row">
-<div class="col-md-3">
-<div class="card mb-3">
-<div class="card-body">
-{% for offre in offres %}
-<h5 class="card-title">{{ offre.type }} {{ offre.competition.Nom }} - {{ offre.nombre_personnes }} personnes</h5>
-<p class="card-text">Prix unitaire : {{ offre.prix }}</p>
-<input type="checkbox" name="offre_id" value="{{ offre.pk_Offre }}">
-<label for="quantite{{ offre.pk_Offre }}">Quantité :</label>
-<input type="number" class="form-control quantite-input" id="quantite{{ offre.pk_Offre }}" name="quantite_{{ offre.pk_Offre }}" min="0" value="0">
-<input type="hidden" name="montant_total_{{ offre.pk_Offre }}" value="{{ offre.prix }}">
-<label for="date_debut{{ offre.pk_Offre }}">Date de début :</label>
-<input type="date" class="form-control date-debut-input" id="date_debut{{ offre.pk_Offre }}" name="date_debut_{{ offre.pk_Offre }}" value="{{ offre.competition.pk_date_competition.date_debut|date:'Y-m-d' }}" min="{{ offre.competition.pk_date_competition.date_debut|date:'Y-m-d' }}" max="{{ offre.competition.pk_date_competition.date_fin|date:'Y-m-d' }}">
-{% endfor %}
+    <div class="row justify-content-center">
+    <div class="col-md-8">
+    {% if offres %}
+    <h2 class="text-center mb-4">Offres disponibles :</h2>
+    <form id="ajout-au-panier-form" method="POST" action="{% url 'ajouter_au_panier' %}">
+    {% csrf_token %}
+    <div class="row">
+    {% for offre in offres %}
+    <div class="col-md-6 mb-4">
+    <div class="card">
+    <div class="card-body">
+    <h5 class="card-title">{{ offre.type }} {{ offre.competition.Nom }} - {{offre.nombre_personnes }} personnes</h5>
+    <p class="card-text">Prix unitaire : {{ offre.prix }}</p>
+    <input type="checkbox" name="offre_id" value="{{ offre.pk_Offre }}">
+    <label for="quantite{{ offre.pk_Offre }}">Quantité :</label>
+    <input type="number" class="form-control quantite-input"
+    id="quantite{{ offre.pk_Offre }}" name="quantite_{{ offre.pk_Offre }}" min="0"
+    value="0">
+    <input type="hidden" name="montant_total_{{ offre.pk_Offre }}" value="{{ offre.prix }}">
+    <label for="date_debut{{ offre.pk_Offre }}">Date de début :</label>
+    <input type="date" class="form-control date-debut-input"
+    id="date_debut{{ offre.pk_Offre }}" name="date_debut_{{ offre.pk_Offre }}"
+    value="{{ offre.competition.pk_date_competition.date_debut|date:'Y-m-d' }}"
+    min="{{ offre.competition.pk_date_competition.date_debut|date:'Y-m-d' }}"
+    max="{{ offre.competition.pk_date_competition.date_fin|date:'Y-m-d' }}">
+    </div>
+    </div>
+    </div>
+    {% endfor %}
+    </div>
+    <div class="text-center">
+    <button type="submit" class="btn btn-primary">Ajouter au panier</button>
+    </div>
+    </form>
+    {% else %}
+    <p class="text-center">Aucune offre disponible pour la compétition sélectionnée.</p>
+    {% endif %}
+    </div>
+    </div>
+    </div>
 
-<button type="submit" class=" ajouter-panier-btn btn btn-primary">Ajouter au panier</button>
-</div>
-</div>
-</div>
-</div>
-</form>
-
-
-{% else %}
-<p>Aucune offre disponible pour la compétition sélectionnée.</p>
-{% endif %}
-</div>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
 // Capturer le changement de sélection de la compétition

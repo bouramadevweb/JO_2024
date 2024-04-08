@@ -8,10 +8,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Les offfres de compétition</title>
-    <script src="https://kit.fontawesome.com/bf80631bb4.js" crossorigin="anonymous"></script>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
+<script src="https://kit.fontawesome.com/bf80631bb4.js" crossorigin="anonymous"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet">
 <body>
 
 <div class="container  ">
@@ -76,7 +74,7 @@ Ajouter <span><i class="fas fa-plus-circle"></i></span>
 <tbody>
 {% for offre in page_obj %}
 <tr>
-    <td>{{  offre.pk_Offre }}</td>
+    <td>{{ offre.pk_Offre }}</td>
 <td>{{ offre.competition.Nom }}</td>
 <td>{{ offre.nombre_personnes }}</td>
 <td>{{ offre.prix }}</td>

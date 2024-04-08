@@ -1,5 +1,6 @@
+from dataclasses import field
 from django import forms
-from my_app_jo.models import List_competition,Lieu_des_competions,Dates_Competions,Competitions,Offre,Commande
+from my_app_jo.models import List_competition,Lieu_des_competions,Dates_Competions,Competitions,Offre,Commande, Types
 
 class ListCompetitionForm(forms.ModelForm):
     class Meta:
@@ -34,10 +35,17 @@ class CompetitionForm(forms.ModelForm):
     class Meta:
         model = Competitions
         fields = ['Nom']
+class TypesForm(forms.ModelForm):
+    class Meta:
+       model= Types
+       fields= ['type']
+
 class OffreForm(forms.ModelForm):
+    
+
     class Meta:
         model = Offre
-        fields = ['type', 'nombre_personnes', 'prix', 'competition']
+        fields = [ 'type','nombre_personnes', 'prix', 'competition']
 
 class CommandeForm(forms.ModelForm):
     class Meta:

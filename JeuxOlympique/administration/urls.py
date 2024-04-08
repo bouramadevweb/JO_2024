@@ -7,6 +7,7 @@ urlpatterns = [
     path('lieu_competition/', views.lieu_competition, name='lieu_competition'),
     path('dates_competitions/',views.dates_competitions, name='dates_competitions'),
     path('competitions/', views.competitions, name='competitions'),
+    path('types/', views.types, name='types'),
     path('offres/',views.offres,name='offres'),
     path('commandes/',views.commandes,name='commandes'),
     path('ventes_par_offre',views.ventes_par_offre,name='ventes_par_offre'),

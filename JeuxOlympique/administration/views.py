@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from my_app_jo.models import List_competition, Lieu_des_competions, Dates_Competions,Competitions,Offre,Commande
-from administration.form import ListCompetitionForm, LieuDesCompetionsForm, DatesCompetitionsForm,CompetitionForm,CommandeForm,OffreForm
+from my_app_jo.models import List_competition, Lieu_des_competions, Dates_Competions,Competitions,Offre,Commande,Types
+from administration.form import TypesForm,ListCompetitionForm, LieuDesCompetionsForm, DatesCompetitionsForm,CompetitionForm,CommandeForm,OffreForm
 from django.http import HttpResponse
 from django.db.models import Value
 from django.db.models.functions import Replace
@@ -175,7 +175,32 @@ def competitions(request):
             competition.delete()
             return redirect('competitions')  # Rediriger vers la même page après la suppression
     # else:
-
+def types(request):
+    if request.method == 'GET':
+        types = Types.objects.all()
+        paginator = Paginator(types,10)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        form = TypesForm()
+        return render(request, 'types/types.html', {'page_obj': page_obj, 'form': form})
+    elif request.method == 'POST':
+        if 'add' in request.POST:
+            form = TypesForm(request.POST)
+            if form.is_valid():
+                form.save()
+        elif 'update' in request.POST:
+            types_id = request.POST.get('id')
+            types = get_object_or_404(Types, pk=types_id)
+            form = TypesForm(request.POST, instance=types)
+            if form.is_valid():
+                form.save()
+                return redirect('types')
+        elif 'delete' in request.POST:
+            types_id = request.POST.get('id')
+            types = get_object_or_404(Types, pk=types_id)
+            types.delete()
+        return redirect('types')
+    
 def offres(request):
     if request.method == 'GET':
         offres = Offre.objects.all()
@@ -184,9 +209,9 @@ def offres(request):
         page_obj =paginator.get_page(page_number)
 
         competitions = Competitions.objects.all()
-        paginator = Paginator(competitions,10)
-        page_number = request.GET.get('page')
-        page_obj =paginator.get_page(page_number)
+        # paginator = Paginator(competitions,10)
+        # page_number = request.GET.get('page')
+        # page_obj =paginator.get_page(page_number)
 
         form = OffreForm()
         return render(request, 'offres/offres.html', {'page_obj': page_obj,'competitions': competitions , 'form': form})  

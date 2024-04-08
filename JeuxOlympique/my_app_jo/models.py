@@ -1,4 +1,5 @@
 from shlex import join
+from tkinter import CASCADE
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 import uuid
@@ -103,15 +104,21 @@ class Competitions(models.Model):
     def __str__(self):
         return f'{self.Nom}'
     
+class Types(models.Model):
+    type =models.CharField(primary_key=True)
+    def __str__(self):
+        return f'{self.type}'
+
 class Offre(models.Model):
-    TYPE_CHOICES = [
-        ('One', 'One'),
-        ('Duo', 'Duo'),
-        ('Famille', 'Famille'),
-    ]
+    # TYPE_CHOICES = [
+    #     ('One', 'One'),
+    #     ('Duo', 'Duo'),
+    #     ('Famille', 'Famille'),
+       
+    # ]
 
     pk_Offre = models.CharField(max_length=2000, primary_key=True)
-    type = models.CharField(max_length=10, choices=TYPE_CHOICES)
+    type = models.ForeignKey(Types, on_delete=models.CASCADE)
     nombre_personnes = models.IntegerField()
     prix = models.FloatField()
     competition = models.ForeignKey(Competitions, on_delete=models.CASCADE)
@@ -123,7 +130,12 @@ class Offre(models.Model):
 
     def __str__(self):
         return f'{self.pk_Offre}, {self.type}, {self.prix}, {self.competition.Nom}'
+    # @classmethod
+    # def add_type_choice(cls, new_type):
+    #     cls.TYPE_CHOICES.append((new_type, new_type))
 
+    
+    
 
 
 class Billet(models.Model):
