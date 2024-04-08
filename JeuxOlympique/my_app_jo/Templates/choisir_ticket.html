@@ -67,13 +67,8 @@ document.addEventListener('DOMContentLoaded', function() {
             montantTotalInput.value = montantTotal.toFixed(2); // Fixer le nombre de décimales à 2
         });
     });
-   document.getElementById('ajout-au-panier-form').addEventListener('submit', function() {
-        var inputs = this.querySelectorAll('input');
-        inputs.forEach(function(input) {
-            input.value = ''; // Vider la valeur de l'input
-        });
-    });
-   /* document.addEventListener('DOMContentLoaded', function() {
+
+    // événement au clic sur le bouton "Ajouter au panier"
     document.getElementById('ajouter-panier-btn').addEventListener('click', function() {
         var form = document.getElementById('ajout-au-panier-form');
         var formData = new FormData(form);
@@ -89,10 +84,8 @@ document.addEventListener('DOMContentLoaded', function() {
         };
         xhr.send(formData);
     });
-}); #} */
-
 });
-    
+
 
 </script>
 {% endblock %}

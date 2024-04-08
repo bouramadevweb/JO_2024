@@ -1,3 +1,8 @@
+{% include 'status.html' %}
+{% block title %} {% endblock %}
+
+{% block content %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,94 +11,124 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <h1 class="mt-3"> Dates des compétitions</h1>
-        
-        <!-- Bouton d'ajout en modal -->
-        <button type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#addModal">
-            Ajouter une compétition
-        </button>
+<div class="container">
+<h1 class="mt-3"> Dates des compétitions</h1>
 
-        <!-- Modal d'ajout -->
-        <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="addModalLabel">Ajouter une compétition</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form action="{% url 'dates_competitions' %}" method="post">
-                            {% csrf_token %}
-                            {{ form.as_p }}
-                            <button class="btn btn-primary" type="submit" name="add">Ajouter</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
+<!-- Bouton d'ajout en modal -->
+<button type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#addModal">
+Ajouter <span><i class="fas fa-plus-circle"></i></span>
+</button>
 
-        <div class="row mt-2">
-            <div class="col-md-9">
-                <table class="table">
-                     <thead class="table-dark">
-                        <tr>
-                            <th scope="col">ID</th>
-                            <th scope="col">Date Début</th>
-                            <th scope="col">Date Fin</th>
-                            <th scope="col">Action</th>
-                            <th scope="col">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for date_competition in dates_competitions %}
-                        <tr>
-                            <td>{{ date_competition.pk_date_competition }}</td>
-                            <td>{{ date_competition.date_debut }}</td>
-                            <td>{{ date_competition.date_fin }}</td>
-                            <td>
-                                <!-- Button trigger modal pour modifier -->
-                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal{{ date_competition.pk_date_competition }}">
-                                    Modifier
-                                </button>
-                            </td>
-<div class="modal fade" id="editModal{{ date_competition.pk_date_competition }}" tabindex="-1" aria-labelledby="editModalLabel{{ date_competition.pk_date_competition }}" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editModalLabel{{ date_competition.pk_date_competition }}">Modifier une compétition</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form action="{% url 'dates_competitions' %}" method="post">
-                    {% csrf_token %}
-                    <input type="text" name="id" value="{{ date_competition.pk_date_competition }}">
-                    {{ form.as_p }}
-                    <button class="btn btn-primary" type="submit" name="update">Modifier</button>
-                </form>
-            </div>
-        </div>
-    </div>
+<!-- Modal d'ajout -->
+<div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
+<div class="modal-dialog">
+<div class="modal-content">
+<div class="modal-header">
+<h5 class="modal-title" id="addModalLabel">Ajouter une compétition</h5>
+<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+<form action="{% url 'dates_competitions' %}" method="post">
+{% csrf_token %}
+
+<div class="mb-3">
+
+<select class="form-control" id="date_competition" name="date_competition">
+<option value="">-- choisissez le lieux  --</option>
+{% for date_competition in dates_competitions %}
+<option value="{{ date_competition.pk_list_competition }}">{{ date_competition.Nom }} - Lieu: {{ date_competition.pk_lieu.Nom }} ({{ date_competition.pk_lieu.Ville }})</option>
+{% endfor %}
+</select>
+</div>
+<div class="mb-3">
+<label for="date_debut" class="form-label">Date Début</label>
+<input type="date" class="form-control" id="date_debut" name="date_debut">
+</div>
+<div class="mb-3">
+<label for="date_fin" class="form-label">Date Fin</label>
+<input type="date" class="form-control" id="date_fin" name="date_fin">
+</div>
+<button class="btn btn-primary" type="submit" name="add">Ajouter</button>
+</form>
+</div>
+</div>
+</div>
 </div>
 
-                                </div>
-                            </td>
-                            <td>
-                                <!-- Bouton de suppression -->
-                                <form action="{% url 'dates_competitions' %}" method="post">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="id" value="{{date_competition.pk_date_competition}}">
-                                    <button class="btn btn-danger" type="submit" name="delete">Supprimer</button>
-                                </form>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+<div class="row mt-6">
+<div class="col-md-10">
+<table class="table">
+<thead class="table-dark">
+<tr>
+<th scope="col">ID</th>
+<th scope="col">Date Début</th>
+<th scope="col">Date Fin</th>
+<th scope="col">Action</th>
+<th scope="col">Action</th>
+</tr>
+</thead>
+<tbody>
+{% for date_competition in dates_competitions %}
+<tr>
+<td>{{ date_competition.pk_date_competition }}</td>
+<td>{{ date_competition.date_debut|date:'Y-m-d' }}</td>
+<td>{{ date_competition.date_fin|date:'Y-m-d' }}</td>
+<td>
+<!-- Button trigger modal pour modifier -->
+<button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editModal{{ date_competition.pk_date_competition }}">
+<span><i class="fas fa-pencil-alt"></i></span>
+</button>
+<!-- Modal pour modifier -->
+<div class="modal fade" id="editModal{{ date_competition.pk_date_competition }}" tabindex="-1" aria-labelledby="editModalLabel{{ date_competition.pk_date_competition }}" aria-hidden="true">
+<div class="modal-dialog">
+<div class="modal-content">
+<div class="modal-header">
+<h5 class="modal-title" id="editModalLabel{{ date_competition.pk_date_competition }}">Modifier une compétition</h5>
+<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+<form action="{% url 'dates_competitions' %}" method="post">
+{% csrf_token %}
+<input type="hidden" name="id" value="{{ date_competition.pk_date_competition|date:'Y-m-d' }}">
+<div class="mb-3">
+
+<label for="editDateDebut" class="form-label">Date Début</label>
+<input type="date" class="form-control" id="editDateDebut" name="editDateDebut" value="{{ date_competition.date_debut|date:'Y/m/d' }}">
+</div>
+<div class="mb-3">
+<label for="editDateFin" class="form-label">Date Fin</label>
+<input type="date" class="form-control" id="editDateFin" name="editDateFin" value="{{ date_competition.date_fin }}">
+</div>
+<button class="btn btn-primary" type="submit" name="update">Modifier</button>
+</form>
+</div>
+</div>
+</div>
+</div>
+</td>
+<td>
+<!-- Bouton de suppression -->
+<form action="{% url 'dates_competitions' %}" method="post">
+{% csrf_token %}
+<input type="hidden" name="id" value="{{ date_competition.pk_date_competition }}">
+<button class="btn btn-danger" type="submit" name="delete"><i class="fas fa-trash"></i></button>
+</form>
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+</div>
+</div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
+
+
+
+
+
+{% endblock %}

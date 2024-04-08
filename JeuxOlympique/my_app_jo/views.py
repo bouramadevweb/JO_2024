@@ -16,7 +16,7 @@ import qrcode, base64
 from django.db.models import Count, Sum,Q
 import secrets
 import string
-from django.views.decorators.csrf import requires_csrf_token
+from django.views.decorators.csrf import csrf_exempt
 
 from io import BytesIO
 
@@ -44,10 +44,7 @@ def choisir_ticket(request):
         competitions = Competitions.objects.select_related('pk_lieu').all()
         return render(request, 'choisir_ticket.html', {'competitions': competitions})
 @login_required
-@requires_csrf_token
-
-
-
+@csrf_exempt
 def ajouter_au_panier(request):
     if request.method == 'POST':
         try:

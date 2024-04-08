@@ -24,16 +24,19 @@ for competition in competitions:
         offre_type_cleaned = offre_type.strip()
 
         # Créer une instance d'Offre avec les détails spécifiés
-        pk_Offre = f"{pk_typ_competition_cleaned}_{offre_type_cleaned}".replace(" ", "")  # Supprimer les espaces
+        offre_pk = f"{pk_typ_competition_cleaned}_{offre_type_cleaned}".replace(" ", "")  # Supprimer les espaces
         offre_instance = Offre(
-            pk_Offre=pk_Offre,
+            pk_Offre=offre_pk,
             type=offre_type_cleaned,
             nombre_personnes=offre_details['nombre_personnes'],
             prix=offre_details['prix'],
             competition=competition
         )
-        # Enregistrer l'instance dans la base de données
-        offre_instance.save()
-        total_offres_crees += 1
+        # Gérer les erreurs potentielles lors de l'enregistrement de l'instance dans la base de données
+        try:
+            offre_instance.save()
+            total_offres_crees += 1
+        except Exception as e:
+            print(f"Erreur lors de la création de l'offre pour {competition} : {e}")
 
 print(f"Total des offres créées : {total_offres_crees}")

@@ -4,10 +4,14 @@ from administration.form import ListCompetitionForm, LieuDesCompetionsForm, Date
 from django.http import HttpResponse
 from django.db.models import Value
 from django.db.models.functions import Replace
+from django.core.paginator import Paginator
 
 def clean_primary_key(value):
     return Replace(Replace(Replace(value, Value(','), Value('')), Value(';'), Value('')), Value('.'), Value(''))
 
+def administration(request):
+    return render(request, 'status.html')
+    
 def list_competition(request):
     if request.method == 'POST':
         # Gérer les opérations CRUD
@@ -32,9 +36,41 @@ def list_competition(request):
         form = ListCompetitionForm()
         return render(request, 'listCompetitions/list_competition.html', {'list_competition': list_competition, 'form': form})
 
+# def lieu_competition(request):
+#     if request.method == 'POST':
+#         # Gérer les opérations CRUD
+#         if 'add' in request.POST:
+#             form = LieuDesCompetionsForm(request.POST)
+#             if form.is_valid():
+#                 form.save()
+#         elif 'update' in request.POST:
+#             lieu_id = request.POST.get('id')
+#             lieu = get_object_or_404(Lieu_des_competions, pk=lieu_id)
+#             form = LieuDesCompetionsForm(request.POST, instance=lieu)
+#             if form.is_valid():
+#                 form.save()
+#                 return redirect('lieux_competitions/lieu_competitions')
+#         elif 'delete' in request.POST:
+#             lieu_id = request.POST.get('id')
+#             lieu = get_object_or_404(Lieu_des_competions, pk=lieu_id)
+#             lieu.delete()
+#         return redirect('lieux_competitions/lieu_competitions')  # Rediriger pour éviter les re-postages
+#     else:
+#         lieu_competition = Lieu_des_competions.objects.all()
+        
+#         form = LieuDesCompetionsForm()
+#         return render(request, 'lieux_competitions/lieu_competitions.html', {'lieu_competition': lieu_competition, 'form': form})
+
 def lieu_competition(request):
-    if request.method == 'POST':
-        # Gérer les opérations CRUD
+    if request.method == 'GET':
+        lieu_competition = Lieu_des_competions.objects.all()
+        paginator = Paginator(lieu_competition, 10)  # Paginer par 10 éléments par page
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        form = LieuDesCompetionsForm()
+        return render(request, 'lieux_competitions/lieu_competitions.html', {'page_obj': page_obj, 'form': form})
+
+    elif request.method == 'POST':
         if 'add' in request.POST:
             form = LieuDesCompetionsForm(request.POST)
             if form.is_valid():
@@ -45,17 +81,12 @@ def lieu_competition(request):
             form = LieuDesCompetionsForm(request.POST, instance=lieu)
             if form.is_valid():
                 form.save()
-                return redirect('lieux_competitions/lieu_competitions')
         elif 'delete' in request.POST:
             lieu_id = request.POST.get('id')
             lieu = get_object_or_404(Lieu_des_competions, pk=lieu_id)
             lieu.delete()
-        return redirect('lieux_competitions/lieu_competitions')  # Rediriger pour éviter les re-postages
-    else:
-        lieu_competition = Lieu_des_competions.objects.all()
-        form = LieuDesCompetionsForm()
-        return render(request, 'lieux_competitions/lieu_competitions.html', {'lieu_competition': lieu_competition, 'form': form})
-
+        return redirect('lieu_competition')
+    
 def dates_competitions(request):
     if request.method == 'POST':
         # Gérer les opérations CRUD

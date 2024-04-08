@@ -72,7 +72,7 @@ from my_app_jo.models import Dates_Competions, Competitions
 from django.db.models import Value
 from django.db.models.functions import Replace
 
-# Supprimer les virgules, les points-virgules et les espaces de la colonne pk_date_competition
+# # Supprimer les virgules, les points-virgules et les espaces de la colonne pk_date_competition
 # Dates_Competions.objects.all().update(pk_date_competition=Replace(Replace(Replace('pk_date_competition', Value(','), Value('')), Value(';'), Value('')), Value(' '), Value('')))
 Competitions.objects.all().update(pk_typ_competition=Replace(Replace(Replace('pk_typ_competition', Value(','), Value('')), Value(';'), Value('')), Value(' '), Value('')))
 print("Mise à jour des données terminée avec succès.")

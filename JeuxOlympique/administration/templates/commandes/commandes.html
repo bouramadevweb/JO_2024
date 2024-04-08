@@ -1,102 +1,150 @@
+{% include 'status.html' %}
+{% block title %} {% endblock %}
+
+{% block content %}
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>Liste des commandes</title>
+    <title>les commandes</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Ajoutez votre CSS personnalisé ici */
+        .modal-dialog {
+            max-width: 80%;
+            /* Réglez la largeur maximale du modal */
+        }
+    </style>
 </head>
+
 <body>
 <div class="container">
-    <h1>Liste des commandes</h1>
+<h1>Liste des commandes</h1>
 
-    <!-- Bouton pour ajouter une commande -->
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCommandeModal">
-        Ajouter une commande
-    </button>
+<!-- Bouton pour ajouter une commande -->
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCommandeModal">
+Ajouter une commande
+</button>
 
-    <!-- Modal d'ajout de commande -->
-    <div class="modal fade" id="addCommandeModal" tabindex="-1" aria-labelledby="addCommandeModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addCommandeModalLabel">Ajouter une commande</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <!-- Formulaire d'ajout de commande -->
-                    <form method="post" id="addCommandeForm">
-                        {% csrf_token %}
-                        {{ form.as_p }}
-                        <button type="submit" class="btn btn-primary" name="add">Ajouter</button>
-                    </form>
-                </div>
-            </div>
-        </div>
+<!-- Modal d'ajout de commande -->
+<div class="modal fade" id="addCommandeModal" tabindex="-1" aria-labelledby="addCommandeModalLabel"
+aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered">
+<div class="modal-content">
+<div class="modal-header">
+<h5 class="modal-title" id="addCommandeModalLabel">Ajouter une commande</h5>
+<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+<!-- Formulaire d'ajout de commande -->
+<form method="post" id="addCommandeForm">
+{% csrf_token %}
+<div class="mb-3">
+<label for="typeOffre" class="form-label">Type d'offre</label>
+<input type="text" class="form-control" id="typeOffre" name="typeOffre">
+</div>
+<div class="mb-3">
+<label for="quantite" class="form-label">Quantité</label>
+<input type="number" class="form-control" id="quantite" name="quantite">
+</div>
+<div class="mb-3">
+<label for="date" class="form-label">Date</label>
+<input type="date" class="form-control" id="date" name="date">
+</div>
+<button type="submit" class="btn btn-primary" name="add">Ajouter</button>
+</form>
+</div>
+</div>
+    </div>
     </div>
 
     <!-- Tableau des commandes -->
     <table class="table">
-        <thead>
-        <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Quantité</th>
-            <th scope="col">Montant Total</th>
-            <th scope="col">Date</th>
-            <th scope="col">Offre</th>
-            <th scope="col">Utilisateur</th>
-            <th scope="col">Billet</th>
-            <th scope="col">Est Validée</th>
-            <th scope="col">Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for commande in commandes %}
-            <tr>
-                <td>{{ commande.pk_Commande }}</td>
-                <td>{{ commande.quantite }}</td>
-                <td>{{ commande.MontantTotal }}</td>
-                <td>{{ commande.pk_date }}</td>
-                <td>{{ commande.pk_Offre }}</td>
-                <td>{{ commande.pk_Utilisateur }}</td>
-                <td>{{ commande.pk_Billet }}</td>
-                <td>{{ commande.est_validee }}</td>
-                <td>
-                    <!-- Bouton pour modifier une commande -->
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editCommandeModal{{ commande.pk_Commande }}">
-                        Modifier
-                    </button>
-                    <!-- Modal de modification de commande -->
-                    <div class="modal fade" id="editCommandeModal{{ commande.pk_Commande }}" tabindex="-1" aria-labelledby="editCommandeModalLabel{{ commande.pk_Commande }}" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="editCommandeModalLabel{{ commande.pk_Commande }}">Modifier la commande</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <!-- Formulaire de modification de commande -->
-                                    <form method="post" id="editCommandeForm">
-                                        {% csrf_token %}
-                                        <input type="hidden" name="id" value="{{ commande.pk_Commande }}">
-                                        {{ form.as_p }}
-                                        <button type="submit" class="btn btn-primary" name="update">Modifier</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Formulaire de suppression de commande -->
-                    <form method="post">
-                        {% csrf_token %}
-                        <input type="hidden" name="id" value="{{ commande.pk_Commande }}">
-                        <button type="submit" class="btn btn-danger" name="delete">Supprimer</button>
-                    </form>
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
+    <thead>
+    <tr>
+    <th scope="col">ID</th>
+    <th scope="col">Quantité</th>
+    <th scope="col">Montant Total</th>
+    <th scope="col">Date</th>
+    <th scope="col">Offre</th>
+    <th scope="col">Utilisateur</th>
+    <th scope="col">Billet</th>
+    <th scope="col">Est Validée</th>
+    <th scope="col">Actions</th>
+    <th scope="col">Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for commande in commandes %}
+    <tr>
+    <td>{{ commande.pk_Commande }}</td>
+    <td>{{ commande.quantite }}</td>
+    <td>{{ commande.MontantTotal }}</td>
+    <td>{{ commande.pk_date|date:'Y-m-d' }}</td>
+    <td>{{ commande.pk_Offre.type }}</td>
+    <td>{{ commande.pk_Utilisateur }}</td>
+    <td>{{ commande.pk_Billet }}</td>
+    <td>{{ commande.est_validee }}</td>
+    <td>
+    <!-- Bouton pour modifier une commande -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+        data-bs-target="#editCommandeModal{{ commande.pk_Commande }}">
+            Modifier
+    </button>
+    <!-- Modal de modification de commande -->
+    <div class="modal fade" id="editCommandeModal{{ commande.pk_Commande }}" tabindex="-1"
+    aria-labelledby="editCommandeModalLabel{{ commande.pk_Commande }}" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+    <div class="modal-header">
+    <h5 class="modal-title" id="editCommandeModalLabel{{ commande.pk_Commande }}">Modifier la commande</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+    <!-- Formulaire de modification de commande -->
+    <form method="post" id="editCommandeForm">
+    {% csrf_token %}
+    <input type="hidden" name="id" value="{{ commande.pk_Commande }}">
+    <div class="mb-3">
+    <label for="editTypeOffre" class="form-label">Type d'offre</label>
+    <input type="text" class="form-control" id="editTypeOffre"
+    name="editTypeOffre" value="{{ commande.pk_Offre.type }}">
+    </div>
+    <div class="mb-3">
+    <label for="editQuantite" class="form-label">Quantité</label>
+    <input type="number" class="form-control" id="editQuantite"
+    name="editQuantite" value="{{ commande.quantite }}">
+    </div>
+    <div class="mb-3">
+    <label for="editDate" class="form-label">Date</label>
+    <input type="date" class="form-control" id="editDate" name="editDate"
+    value="{{ commande.pk_date|date:'Y-m-d' }}">
+    </div>
+    <button type="submit" class="btn btn-primary"
+    name="update">Modifier</button>
+    </form>
+    </div>
+    </div>
+    </div>
+    </div>
+    </td>
+    <td>
+    <form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="id" value="{{ commande.pk_Commande }}">
+    <button type="submit" class="btn btn-danger" name="delete">Supprimer</button>
+    </td>
+    </tr>
+    {% endfor %}
+    </tbody>
     </table>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"></script>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
+
+
+{% endblock %}

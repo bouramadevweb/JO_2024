@@ -118,7 +118,7 @@ class Offre(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.pk_Offre:
-            self.pk_Offre = "_".join([str(self.type.strip()), str(self.nombre_personnes), str(self.competition.pk_typ_competition)])
+            self.pk_Offre = "_".join([str(self.type.strip()), str(self.nombre_personnes), str(self.competition.pk)])
         super().save(*args, **kwargs)
 
     def __str__(self):

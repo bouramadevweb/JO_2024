@@ -1,0 +1,190 @@
+{% load bootstrap5 %}
+
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Your Django App{% endblock %}</title>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+<!-- Inclure Bootstrap -->
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+<link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+<script src="https://kit.fontawesome.com/bf80631bb4.js" crossorigin="anonymous"></script>
+
+</head>
+
+<div class="container-fluid container-status "style="overflow-x: hidden;">
+<!-- Barre de navigation latérale -->
+<nav class="nav-admin vertical-menu">
+<ul>
+<li>
+<a href="#" class="logo">
+<img src="https://img.freepik.com/vecteurs-libre/affiche-isometrique-sport-colore_1284-15145.jpg?w=740&t=st=1712014618~exp=1712015218~hmac=d2daffd59b0881cafc5d76bd19743c688ff595e225a6015f3144047711675b23"
+alt="">
+<span class="nav-item">Tableau de Bord</span>
+</a>
+</li>
+<li><a href="{% url 'list_competition' %}"><i class="fas fa-home"></i><span
+class="nav-item">Accueil</span></a></li>
+<li><a href="{% url 'lieu_competition' %}"><i class="fas fa-user"></i><span
+class="nav-item">Profile</span></a></li>
+<li><a href="#"><i class="fas fa-shopping-cart"></i><span class="nav-item">Vente</span></a></li>
+<li><a href="#"><i class="fas fa-ticket-alt"></i><span class="nav-item">Billets vendus</span></a></li>
+<li><a href="#"><i class="fas fa-question-circle"></i><span class="nav-item">Aide</span></a></li>
+<li><a href="#" class="logout"><i class="fas fa-sign-out-alt"></i><span
+class="nav-item">Déconnexion</span></a></li>
+</ul>
+</nav>
+
+
+
+{% block content %}
+
+{% endblock %}
+
+    <!-- Votre CSS -->
+    <style>
+        body {
+            background-color: #dfe9f5;
+        }
+
+        .nav-admin {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            height: 100vh;
+            left: 0;
+            background: #fff;
+            width: auto;
+            overflow: hidden;
+            box-shadow: 0 20px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            outline: none;
+            border: none;
+            font-family: "poppins", sans-serif;
+        }
+
+        .logo {
+            text-align: center;
+            display: flex;
+            margin: 10px 0 0 10px;
+            border-radius: 50%;
+        }
+
+        .logo img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+        }
+
+        .logo span {
+            font-weight: bold;
+            padding-left: 15;
+            font-size: 18px;
+            text-transform: uppercase;
+        }
+
+        .nav-admin a {
+            position: relative;
+            color: rgb(85, 83, 83);
+            font-size: 14px;
+            display: table;
+            width: 280px;
+            padding: 10px;
+            text-decoration: none;
+        }
+
+        .nav-admin .fas {
+            position: relative;
+            width: 76px;
+            height: 40px;
+            top: 14px;
+            font-size: 20px;
+            text-align: center;
+        }
+
+        .nav-admin .nav-item {
+            position: relative;
+            top: 12px;
+            margin-left: 10px;
+        }
+
+        .nav-admin a:hover {
+            background: #eee;
+        }
+
+        .logout {
+            position: absolute;
+            bottom: 0;
+        }
+
+        .container-status {
+            display: flex;
+        }
+
+        #total-order {
+            background-color: #4cb4c7;
+        }
+
+        .nav-admin ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .nav-admin li {
+            margin-bottom: 10px;
+        }
+
+        .nav-admin a {
+            display: block;
+            padding: 10px;
+            text-decoration: none;
+            color: #555;
+        }
+
+        .nav-admin a:hover {
+            background-color: #f2f2f2;
+        }
+
+        .nav-admin .fas {
+            margin-right: 10px;
+        }
+
+        .container-fluid {
+            margin-left: 280px;
+            /* Ajustement pour la barre de navigation latérale */
+        }
+
+        .card {
+            background-color: #4cb4c7;
+            /* Couleur de fond pour les cartes */
+            margin-bottom: 20px;
+            /* Marge en bas pour l'espacement entre les cartes */
+        }
+
+        .container-fluid .row {
+            margin-left: 0px;
+            /* Ajustement pour la barre de navigation latérale */
+        }
+
+        .table-responsive {
+            margin-top: 2px;
+            /* Ajustez la marge supérieure selon vos besoins */
+        }
+
+        #total-order {
+            background-color: #4cb4c7;
+        }
+    </style>

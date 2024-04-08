@@ -20,23 +20,23 @@ for ods_entry in ODS.objects.all():
     for lieu_competition_instance in lieu_competition_instances:
         try:
             # Vérifier si une instance de Dates_Competions avec les mêmes valeurs existe déjà
-            dates_competition = Dates_Competions.objects.get(
+            dates_competition, created = Dates_Competions.objects.get_or_create(
                 pk_list_competition=list_competition_instance,
                 pk_lieu=lieu_competition_instance,
                 date_debut=ods_entry.date_debut,
                 date_fin=ods_entry.date_fin
             )
 
-            # Supprimer les espaces de la clé primaire pour pk_typ_competition
-            pk_typ_competition = "_".join([str(lieu_competition_instance.pk_lieu), str(list_competition_instance.pk_list_competition), str(dates_competition.pk_date_competition)])
-            pk_typ_competition = pk_typ_competition.replace(" ", "").replace(",", "").replace(";", "")
+            # Supprimer les espaces, virgules et points-virgules de la clé primaire pour pk_typ_competition
+            pk_typ_competition = f"{lieu_competition_instance.pk_lieu}_{list_competition_instance.pk_list_competition}_{dates_competition.pk_date_competition}".replace(" ", "").replace(",", "").replace(";", "")
+
             # Créer une instance de Competitions avec les valeurs appropriées
             competition, created = Competitions.objects.get_or_create(
-                Nom=ods_entry.discipline,
-                pk_list_competition=list_competition_instance,
+                Nom=list_competition_instance.nom,
+                pk_list_competition=list_competition_instance,  # Utilisation de l'instance de List_competition
                 pk_date_competition=dates_competition,
                 pk_lieu=lieu_competition_instance,
-                pk_typ_competition=pk_typ_competition.replace(" ", "")
+                pk_typ_competition=pk_typ_competition
             )
 
             # Afficher un message pour confirmer l'insertion
@@ -45,5 +45,7 @@ for ods_entry in ODS.objects.all():
 
         except Dates_Competions.DoesNotExist:
             print("L'instance de Dates_Competions correspondante n'existe pas.")
+        except Dates_Competions.MultipleObjectsReturned:
+            print("Plusieurs instances de Dates_Competions correspondent aux mêmes valeurs.")
 
 print("Toutes les données ont été insérées avec succès.")
