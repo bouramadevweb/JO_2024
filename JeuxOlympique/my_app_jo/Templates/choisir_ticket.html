@@ -3,87 +3,87 @@
 
 {% block content %}
 <div class="container-fluid px-4">
-    <h1>Choisir un ticket</h1>
-    <form id="choix-competition-form" method="GET">
-            {% csrf_token %}
+<h1>Choisir un ticket</h1>
+<form id="choix-competition-form" method="GET">
+{% csrf_token %}
 
-        <div class="form-group">
-            <label for="competition">Sélectionner une compétition :</label>
-            <select class="form-control" id="competition" name="competition">
-                <option value="">-- Sélectionner une compétition --</option>
-                {% for competition in competitions %}
-                    <option value="{{ competition.pk_typ_competition }}">{{ competition.Nom }} - Lieu: {{ competition.pk_lieu.Nom }} ({{ competition.pk_lieu.Ville }})</option>
-                {% endfor %}
-            </select>
-        </div>
-    </form>
+<div class="form-group">
+<label for="competition">Sélectionner une compétition :</label>
+<select class="form-control" id="competition" name="competition">
+<option value="">-- Sélectionner une compétition --</option>
+{% for competition in competitions %}
+<option value="{{ competition.pk_typ_competition }}">{{ competition.Nom }} - Lieu: {{ competition.pk_lieu.Nom }} ({{ competition.pk_lieu.Ville }})</option>
+{% endfor %}
+</select>
+</div>
+</form>
 
-    {% if offres %}
-    <h2>Offres disponibles :</h2>
-    <form id="ajout-au-panier-form" method="POST" action="{% url 'ajouter_au_panier' %}">
-    {% csrf_token %}
-    <div class="row">
-        <div class="col-md-3">
-            <div class="card mb-3">
-                <div class="card-body">
-                    {% for offre in offres %}
-                    <h5 class="card-title">{{ offre.type }} {{ offre.competition.Nom }} - {{ offre.nombre_personnes }} personnes</h5>
-                    <p class="card-text">Prix unitaire : {{ offre.prix }}</p>
-                    <input type="checkbox" name="offre_id" value="{{ offre.pk_Offre }}">
-                    <label for="quantite{{ offre.pk_Offre }}">Quantité :</label>
-                    <input type="number" class="form-control quantite-input" id="quantite{{ offre.pk_Offre }}" name="quantite_{{ offre.pk_Offre }}" min="0" value="0">
-                    <input type="hidden" name="montant_total_{{ offre.pk_Offre }}" value="{{ offre.prix }}">
-                    <label for="date_debut{{ offre.pk_Offre }}">Date de début :</label>
-                    <input type="date" class="form-control date-debut-input" id="date_debut{{ offre.pk_Offre }}" name="date_debut_{{ offre.pk_Offre }}" value="{{ offre.competition.pk_date_competition.date_debut|date:'Y-m-d' }}" min="{{ offre.competition.pk_date_competition.date_debut|date:'Y-m-d' }}" max="{{ offre.competition.pk_date_competition.date_fin|date:'Y-m-d' }}">
-                    {% endfor %}
-                    
-                    <button type="submit" class=" ajouter-panier-btn btn btn-primary">Ajouter au panier</button>
-                </div>
-            </div>
-        </div>
-    </div>
+{% if offres %}
+<h2>Offres disponibles :</h2>
+<form id="ajout-au-panier-form" method="POST" action="{% url 'ajouter_au_panier' %}">
+{% csrf_token %}
+<div class="row">
+<div class="col-md-3">
+<div class="card mb-3">
+<div class="card-body">
+{% for offre in offres %}
+<h5 class="card-title">{{ offre.type }} {{ offre.competition.Nom }} - {{ offre.nombre_personnes }} personnes</h5>
+<p class="card-text">Prix unitaire : {{ offre.prix }}</p>
+<input type="checkbox" name="offre_id" value="{{ offre.pk_Offre }}">
+<label for="quantite{{ offre.pk_Offre }}">Quantité :</label>
+<input type="number" class="form-control quantite-input" id="quantite{{ offre.pk_Offre }}" name="quantite_{{ offre.pk_Offre }}" min="0" value="0">
+<input type="hidden" name="montant_total_{{ offre.pk_Offre }}" value="{{ offre.prix }}">
+<label for="date_debut{{ offre.pk_Offre }}">Date de début :</label>
+<input type="date" class="form-control date-debut-input" id="date_debut{{ offre.pk_Offre }}" name="date_debut_{{ offre.pk_Offre }}" value="{{ offre.competition.pk_date_competition.date_debut|date:'Y-m-d' }}" min="{{ offre.competition.pk_date_competition.date_debut|date:'Y-m-d' }}" max="{{ offre.competition.pk_date_competition.date_fin|date:'Y-m-d' }}">
+{% endfor %}
+
+<button type="submit" class=" ajouter-panier-btn btn btn-primary">Ajouter au panier</button>
+</div>
+</div>
+</div>
+</div>
 </form>
 
 
-    {% else %}
-    <p>Aucune offre disponible pour la compétition sélectionnée.</p>
-    {% endif %}
+{% else %}
+<p>Aucune offre disponible pour la compétition sélectionnée.</p>
+{% endif %}
 </div>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Capturer le changement de sélection de la compétition
-    document.getElementById('competition').addEventListener('change', function() {
-        document.getElementById('choix-competition-form').submit();
-    });
+// Capturer le changement de sélection de la compétition
+document.getElementById('competition').addEventListener('change', function() {
+document.getElementById('choix-competition-form').submit();
+});
 
-    // Mettre à jour le montant total lorsqu'une quantité change
-    var quantiteInputs = document.querySelectorAll('.quantite-input');
-    quantiteInputs.forEach(function(input) {
-        input.addEventListener('change', function() {
-            var quantite = parseInt(this.value);
-            var prix = parseFloat(this.parentNode.querySelector('[name^=montant_total]').value);
-            var montantTotalInput = this.parentNode.querySelector('[name^=montant_total]');
-            var montantTotal = quantite * prix;
-            montantTotalInput.value = montantTotal.toFixed(2); // Fixer le nombre de décimales à 2
-        });
-    });
+// Mettre à jour le montant total lorsqu'une quantité change
+var quantiteInputs = document.querySelectorAll('.quantite-input');
+quantiteInputs.forEach(function(input) {
+input.addEventListener('change', function() {
+var quantite = parseInt(this.value);
+var prix = parseFloat(this.parentNode.querySelector('[name^=montant_total]').value);
+var montantTotalInput = this.parentNode.querySelector('[name^=montant_total]');
+var montantTotal = quantite * prix;
+montantTotalInput.value = montantTotal.toFixed(2); // Fixer le nombre de décimales à 2
+});
+});
 
-    // événement au clic sur le bouton "Ajouter au panier"
-    document.getElementById('ajouter-panier-btn').addEventListener('click', function() {
-        var form = document.getElementById('ajout-au-panier-form');
-        var formData = new FormData(form);
+// événement au clic sur le bouton "Ajouter au panier"
+document.getElementById('ajouter-panier-btn').addEventListener('click', function() {
+var form = document.getElementById('ajout-au-panier-form');
+var formData = new FormData(form);
 
-        var xhr = new XMLHttpRequest();
-        xhr.open(form.method, form.action, true);
-        xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-                // La requête AJAX a réussi, vous pouvez mettre à jour la page si nécessaire
-                // Exemple : window.location.reload();
-            }
-        };
-        xhr.send(formData);
-    });
+var xhr = new XMLHttpRequest();
+xhr.open(form.method, form.action, true);
+xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');
+xhr.onreadystatechange = function() {
+if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+// La requête AJAX a réussi, vous pouvez mettre à jour la page si nécessaire
+// Exemple : window.location.reload();
+}
+};
+xhr.send(formData);
+});
 });
 
 

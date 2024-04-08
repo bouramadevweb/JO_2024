@@ -1,4 +1,4 @@
-{% include 'status.html' %}
+{% include   'status.html' %}
 {% block title %}Liste des lieux de compétition{% endblock %}
 
 {% block content %}
@@ -46,8 +46,9 @@ Ajouter <span><i class="fas fa-plus-circle"></i></span>
 <table class="table">
 <thead class="table-dark">
 <tr>
-<th scope="col">ID</th>
+<th scope="col">disicipline</th>
 <th scope="col">Nom</th>
+<th scope="col">Ville</th>
 <th scope="col">Modifier</th>
 <th scope="col">Supprimer</th>
 </tr>
@@ -55,8 +56,9 @@ Ajouter <span><i class="fas fa-plus-circle"></i></span>
 <tbody>
 {% for competition in page_obj %}
 <tr>
-<td>{{ competition.pk_lieu }}</td>
+<td>{{ competition.Discipline.nom }}</td>
 <td>{{ competition.Nom }}</td>
+<td>{{ competition.Ville }}</td>
 <td>
 <!-- Button trigger modal pour modifier -->
 <button type="button" class="btn btn-warning" data-bs-toggle="modal"

@@ -20,8 +20,6 @@ from django.views.decorators.csrf import csrf_exempt
 
 from io import BytesIO
 
- 
-
 
 def home(request):
     competitions = Competitions.objects.all()
@@ -95,15 +93,15 @@ def ajouter_au_panier(request):
                         print("Commande créée :", commande)  # Ajouter cette ligne
                         
                         # Créer les billets associés uniquement aux offres sélectionnées
-                        for _ in range(quantite):
-                            billet = Billet.objects.create(
-                                ClefUtilisateur=request.user.ClefGeneree,
-                                pk_typ_competition=offre.competition,
-                                date_valide=date_debut
-                            )
-                            # Assigner le billet à la commande
-                            commande.pk_Billet = billet
-                            commande.save()
+                        # for _ in range(quantite):
+                        #     billet = Billet.objects.create(
+                        #         ClefUtilisateur=request.user.ClefGeneree,
+                        #         pk_typ_competition=offre.competition,
+                        #         date_valide=date_debut
+                        #     )
+                        #     # Assigner le billet à la commande
+                        #     commande.pk_Billet = billet
+                        commande.save()
                         print(f"Commande créée avec succès pour l'offre {offre_id}")
 
                 messages.success(request, "Les offres ont été ajoutées au panier.")
@@ -144,7 +142,7 @@ def payer_commande(request, commande_id):
             return redirect('voir_panier')
     else:
         # Passer le montant total comme contexte vers le modèle HTML
-        montant_total = commande.MontantTotal if commande else 0  # Assurez-vous d'adapter cela à votre modèle de données
+        montant_total = commande.MontantTotal if commande else 0  
         return render(request, 'payer_commande.html', {'commande_id': commande_id , 'montant_total': montant_total})
 @login_required
 def modifier_commande(request, commande_id):
@@ -310,17 +308,4 @@ def connexion(request):
 def deconnexion(request):
     logout(request)
     return redirect('home')
-#admin
-def ventes_par_offre(request):
-    # Récupérer les offres avec le nombre de ventes pour chaque offre
-    ventes_par_offre = Offre.objects.annotate(
-        nombre_ventes=Count('commande', filter=Q(commande__est_validee=True)),
-        quantite_vendue=Sum('commande__quantite', filter=Q(commande__est_validee=True))
-    ).filter(
-        commande__est_validee=True  # Commande validée
-    ).annotate(
-        montant_total_ventes=Sum('commande__MontantTotal')  # Calcul du montant total des ventes pour chaque offre
-    )
-     
-    
-    return render(request, 'admin/ventes_par_offre.html', {'ventes_par_offre': ventes_par_offre})
+
