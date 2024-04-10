@@ -33,14 +33,7 @@ class Dates_commandes(models.Model):
 class List_competition(models.Model):
     pk_list_competition = models.CharField(max_length=150, primary_key=True ,unique=True)
     nom = models.CharField(max_length=150)
-    def save(self, *args, **kwargs):
-        if not self.pk_list_competition:
-            # Supprimer les espaces de la clé primaire
-            self.pk_list_competition = self.nom.replace(' ','')
-        super().save(*args, **kwargs)
-
-    
-
+   
     def __str__(self):
         return f'{self.pk_list_competition}, {self.nom}'
 
@@ -71,7 +64,7 @@ class Lieu_des_competions(models.Model):
         return f'{self.Nom}, {self.Ville}, {self.Capacite} ,{self.Discipline.nom}'    
 class Dates_Competions(models.Model):
     # Définir le champ pour la clé primaire concaténée
-    pk_date_competition = models.CharField(max_length=255, primary_key=True)
+    pk_date_competition = models.CharField(max_length=600, primary_key=True)
     date_debut = models.DateTimeField()
     date_fin = models.DateTimeField()
     pk_list_competition = models.ForeignKey(List_competition, on_delete=models.CASCADE)
@@ -80,7 +73,10 @@ class Dates_Competions(models.Model):
 
     def save(self, *args, **kwargs):
         # Concaténer les champs pour former la clé primaire
-        self.pk_date_competition = "_".join([str(self.pk_list_competition.pk_list_competition),str(self.pk_lieu),str(self.date_debut), str(self.date_fin)])
+        self.pk_date_competition = "_".join([str(self.pk_list_competition.pk_list_competition),
+                                             str(self.pk_lieu.pk_lieu),str(self.date_debut),
+                                             str(self.date_fin),
+                                             str(self.Remises_de_medailles)])
         super().save(*args, **kwargs)
     
     def __str__(self):
@@ -94,15 +90,21 @@ class Competitions(models.Model):
     pk_date_competition = models.ForeignKey(Dates_Competions, on_delete=models.CASCADE)
     pk_lieu = models.ForeignKey(Lieu_des_competions, on_delete=models.CASCADE)
 
+    # def save(self, *args, **kwargs):
+    #     # Vérifier si les clés étrangères ne sont pas nulles
+    #     if self.pk_lieu_id is not None and self.pk_list_competition_id is not None and self.pk_date_competition_id is not None:
+    #         # Concaténer les champs pour former la clé primaire
+    #         self.pk_typ_competition = "_".join([str(self.pk_lieu_id), str(self.pk_list_competition_id), str(self.pk_date_competition_id)])
+    #     super().save(*args, **kwargs)
     def save(self, *args, **kwargs):
         # Vérifier si les clés étrangères ne sont pas nulles
-        if self.pk_lieu_id is not None and self.pk_list_competition_id is not None and self.pk_date_competition_id is not None:
-            # Concaténer les champs pour former la clé primaire
-            self.pk_typ_competition = "_".join([str(self.pk_lieu_id), str(self.pk_list_competition_id), str(self.pk_date_competition_id)])
+        if self.pk_lieu_id is not None and self.pk_list_competition_id is not None:
+            # Former la clé primaire en utilisant les instances des objets associés
+            self.pk_typ_competition = f"{self.pk_list_competition.pk_list_competition}_{self.pk_date_competition.pk_date_competition}_{self.pk_lieu.pk_lieu}"
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f'{self.Nom}'
+        return self.Nom
     
 class Types(models.Model):
     type =models.CharField(primary_key=True)
@@ -110,12 +112,7 @@ class Types(models.Model):
         return f'{self.type}'
 
 class Offre(models.Model):
-    # TYPE_CHOICES = [
-    #     ('One', 'One'),
-    #     ('Duo', 'Duo'),
-    #     ('Famille', 'Famille'),
-       
-    # ]
+   
 
     pk_Offre = models.CharField(max_length=2000, primary_key=True)
     type = models.ForeignKey(Types, on_delete=models.CASCADE)
@@ -125,15 +122,12 @@ class Offre(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.pk_Offre:
-            self.pk_Offre = "_".join([str(self.type.strip()), str(self.nombre_personnes), str(self.competition.pk)])
+            self.pk_Offre = "_".join([str(self.type), str(self.nombre_personnes), str(self.competition.pk_list_competition)]).replace(',', '').replace(';', '').replace(' ', '')
         super().save(*args, **kwargs)
 
     def __str__(self):
         return f'{self.pk_Offre}, {self.type}, {self.prix}, {self.competition.Nom}'
-    # @classmethod
-    # def add_type_choice(cls, new_type):
-    #     cls.TYPE_CHOICES.append((new_type, new_type))
-
+   
     
     
 

@@ -1,32 +1,25 @@
 from my_app_jo.models import ODS, Lieu_des_competions, List_competition
-from django.db import IntegrityError, connection
+from django.db import IntegrityError
 
 try:
     # Insertion des données pour les lieux de compétitions
-    for competition_entry in ODS.objects.all():
-        print(f"Insertion des données pour {competition_entry.discipline}")
-
+    for ods_instance in ODS.objects.all():
+        print(f"Insertion des données pour {ods_instance.discipline}")
+        discipline_instance = List_competition.objects.get(nom=ods_instance.discipline)
+        pk_lieus = f"{ods_instance.lieu},{ods_instance.ville},{ods_instance.capacite},{discipline_instance.nom}"
+        pk_lieu = pk_lieus.replace(',', '').replace(';', '').replace(' ', '')
         # Assurez-vous que la discipline existe
-        if competition_entry.discipline:
-            # Récupérer l'instance de List_competition associée à la discipline s'il existe
-            discipline_instance, created = List_competition.objects.get_or_create(
-                pk_list_competition=competition_entry.discipline.strip().replace(',', '').replace(';', '').replace(' ', ''),
-                defaults={'nom': competition_entry.discipline.strip()}  # Défaut si l'instance est créée
-            )
+        
+        # Créer un lieu de compétition en associant la discipline
+        lieu_competition = Lieu_des_competions(
+            pk_lieu=pk_lieu,  # Supprimer les espaces
+            Nom=ods_instance.lieu.strip(),  # Supprimer les espaces
+            Discipline=discipline_instance,
+            Capacite=ods_instance.capacite,
+            Ville=ods_instance.ville
+        )
 
-            # Supprimer les espaces dans le nom du lieu pour créer pk_lieu
-            pk_lieu = competition_entry.lieu.replace(' ', '')
-
-            # Créer un lieu de compétition en associant la discipline
-            lieu_competition = Lieu_des_competions(
-                pk_lieu=pk_lieu.strip(),  # Supprimer les espaces
-                Nom=competition_entry.lieu.strip(),  # Supprimer les espaces
-                Discipline=discipline_instance,
-                Capacite=competition_entry.capacite,
-                Ville=competition_entry.ville
-            )
-
-            lieu_competition.save()
+        lieu_competition.save()
 
     print("Fin d'insertion des données pour les lieux de compétitions")
 

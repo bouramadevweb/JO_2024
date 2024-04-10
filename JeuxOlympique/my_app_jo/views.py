@@ -30,17 +30,24 @@ def choisir_ticket(request):
         # Récupérer l'ID de la compétition sélectionnée par l'utilisateur
         competition_id = request.GET.get('competition')
 
-        # Sélectionner les offres pour la compétition sélectionnée
-        offres = Offre.objects.filter(competition_id=competition_id)
+        # Récupérer le type sélectionné par l'utilisateur
+        selected_type = request.GET.get('type')
+
+        # Sélectionner les offres pour la compétition et le type sélectionnés
+        if selected_type:
+            page_objs = Offre.objects.filter(competition_id=competition_id, type__type=selected_type)
+        else:
+            page_objs = Offre.objects.filter(competition_id=competition_id)
 
         # Sélectionner toutes les compétitions disponibles
         competitions = Competitions.objects.select_related('pk_lieu').all()
         
-        return render(request, 'choisir_ticket.html', {'offres': offres, 'competitions': competitions})
+        return render(request, 'choisir_ticket.html', {'page_objs': page_objs, 'competitions': competitions})
     else:
         # Si aucune compétition n'a été sélectionnée, afficher toutes les compétitions disponibles
         competitions = Competitions.objects.select_related('pk_lieu').all()
         return render(request, 'choisir_ticket.html', {'competitions': competitions})
+
 @login_required
 @csrf_exempt
 def ajouter_au_panier(request):
