@@ -4,7 +4,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 import uuid
 import os
-
+import random
 import secrets
 import string
 from django.conf import settings
@@ -13,6 +13,7 @@ class User(AbstractUser):
     Nom = models.CharField(max_length=150)
     Prenom = models.CharField(max_length=150)
     ClefGeneree = models.CharField(max_length=50, default=secrets.token_hex(16))
+    phone_number = models.CharField(max_length=12)
 
     class Meta:
         db_table = 'auth_user'
@@ -24,7 +25,22 @@ class User(AbstractUser):
 
     def __str__(self):
         return f'{self.Nom}, {self.Prenom}'
+class Code(models.Model):
+    number = models.CharField(max_length=5, blank=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return str(self.number)
+
+    def save(self, *args, **kwargs):
+        if not self.number:  # Générer le code uniquement s'il n'est pas déjà défini
+            number_list = [x for x in range(10)]
+            code_items = []
+            for _ in range(5):
+                num = random.choice(number_list)
+                code_items.append(str(num))
+            self.number = "".join(code_items)
+        super().save(*args, **kwargs)
 
 class Dates_commandes(models.Model):
     pk_date = models.DateTimeField(primary_key=True)

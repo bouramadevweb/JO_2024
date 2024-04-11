@@ -17,6 +17,12 @@ from django.db.models import Count, Sum,Q
 import secrets
 import string
 from django.views.decorators.csrf import csrf_exempt
+from django.core.mail import send_mail
+from django.contrib.auth.models import User
+from django.utils.crypto import get_random_string
+from .models import User ,Code
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 from io import BytesIO
 
@@ -277,7 +283,7 @@ def mes_billets(request):
 
     return render(request, 'mes_billets.html', {'billets_with_qr': billets_with_qr})
 
-# 
+
 
 
 def inscription(request):
@@ -311,6 +317,8 @@ def connexion(request):
     else:
         form = AuthenticationForm()
     return render(request, 'connexion.html', {'form': form})
+
+
 
 
 

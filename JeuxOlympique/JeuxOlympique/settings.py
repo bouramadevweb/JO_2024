@@ -53,6 +53,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
 ]
 
 ROOT_URLCONF = 'JeuxOlympique.urls'
@@ -140,14 +141,20 @@ STATICFILES_DIRS = [
 ]
 MEDIA_URL ='/'
 MEDIA_ROOT = os.path.join(BASE_DIR,'media')
-# Default primary key field type
+# Default primary k ey field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+LOGIN_REDIRECT_URL ='/'
 
+# ENVIRONMENT == 'production' or POSTGRESLOCALLY == TRUE 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
+ACCOUNT_AUTHENTICATION_METHOD ='email'
+ACCOUNT_EMAIL_REQUIRED =True
+EMAIL_HOST = 'smtp.gmail.com'   # env('EMAIL_ADDRESS')
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'votre_email@gmail.com'  # Remplacez par votre adresse e-mail Gmail
-EMAIL_HOST_PASSWORD = 'votre_mot_de_passe'  # Remplacez par votre mot de passe Gmail
+EMAIL_HOST_USER = 'bouramadevweb@gmail.com'  
+EMAIL_HOST_PASSWORD = '240283KungfuMaitre' 
+ACCOUNT_AUTHENTICATION_BLACKLIST = ['admin','accounts','connexion']
+

@@ -1,14 +1,16 @@
 # Dans admin.py
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import User, Offre, Dates_commandes, List_competition, Lieu_des_competions, Dates_Competions, Competitions, Billet, Commande, ODS
+from .models import User, Offre,Types, Dates_commandes, List_competition, Lieu_des_competions, Dates_Competions, Competitions, Billet, Commande, ODS, Code
 from .forms import CustomUserCreationForm
 
 # Enregistrement des modèles dans l'interface d'administration
+admin.site.register(Code)
+admin.site.register(Types)
 class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
     model = User
-    list_display = ['username', 'email']
+    list_display = ['username', 'email','phone_number']
 @admin.register(Commande)
 class CommandeAdmin(admin.ModelAdmin):
     list_display = ('pk_Commande', 'quantite', 'MontantTotal', 'pk_date', 'pk_Offre', 'pk_Utilisateur', 'pk_Billet', 'est_validee')    

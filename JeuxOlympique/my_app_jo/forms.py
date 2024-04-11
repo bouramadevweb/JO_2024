@@ -2,6 +2,8 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from .models import User, Commande, Competitions, Offre
 
+class VerificationCodeForm(forms.Form):
+    verification_code = forms.CharField(label='Code de vérification', max_length=6)
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = User
@@ -26,7 +28,7 @@ class InscriptionForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ['username', 'last_name', 'first_name', 'email', 'password1', 'password2', 'accept_conditions']
+        fields = ['username', 'last_name', 'first_name', 'email','phone_number' , 'password1', 'password2', 'accept_conditions']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -34,5 +36,7 @@ class InscriptionForm(UserCreationForm):
         self.fields['last_name'].widget.attrs.update({'class': 'form-control'})
         self.fields['first_name'].widget.attrs.update({'class': 'form-control'})
         self.fields['email'].widget.attrs.update({'class': 'form-control'})
+        self.fields['phone_number'].widget.attrs.update({'class': 'form-control'})
+
         self.fields['password1'].widget.attrs.update({'class': 'form-control'})
         self.fields['password2'].widget.attrs.update({'class': 'form-control'})
