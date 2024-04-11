@@ -74,18 +74,20 @@ tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
 aria-label="Close"></button>
 </div>
 <div class="modal-body">
-<form action="{% url 'list_competition' %}" method="post">
-{% csrf_token %}
-<input type="hidden" name="id"
-value="{{ competition.pk_list_competition }}">
-<div class="form-group">
-<label for="nom">Nom</label>
-<input type="text" class="form-control" id="nom" name="nom"
-value="{{ competition.nom }}">
-</div>
-<button class="btn btn-primary" type="submit"
-name="update">Modifier</button>
+<form action="{% url 'list_competition' %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="hidden" name="id" value="{{ competition.pk_list_competition }}">
+    <div class="form-group">
+        <label for="nom">Nom</label>
+        <input type="text" class="form-control" id="nom" name="nom" value="{{ competition.nom }}">
+    </div>
+    <div class="form-group">
+        <label for="image">Image</label>
+        <input type="file" class="form-control" id="image" name="image">
+    </div>
+    <button class="btn btn-primary" type="submit" name="update">Modifier</button>
 </form>
+
 </div>
 </div>
 </div>

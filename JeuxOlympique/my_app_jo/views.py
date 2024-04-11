@@ -312,6 +312,8 @@ def connexion(request):
         form = AuthenticationForm()
     return render(request, 'connexion.html', {'form': form})
 
+
+
 def deconnexion(request):
     logout(request)
     return redirect('home')

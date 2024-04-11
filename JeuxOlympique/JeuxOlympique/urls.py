@@ -24,6 +24,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('my_app_jo.urls')),
     path('administration/', include('administration.urls')),
+   
  ]
 # + static(settings.MEDIA_URL,Document_root=settings.MEDIA_ROOT)
 

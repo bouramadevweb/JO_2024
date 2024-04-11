@@ -3,6 +3,7 @@ from tkinter import CASCADE
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 import uuid
+import os
 
 import secrets
 import string
@@ -19,6 +20,7 @@ class User(AbstractUser):
         default_permissions = ()
         permissions = (('create_users', 'Can create users'),)
         abstract = False
+    
 
     def __str__(self):
         return f'{self.Nom}, {self.Prenom}'
@@ -29,10 +31,24 @@ class Dates_commandes(models.Model):
 
     def __str__(self):
         return f'{self.pk_date}'
-
+    
+# def get_competition_image_path(instance, filename):
+#     """
+#     Fonction pour définir le chemin de téléchargement des images de compétition.
+#     """
+#     return os.path.join('competition_images', filename)
+def get_competition_image_path(instance, filename):
+    # Définir le chemin de téléversement en fonction de l'ID de l'instance
+    folder_name = str(instance.pk_list_competition)
+    return f'competition_images/{folder_name}/{filename}'
 class List_competition(models.Model):
     pk_list_competition = models.CharField(max_length=150, primary_key=True ,unique=True)
     nom = models.CharField(max_length=150)
+    image = models.ImageField(upload_to=get_competition_image_path, null=True, blank=True)
+    
+    def get_competition_image_path(instance, filename):
+           return f'competition_images/{instance.pk_list_competition}/{filename}'
+
    
     def __str__(self):
         return f'{self.pk_list_competition}, {self.nom}'

@@ -28,34 +28,34 @@ def ventes_par_offre(request):
     return render(request, 'commandes/ventes_par_offre.html', {'ventes_par_offre': ventes_par_offre})
 
     
+
 def list_competition(request):
-    if request.method =='GET':
-        list_competition =List_competition.objects.all()
-        paginator = Paginator(list_competition,10)
-        page_number  = request.GET.get('page')
+    if request.method == 'GET':
+        list_competition = List_competition.objects.all()
+        paginator = Paginator(list_competition, 10)
+        page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
         form = ListCompetitionForm()
         return render(request, 'listCompetitions/list_competition.html', {'page_obj': page_obj, 'form': form})
-        
 
     elif request.method == 'POST':
-        # Gérer les opérations CRUD
         if 'add' in request.POST:
-            form = ListCompetitionForm(request.POST)
+            form = ListCompetitionForm(request.POST, request.FILES)  # Ajouter request.FILES pour traiter les fichiers
             if form.is_valid():
                 form.save()
         elif 'update' in request.POST:
             competition_id = request.POST.get('id')
             competition = get_object_or_404(List_competition, pk=competition_id)
-            form = ListCompetitionForm(request.POST, instance=competition)
+            form = ListCompetitionForm(request.POST, request.FILES, instance=competition)  # Ajouter request.FILES
             if form.is_valid():
                 form.save()
-                return redirect('listCompetitions/list_competition')
+                return redirect('list_competition')
         elif 'delete' in request.POST:
             competition_id = request.POST.get('id')
             competition = get_object_or_404(List_competition, pk=competition_id)
             competition.delete()
-        return redirect('listCompetitions/list_competition')  # Rediriger pour éviter les re-postages
+        return redirect('list_competition')
+  # Rediriger pour éviter les re-postages
     
 
 # def lieu_competition(request):
@@ -233,6 +233,50 @@ def types(request):
 #             offre.delete()
 #         return redirect('offres')  # Redirection après ajout ou suppression
 
+# def offres(request):
+#     if request.method == 'GET':
+#         offres = Offre.objects.all()
+#         paginator = Paginator(offres, 10)
+#         page_number = request.GET.get('page')
+#         page_obj = paginator.get_page(page_number)
+#         page_objs = Types.objects.all()
+#         competitions = Competitions.objects.all()
+#         form = OffreForm()
+#         return render(request, 'offres/offres.html', {'page_objs': page_objs, 'types': types, 'competitions': competitions, 'form': form})  
+#     elif request.method == 'POST':
+#         if 'add' in request.POST:
+#             form = OffreForm(request.POST)
+#             if form.is_valid():
+#                 offre = form.save(commit=False)
+#                 competition_id = request.POST.get('competition')
+#                 if competition_id:
+#                     competition = get_object_or_404(Competitions, pk=competition_id)
+#                     offre.competition = competition
+#                     offre.save()
+#                 else:
+#                     # Ajouter l'offre à toutes les compétitions disponibles
+#                     competitions = Competitions.objects.all()
+#                     for competition in competitions:
+#                         Offre.objects.create(
+#                             type=offre.type,
+#                             nombre_personnes=offre.nombre_personnes,
+#                             prix=offre.prix,
+#                             competition=competition
+#                         )
+#         elif 'update' in request.POST:
+#             offre_id = request.POST.get('id')
+#             offre = get_object_or_404(Offre, pk=offre_id)
+#             form = OffreForm(request.POST, instance=offre)
+#             if form.is_valid():
+#                 form.save()
+#                 return redirect('offres')  # Redirection après modification
+#         elif 'delete' in request.POST:
+#             offre_id = request.POST.get('id')
+#             offre = get_object_or_404(Offre, pk=offre_id)
+#             offre.delete()
+#         return redirect('offres')  # Redirection après ajout ou suppression
+
+
 def offres(request):
     if request.method == 'GET':
         offres = Offre.objects.all()
@@ -242,7 +286,7 @@ def offres(request):
         page_objs = Types.objects.all()
         competitions = Competitions.objects.all()
         form = OffreForm()
-        return render(request, 'offres/offres.html', {'page_objs': page_objs, 'types': types, 'competitions': competitions, 'form': form})  
+        return render(request, 'offres/offres.html', {'page_obj': page_obj, 'page_objs': page_objs, 'competitions': competitions, 'form': form})  
     elif request.method == 'POST':
         if 'add' in request.POST:
             form = OffreForm(request.POST)
@@ -274,9 +318,7 @@ def offres(request):
             offre_id = request.POST.get('id')
             offre = get_object_or_404(Offre, pk=offre_id)
             offre.delete()
-        return redirect('offres')  # Redirection après ajout ou suppression
-
-
+        return redirect('offres')
 
 def commandes(request):
     if request.method=='GET':

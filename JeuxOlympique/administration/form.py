@@ -5,7 +5,8 @@ from my_app_jo.models import List_competition,Lieu_des_competions,Dates_Competio
 class ListCompetitionForm(forms.ModelForm):
     class Meta:
         model = List_competition
-        fields = ['nom']
+        fields = ['nom', 'image']
+
 
 class LieuDesCompetionsForm(forms.ModelForm):
     class Meta:
