@@ -26,7 +26,7 @@ from django.dispatch import receiver
 from .forms import VerificationCodeForm
 from io import BytesIO
 from .forms import BootstrapAuthenticationForm
-
+from .utils import envoie_sms
 
 def home(request):
     competitions = Competitions.objects.all()
@@ -351,12 +351,12 @@ def connexion(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                request.session['user_pk'] = user.pk  # Stocker la clé primaire de l'utilisateur dans la session
-                return redirect('verificode')  # Rediriger vers la vue de vérification du code
+                request.session['user_pk'] = user.pk 
+                return redirect('verificode')  
             else:
                 messages.error(request, "L'adresse e-mail ou le mot de passe est incorrect.")
     else:
-        # form = AuthenticationForm()
+      
          
         form = BootstrapAuthenticationForm()
     return render(request, 'connexion.html', {'form': form})
@@ -367,7 +367,13 @@ def verificode(request):
     if user_pk:
         user = User.objects.get(pk=user_pk)
         code = user.code
-        if request.method == 'POST':
+        code_user = f'{user.username} {user.phone_number}'
+        print(code_user)
+        if not request.POST:
+            print(code_user)
+            envoie_sms(code)
+
+        elif request.method == 'POST':
             if form.is_valid():
                 num = form.cleaned_data.get('verification_code')
                 if str(code) == num:

@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'my_app_jo',
     'administration',
     'bootstrap5',
+    'django_twilio'
 ]
 
 MIDDLEWARE = [
@@ -158,3 +159,12 @@ EMAIL_HOST_USER = 'bouramadevweb@gmail.com'
 EMAIL_HOST_PASSWORD = '240283KungfuMaitre' 
 ACCOUNT_AUTHENTICATION_BLACKLIST = ['admin','accounts','connexion']
 
+import os
+from dotenv import load_dotenv
+
+# Chargement des variables d'environnement depuis le fichier .env
+load_dotenv()
+
+# Utilisation des variables d'environnement
+account_sid = os.getenv('TWILIO_ACCOUNT_SID')
+auth_token = os.getenv('TWILIO_AUTH_TOKEN')
