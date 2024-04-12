@@ -1,10 +1,8 @@
-
-<<<<<<< HEAD
-=======
-body {
-   background-color: black;
+section {
+    background: url('/static/images/jeuxonav_2.jpg');    background-repeat: no-repeat;
+    background-size: cover;
 }
->>>>>>> 8e1c4047e301b530f358f4e15790d00c69dbcbc7
+
 #total-order {
   background-color: #4cb4c7;
 }
