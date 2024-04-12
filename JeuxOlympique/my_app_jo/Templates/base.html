@@ -20,69 +20,74 @@
 </head>
 
 <body>
-<section>
+    <section id="ackground-section">
     <div class="container-fluid px-2">
         <nav class="navbar navbar-expand-lg navbar-light bg-light justify-content-end">
             <a class="navbar-brand" href="/">France JO 2024</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav ml-auto">
-                    <!-- Liens pour les utilisateurs non connectés -->
-                    {% if not user.is_authenticated %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'home' %}">Accueil</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'ventes_par_offre' %}">Ventes par offre</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'mes_billets' %}">Billets</a>
-
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'inscription' %}">Inscription</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'connexion' %}">Connexion</a>
-                    </li>
-                    {% endif %}
-
-                    <!-- Lien pour tous les utilisateurs -->
-
-                    <!-- Lien pour les utilisateurs connectés -->
-                    {% if user.is_authenticated %}
-                    {% if request.resolver_match.url_name != 'verificode' %}
-                    <!-- Afficher les liens supplémentaires pour les utilisateurs connectés (sauf dans la vue de vérification du code de vérification) -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'home' %}">Accueil</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'choisir_ticket' %}">Choisir Ticket</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'voir_panier' %}">Panier d'achat</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'deconnexion' %}">Déconnexion</a>
-                    </li>
-                    {% endif %}
-                    {% endif %}
-                </ul>
-            </div>
-        </nav>
-    </div>
-    <div id="bandeau">
-        <div id="contenu">
-            <img src="" class="" alt="">
-            <h1>JO 2024 PARIS</h1>
-            <h2>Venez</h2>
-            <h3>tout les info ici</h3>
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ml-auto">
+                <!-- Liens pour les utilisateurs non connectés -->
+                {% if not user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'home' %}">Accueil</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'ventes_par_offre' %}">Ventes par offre</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'mes_billets' %}">Billets</a>
+                    
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'inscription' %}">Inscription</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'connexion' %}">Connexion</a>
+                </li>
+                {% endif %}
+                
+                <!-- Lien pour tous les utilisateurs -->
+                
+                <!-- Lien pour les utilisateurs connectés -->
+                {% if user.is_authenticated %}
+                {% if request.resolver_match.url_name != 'verificode' %}
+                <!-- Afficher les liens supplémentaires pour les utilisateurs connectés (sauf dans la vue de vérification du code de vérification) -->
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'home' %}">Accueil</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'choisir_ticket' %}">Choisir Ticket</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'voir_panier' %}">Panier d'achat</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'deconnexion' %}">Déconnexion</a>
+                </li>
+                {% endif %}
+                {% endif %}
+            </ul>
+            
         </div>
-    </div>
+        <!--<div id="bandeau">
+            <div id="contenu">
+                <h1>JO 2024 PARIS</h1>
+                <img src="{% static 'images/olympic-games-1608127_640.png' %}" class="" alt="">
+                <div>
+        
+                    <a href="">cest ici</a>
+                </div>
+        
+            </div>
+        </div>-->
+        </div>
+    </nav>
+        
 </section>  
     
 {% block content %}

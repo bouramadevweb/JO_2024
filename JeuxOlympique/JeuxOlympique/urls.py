@@ -25,8 +25,7 @@ urlpatterns = [
     path('',include('my_app_jo.urls')),
     path('administration/', include('administration.urls')),
    
- ] + static(settings.MEDIA_URL,Document_root=settings.MEDIA_ROOT)
+ ] 
+
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-
