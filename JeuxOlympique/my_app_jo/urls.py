@@ -14,6 +14,7 @@ urlpatterns = [
     path('mes_billets/', views.mes_billets, name='mes_billets'),
     path('billet/<int:billet_id>/', views.details_billet, name='details_billet'),
     path('connexion/', views.connexion, name='connexion'),
+    path('verificode',views.verificode,name='verificode'),
     path('inscription/', views.inscription, name='inscription'),
     path('deconnexion/', views.deconnexion, name='deconnexion'),
 ]

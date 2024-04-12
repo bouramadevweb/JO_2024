@@ -23,8 +23,9 @@ from django.utils.crypto import get_random_string
 from .models import User ,Code
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-
+from .forms import VerificationCodeForm
 from io import BytesIO
+from .forms import BootstrapAuthenticationForm
 
 
 def home(request):
@@ -301,6 +302,46 @@ def inscription(request):
         
     return render(request, 'inscription.html', {'form': form})
         
+# def connexion(request):
+#     if request.method == 'POST':
+#         form = AuthenticationForm(request, request.POST)
+#         if form.is_valid():
+#             username = form.cleaned_data.get('username')
+#             password = form.cleaned_data.get('password')
+#             user = authenticate(request, username=username, password=password)
+#             if user is not None:
+#                 login(request, user)
+#                 messages.success(request, "Vous êtes maintenant connecté.")
+#                 return redirect('verificode')
+#             else:
+#                 messages.error(request, "L'adresse e-mail ou le mot de passe est incorrect.")
+#     else:
+#         form = AuthenticationForm()
+#     return render(request, 'connexion.html', {'form': form})
+
+
+# def verificode(request):
+#     form = VerificationCodeForm(request.POST or None)
+#     user_pk = request.session.get('user_pk')  # Récupérer la clé primaire de l'utilisateur depuis la session
+#     if user_pk:
+#         user = User.objects.get(pk=user_pk)
+#         code = user.code
+#         if request.method == 'POST':
+#             if form.is_valid():
+#                 num = form.cleaned_data.get('verification_code')
+#                 if str(code) == num:
+#                     user.save()
+#                     login(request, user)
+#                     messages.success(request, "Connexion réussie.")
+#                     return redirect('home')
+#                 else:
+#                     messages.error(request, "Code incorrect. Redirection vers la page d'inscription.")
+#                     return redirect('inscription')
+#     else:
+#         # Si la clé primaire de l'utilisateur n'est pas présente dans la session, redirigez vers la page de connexion
+#         return redirect('connexion')
+#     return render(request, 'saisie_code_verification.html', {'form': form})
+
 def connexion(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, request.POST)
@@ -310,13 +351,37 @@ def connexion(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                messages.success(request, "Vous êtes maintenant connecté.")
-                return redirect('choisir_ticket')
+                request.session['user_pk'] = user.pk  # Stocker la clé primaire de l'utilisateur dans la session
+                return redirect('verificode')  # Rediriger vers la vue de vérification du code
             else:
                 messages.error(request, "L'adresse e-mail ou le mot de passe est incorrect.")
     else:
-        form = AuthenticationForm()
+        # form = AuthenticationForm()
+         
+        form = BootstrapAuthenticationForm()
     return render(request, 'connexion.html', {'form': form})
+
+def verificode(request):
+    form = VerificationCodeForm(request.POST or None)
+    user_pk = request.session.get('user_pk')  # Récupérer la clé primaire de l'utilisateur depuis la session
+    if user_pk:
+        user = User.objects.get(pk=user_pk)
+        code = user.code
+        if request.method == 'POST':
+            if form.is_valid():
+                num = form.cleaned_data.get('verification_code')
+                if str(code) == num:
+                    user.save()
+                    login(request, user)
+                    messages.success(request, "Connexion réussie.")
+                    return redirect('home')
+                else:
+                    messages.error(request, "Code incorrect. Redirection vers la page d'inscription.")
+                    return redirect('inscription')
+    return render(request, 'saisie_code_verification.html', {'form': form})
+
+
+
 
 
 

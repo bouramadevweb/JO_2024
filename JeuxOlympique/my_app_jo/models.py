@@ -26,22 +26,28 @@ class User(AbstractUser):
     def __str__(self):
         return f'{self.Nom}, {self.Prenom}'
 class Code(models.Model):
-    number = models.CharField(max_length=5, blank=True)
+    number = models.CharField(max_length=5, blank=True, unique=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return str(self.number)
 
     def save(self, *args, **kwargs):
-        if not self.number:  # Générer le code uniquement s'il n'est pas déjà défini
-            number_list = [x for x in range(10)]
-            code_items = []
-            for _ in range(5):
-                num = random.choice(number_list)
-                code_items.append(str(num))
-            self.number = "".join(code_items)
+        if not self.number or 'force_insert' in kwargs:  # Vérifiez si le code n'est pas défini ou si l'insertion forcée est demandée
+            while True:
+                number_list = [x for x in range(10)]
+                code_items = []
+                for _ in range(5):
+                    num = random.choice(number_list)
+                    code_items.append(str(num))
+                new_code = "".join(code_items)
+                
+                # Vérifiez si le code généré est déjà utilisé par un autre objet Code
+                if not Code.objects.filter(number=new_code).exists():
+                    self.number = new_code
+                    break  # Sortir de la boucle si le code généré est unique
+        
         super().save(*args, **kwargs)
-
 class Dates_commandes(models.Model):
     pk_date = models.DateTimeField(primary_key=True)
 

@@ -1,9 +1,21 @@
+from dataclasses import fields
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import User, Commande, Competitions, Offre
+from .models import User, Commande, Competitions, Offre,Code
+from django.contrib.auth.forms import AuthenticationForm
 
+# class VerificationCodeForm(forms.Form):
+#         verification_code = forms.CharField(label='Code de vérification', max_length=6, help_text='Entrez votre code de vérification')
+#         model = Code
+#         fields =('number')
 class VerificationCodeForm(forms.Form):
     verification_code = forms.CharField(label='Code de vérification', max_length=6)
+
+class BootstrapAuthenticationForm(AuthenticationForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['username'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Nom d\'utilisateur'})
+        self.fields['password'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Mot de passe'})
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = User

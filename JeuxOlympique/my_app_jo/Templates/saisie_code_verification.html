@@ -1,19 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <title>Saisie du code de vérification</title>
-</head>
+{% block title %}Panier{% endblock %}
 
-<body>
-    <h2>Saisie du code de vérification</h2>
-    <form method="post">
-        {% csrf_token %}
-        <label for="verification_code">Code de vérification:</label><br>
-        <input type="text" id="verification_code" name="verification_code"><br><br>
-        <button type="submit">Valider</button>
-    </form>
-</body>
-
-</html>
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <h2 class="text-center">Saisissez le code de vérification reçu par sms</h2>
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="verification_code">Code de vérification:</label>
+                    <input type="text" class="form-control" id="verification_code" name="verification_code" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Valider</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
