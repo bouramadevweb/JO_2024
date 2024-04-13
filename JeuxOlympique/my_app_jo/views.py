@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
 from .forms import InscriptionForm
-from django.views.decorators.http import require_POST
+# from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from .models import Offre, Commande, Competitions, User ,List_competition,Billet,Competitions,Offre
 from django.contrib import messages
@@ -13,16 +13,16 @@ from django.db import transaction
 from django.shortcuts import render
 from datetime import datetime ,timezone
 import qrcode, base64
-from django.db.models import Count, Sum,Q
-import secrets
-import string
+# from django.db.models import Count, Sum,Q
+# import secrets
+# import string
 from django.views.decorators.csrf import csrf_exempt
-from django.core.mail import send_mail
+# from django.core.mail import send_mail
 from django.contrib.auth.models import User
-from django.utils.crypto import get_random_string
+# from django.utils.crypto import get_random_string
 from .models import User ,Code
-from django.db.models.signals import post_save
-from django.dispatch import receiver
+# from django.db.models.signals import post_save
+# from django.dispatch import receiver
 from .forms import VerificationCodeForm
 from io import BytesIO
 from .forms import BootstrapAuthenticationForm
@@ -104,17 +104,8 @@ def ajouter_au_panier(request):
                             pk_Offre=offre,
                             pk_Utilisateur=request.user,
                         )
-                        print("Commande créée :", commande)  # Ajouter cette ligne
+                        print("Commande créée :", commande)  
                         
-                        # Créer les billets associés uniquement aux offres sélectionnées
-                        # for _ in range(quantite):
-                        #     billet = Billet.objects.create(
-                        #         ClefUtilisateur=request.user.ClefGeneree,
-                        #         pk_typ_competition=offre.competition,
-                        #         date_valide=date_debut
-                        #     )
-                        #     # Assigner le billet à la commande
-                        #     commande.pk_Billet = billet
                         commande.save()
                         print(f"Commande créée avec succès pour l'offre {offre_id}")
 
@@ -126,9 +117,6 @@ def ajouter_au_panier(request):
             return redirect('choisir_ticket')
 
     return redirect('choisir_ticket')
-
-
-
 
 @login_required
 def voir_panier(request):
@@ -211,6 +199,80 @@ def supprimer_commande(request, commande_id):
     messages.success(request, "La commande a été supprimée avec succès.")
     return redirect('voir_panier')  
  
+# def details_billet(request, billet_id):
+#     billet = get_object_or_404(Billet, pk=billet_id)
+    
+#     # Récupérer la commande associée au billet
+#     commande = billet.commande_set.first()
+    
+#     # Vérifier si une commande existe
+#     if commande:
+#         # Récupérer le montant total de la commande
+#         montant_total_commande = commande.MontantTotal
+        
+#         # Récupérer le type d'offre
+#         type_offre = commande.pk_Offre.type
+        
+#         # Récupérer le nom de l'utilisateur
+#         nom_utilisateur = commande.pk_Utilisateur.username
+
+#     else:
+#         montant_total_commande = None
+#         type_offre = None
+#         nom_utilisateur = None
+    
+#     # Concaténer la clef utilisateur et la clef de billet pour former le contenu du QR code
+#     qr_content = f"{billet.ClefUtilisateur}{billet.Cledebilletelectroniquesecurisee}"
+    
+#     # Générer le QR code
+#     qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)
+#     qr.add_data(qr_content)
+#     qr.make(fit=True)
+#     img = qr.make_image(fill_color="black", back_color="white")
+    
+#     # Enregistrer le QR code dans un buffer
+#     buffer = BytesIO()
+#     img.save(buffer, 'PNG')
+#     qr_image = base64.b64encode(buffer.getvalue()).decode()
+    
+#     # Renvoyer le rendu de la page avec le billet, le QR code, et les informations supplémentaires
+#     return render(request, 'details_billet.html', {'billet': billet, 'qr_image': qr_image, 
+#                                                    'montant_total_commande': montant_total_commande,
+#                                                    'type_offre': type_offre,
+#                                                    'nom_utilisateur': nom_utilisateur})
+# def mes_billets(request):
+ 
+#     # Récupérer tous les billets avec les informations de commande associées
+#     billets_with_qr = []
+
+#     billets = Billet.objects.all()
+
+#     for billet in billets:
+#         # Récupérer la commande associée à ce billet
+#         commande = Commande.objects.filter(pk_Billet=billet.pk_Billet).first()
+
+#         # Vérifier si une commande existe pour ce billet
+#         if commande:
+#             # Créer le contenu du QR code avec la clé utilisateur et la clé du billet
+#             qr_content = f"{billet.ClefUtilisateur}{billet.Cledebilletelectroniquesecurisee} {commande.pk_Utilisateur.firt_name} {commande.pk_Utilisateur.last_name} "
+            
+#             # Générer le QR code
+#             qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)
+#             qr.add_data(qr_content)
+#             qr.make(fit=True)
+#             img = qr.make_image(fill_color="black", back_color="white")
+
+#             # Convertir l'image du QR code en base64
+#             buffer = BytesIO()
+#             img.save(buffer,"PNG")
+#             qr_image = base64.b64encode(buffer.getvalue()).decode()
+
+#             # Ajouter le billet avec ses informations et le QR code à la liste
+#             billets_with_qr.append({'billet': billet, 'commande': commande, 'qr_image': qr_image})
+
+#     return render(request, 'mes_billets.html', {'billets_with_qr': billets_with_qr})
+
+
 def details_billet(request, billet_id):
     billet = get_object_or_404(Billet, pk=billet_id)
     
@@ -226,15 +288,15 @@ def details_billet(request, billet_id):
         type_offre = commande.pk_Offre.type
         
         # Récupérer le nom de l'utilisateur
-        nom_utilisateur = commande.pk_Utilisateur.username
+        nom_utilisateur = commande.pk_Utilisateur.first_name
 
     else:
         montant_total_commande = None
         type_offre = None
         nom_utilisateur = None
     
-    # Concaténer la clef utilisateur et la clef de billet pour former le contenu du QR code
-    qr_content = f"{billet.ClefUtilisateur}{billet.Cledebilletelectroniquesecurisee}"
+    # Concaténer la clé utilisateur et la clé de billet pour former le contenu du QR code
+    qr_content = f"{billet.ClefUtilisateur}{billet.Cledebilletelectroniquesecurisee} {commande.pk_Utilisateur.first_name} {commande.pk_Utilisateur.last_name} {commande.pk_Utilisateur.username}"
     
     # Générer le QR code
     qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)
@@ -247,13 +309,13 @@ def details_billet(request, billet_id):
     img.save(buffer, 'PNG')
     qr_image = base64.b64encode(buffer.getvalue()).decode()
     
-    # Renvoyer le rendu de la page avec le billet, le QR code, et les informations supplémentaires
+    # Renvoyer le rendu de la page avec le billet, le QR code et les informations supplémentaires
     return render(request, 'details_billet.html', {'billet': billet, 'qr_image': qr_image, 
                                                    'montant_total_commande': montant_total_commande,
                                                    'type_offre': type_offre,
                                                    'nom_utilisateur': nom_utilisateur})
+
 def mes_billets(request):
- 
     # Récupérer tous les billets avec les informations de commande associées
     billets_with_qr = []
 
@@ -263,10 +325,10 @@ def mes_billets(request):
         # Récupérer la commande associée à ce billet
         commande = Commande.objects.filter(pk_Billet=billet.pk_Billet).first()
 
-        # Vérifier si une commande existe pour ce billet
-        if commande:
+        # Vérifier si une commande existe pour ce billet et si elle est valide
+        if commande and commande.est_validee:
             # Créer le contenu du QR code avec la clé utilisateur et la clé du billet
-            qr_content = f"{billet.ClefUtilisateur}{billet.Cledebilletelectroniquesecurisee}"
+            qr_content = f"{billet.ClefUtilisateur}{billet.Cledebilletelectroniquesecurisee} {commande.pk_Utilisateur.first_name} {commande.pk_Utilisateur.last_name}"
             
             # Générer le QR code
             qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)
@@ -276,15 +338,13 @@ def mes_billets(request):
 
             # Convertir l'image du QR code en base64
             buffer = BytesIO()
-            img.save(buffer,"PNG")
+            img.save(buffer, "PNG")
             qr_image = base64.b64encode(buffer.getvalue()).decode()
 
             # Ajouter le billet avec ses informations et le QR code à la liste
             billets_with_qr.append({'billet': billet, 'commande': commande, 'qr_image': qr_image})
 
     return render(request, 'mes_billets.html', {'billets_with_qr': billets_with_qr})
-
-
 
 
 def inscription(request):
@@ -302,45 +362,6 @@ def inscription(request):
         
     return render(request, 'inscription.html', {'form': form})
         
-# def connexion(request):
-#     if request.method == 'POST':
-#         form = AuthenticationForm(request, request.POST)
-#         if form.is_valid():
-#             username = form.cleaned_data.get('username')
-#             password = form.cleaned_data.get('password')
-#             user = authenticate(request, username=username, password=password)
-#             if user is not None:
-#                 login(request, user)
-#                 messages.success(request, "Vous êtes maintenant connecté.")
-#                 return redirect('verificode')
-#             else:
-#                 messages.error(request, "L'adresse e-mail ou le mot de passe est incorrect.")
-#     else:
-#         form = AuthenticationForm()
-#     return render(request, 'connexion.html', {'form': form})
-
-
-# def verificode(request):
-#     form = VerificationCodeForm(request.POST or None)
-#     user_pk = request.session.get('user_pk')  # Récupérer la clé primaire de l'utilisateur depuis la session
-#     if user_pk:
-#         user = User.objects.get(pk=user_pk)
-#         code = user.code
-#         if request.method == 'POST':
-#             if form.is_valid():
-#                 num = form.cleaned_data.get('verification_code')
-#                 if str(code) == num:
-#                     user.save()
-#                     login(request, user)
-#                     messages.success(request, "Connexion réussie.")
-#                     return redirect('home')
-#                 else:
-#                     messages.error(request, "Code incorrect. Redirection vers la page d'inscription.")
-#                     return redirect('inscription')
-#     else:
-#         # Si la clé primaire de l'utilisateur n'est pas présente dans la session, redirigez vers la page de connexion
-#         return redirect('connexion')
-#     return render(request, 'saisie_code_verification.html', {'form': form})
 
 def connexion(request):
     if request.method == 'POST':
@@ -355,9 +376,7 @@ def connexion(request):
                 return redirect('verificode')  
             else:
                 messages.error(request, "L'adresse e-mail ou le mot de passe est incorrect.")
-    else:
-      
-         
+    else:      
         form = BootstrapAuthenticationForm()
     return render(request, 'connexion.html', {'form': form})
 
@@ -371,7 +390,7 @@ def verificode(request):
         print(code_user)
         if not request.POST:
             print(code_user)
-            envoie_sms(code)
+            envoie_sms(user.code, user.phone_number)
 
         elif request.method == 'POST':
             if form.is_valid():
@@ -385,13 +404,6 @@ def verificode(request):
                     messages.error(request, "Code incorrect. Redirection vers la page d'inscription.")
                     return redirect('inscription')
     return render(request, 'saisie_code_verification.html', {'form': form})
-
-
-
-
-
-
-
 
 def deconnexion(request):
     logout(request)

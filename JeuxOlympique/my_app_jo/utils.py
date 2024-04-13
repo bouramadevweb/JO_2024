@@ -6,11 +6,11 @@ auth_token = os.environ['TWILIO_AUTH_TOKEN']
 client = Client(account_sid, auth_token)
 
 
-def envoie_sms(user_code):
+def envoie_sms(user_code,phone_number):
     
     message = client.messages.create(
-        body=f'Hi there {user_code}',
+        body=f' bonjour votre code est  {user_code}',
         from_='+13346001254',
-        to='+33650255412',
+        to=phone_number,
     )
     print(message.sid)

@@ -4,34 +4,34 @@
 {% block content %}
 <section id="modifier_commande_user">
 
-    <div class="container-fluid">
-        <h1>Choisir pour modifier</h1>
-        <form id="choix-competition-form" method="GET">
-            <div class="form-group">
-                <label for="competition">Sélectionner une compétition :</label>
-                <select class="form-control" id="competition" name="competition">
-                    <option value="">-- Sélectionner une compétition --</option>
-                    {% for competition in competitions %}
-                    <option value="{{ competition.pk_typ_competition }}">{{ competition.Nom }} - Lieu: {{ competition.pk_lieu.Nom }} ({{ competition.pk_lieu.Ville }})</option>
-                    {% endfor %}
-                </select>
-            </div>
-        </form>
-        
-        {% if offres %}
-        <h2>Modifier votre offre  :</h2>
-        <form method="POST" action="{% url 'modifier_commande' commande.pk_Commande %}">
+<div class="container-fluid">
+<h1>Choisir pour modifier</h1>
+<form id="choix-competition-form" method="GET">
+<div class="form-group">
+<label for="competition">Sélectionner une compétition :</label>
+<select class="form-control" id="competition" name="competition">
+<option value="">-- Sélectionner une compétition --</option>
+{% for competition in competitions %}
+<option value="{{ competition.pk_typ_competition }}">{{ competition.Nom }} - Lieu: {{ competition.pk_lieu.Nom }} ({{ competition.pk_lieu.Ville }})</option>
+{% endfor %}
+</select>
+</div>
+</form>
+
+{% if offres %}
+<h2>Modifier votre offre  :</h2>
+<form method="POST" action="{% url 'modifier_commande' commande.pk_Commande %}">
 {% csrf_token %}
 <div class="row">
-    {% for offre in offres %}
-    <div class="col-md-4">
-        <div class="card mb-3">
-            <div class="card-body">
-                <h5 class="card-title">{{ offre.type }} {{ offre.competition.Nom }} - {{ offre.nombre_personnes }} personnes</h5>
-                <p class="card-text">Prix unitaire : {{ offre.prix }}</p>
-                <input type="checkbox" name="offre_id" value="{{ offre.pk_Offre }}">
-                <label for="quantite{{ offre.pk_Offre }}">Quantité :</label>
-                <input type="number" class="form-control quantite-input" id="quantite{{ offre.pk_Offre }}" name="quantite_{{ offre.pk_Offre }}" min="0" value="{{ offre.quantite }}">
+{% for offre in offres %}
+<div class="col-md-4">
+<div class="card mb-3">
+<div class="card-body">
+<h5 class="card-title">{{ offre.type }} {{ offre.competition.Nom }} - {{ offre.nombre_personnes }} personnes</h5>
+<p class="card-text">Prix unitaire : {{ offre.prix }}</p>
+<input type="checkbox" name="offre_id" value="{{ offre.pk_Offre }}">
+<label for="quantite{{ offre.pk_Offre }}">Quantité :</label>
+<input type="number" class="form-control quantite-input" id="quantite{{ offre.pk_Offre }}" name="quantite_{{ offre.pk_Offre }}" min="0" value="{{ offre.quantite }}">
 <input type="hidden" name="montant_total_{{ offre.pk_Offre }}" value="{{ offre.prix }}">
 </div>
 </div>
@@ -45,27 +45,27 @@
 {% endif %}
 
 <div class="container">
-    <h1>Modifier la commande</h1>
-    <form method="POST">
-        {% csrf_token %}
-        <label for="offre">Sélectionner une offre :</label>
-        <select name="offre_id" id="offre">
-            {% for offre in offres %}
-            <option value="{{ offre.pk_Offre }}">{{ offre.type }} - {{ offre.competition.Nom }} - {{ offre.nombre_personnes }} personnes</option>
-            {% endfor %}
-        </select>
-        <br>
-        <label for="quantite">Quantité :</label>
-        <input type="number" name="quantite" id="quantite" min="1" value="{{ commande.quantite }}">
-        <br>
-        <button type="submit">Valider</button>
-    </form>
+<h1>Modifier la commande</h1>
+<form method="POST">
+{% csrf_token %}
+<label for="offre">Sélectionner une offre :</label>
+<select name="offre_id" id="offre">
+{% for offre in offres %}
+<option value="{{ offre.pk_Offre }}">{{ offre.type }} - {{ offre.competition.Nom }} - {{ offre.nombre_personnes }} personnes</option>
+{% endfor %}
+</select>
+<br>
+<label for="quantite">Quantité :</label>
+<input type="number" name="quantite" id="quantite" min="1" value="{{ commande.quantite }}">
+<br>
+<button type="submit">Valider</button>
+</form>
 </div>
 </div>
 </section>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
 // Capturer le changement de sélection de la compétition
 document.getElementById('competition').addEventListener('change', function() {
 document.getElementById('choix-competition-form').submit();

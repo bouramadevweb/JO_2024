@@ -35,12 +35,42 @@ class ModifierCommandeForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+# class InscriptionForm(UserCreationForm):
+#     accept_conditions = forms.BooleanField(label="J'accepte les conditions d'inscription", required=True)
+
+#     class Meta:
+#         model = User
+#         fields = ['username', 'last_name', 'first_name', 'email','phone_number' , 'password1', 'password2', 'accept_conditions']
+
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         self.fields['username'].widget.attrs.update({'class': 'form-control'})
+#         self.fields['last_name'].widget.attrs.update({'class': 'form-control'})
+#         self.fields['first_name'].widget.attrs.update({'class': 'form-control'})
+#         self.fields['email'].widget.attrs.update({'class': 'form-control'})
+#         self.fields['phone_number'].widget.attrs.update({'class': 'form-control'})
+
+#         self.fields['password1'].widget.attrs.update({'class': 'form-control'})
+#         self.fields['password2'].widget.attrs.update({'class': 'form-control'})
+
+from django import forms
+from django.contrib.auth.forms import UserCreationForm
+from .models import User
+
+class PhoneNumberField(forms.CharField):
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault('label', 'Numéro de téléphone')
+        kwargs.setdefault('max_length', 12)  # définir la longueur maximale selon le standard international E.164
+        kwargs.setdefault('widget', forms.TextInput(attrs={'type': 'tel', 'class': 'form-control', 'placeholder': '+33612345678', 'required': True}))
+        super().__init__(*args, **kwargs)
+
 class InscriptionForm(UserCreationForm):
     accept_conditions = forms.BooleanField(label="J'accepte les conditions d'inscription", required=True)
+    phone_number = PhoneNumberField()
 
     class Meta:
         model = User
-        fields = ['username', 'last_name', 'first_name', 'email','phone_number' , 'password1', 'password2', 'accept_conditions']
+        fields = ['username', 'last_name', 'first_name', 'email', 'phone_number', 'password1', 'password2', 'accept_conditions']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -49,6 +79,9 @@ class InscriptionForm(UserCreationForm):
         self.fields['first_name'].widget.attrs.update({'class': 'form-control'})
         self.fields['email'].widget.attrs.update({'class': 'form-control'})
         self.fields['phone_number'].widget.attrs.update({'class': 'form-control'})
-
         self.fields['password1'].widget.attrs.update({'class': 'form-control'})
         self.fields['password2'].widget.attrs.update({'class': 'form-control'})
+
+    def clean_phone_number(self):
+        phone_number = self.cleaned_data['phone_number']
+        return phone_number

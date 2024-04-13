@@ -5,15 +5,15 @@
 {% block title %}  {% endblock %}
 <section id="mes_billet" >
 
-    <div class="container-fluid">
-        <h1 class="my-4">Tous les billets</h1>
-        <div class="row">
-            
-            {% for billet_info in billets_with_qr %}
+<div class="container-fluid">
+<h1 class="my-4">Tous les billets</h1>
+<div class="row">
+
+{% for billet_info in billets_with_qr %}
 <div class="billet-container">
-    <h3>Billet {{ billet_info.billet.pk_Billet }}</h3>
-    <p>Montant total: {{ billet_info.commande.MontantTotal }}</p>
-    <img src="data:image/png;base64,{{ billet_info.qr_image }}" alt="QR Code">
+<h3>Billet {{ billet_info.billet.pk_Billet }}</h3>
+<p>Montant total: {{ billet_info.commande.MontantTotal }}</p>
+<img src="data:image/png;base64,{{ billet_info.qr_image }}" alt="QR Code">
 </div>
 
 {% endfor %}

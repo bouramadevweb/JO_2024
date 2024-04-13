@@ -1,19 +1,15 @@
-from shlex import join
-from tkinter import CASCADE
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 import uuid
-import os
 import random
 import secrets
-import string
 from django.conf import settings
-
+from datetime import datetime, timedelta
 class User(AbstractUser):
     Nom = models.CharField(max_length=150)
     Prenom = models.CharField(max_length=150)
     ClefGeneree = models.CharField(max_length=50, default=secrets.token_hex(16))
-    phone_number = models.CharField(max_length=12)
+    phone_number = models.CharField(max_length=12 ,unique=True)
 
     class Meta:
         db_table = 'auth_user'
@@ -25,28 +21,57 @@ class User(AbstractUser):
 
     def __str__(self):
         return f'{self.Nom}, {self.Prenom}'
+    
+# class Code(models.Model):
+#     number = models.CharField(max_length=5, blank=True, unique=True)
+#     user = models.OneToOneField(User, on_delete=models.CASCADE)
+#     est_validee = models.BooleanField(default=False)
+#     def __str__(self):
+#         return str(self.number)
+
+#     def save(self, *args, **kwargs):
+#         if not self.number or 'force_insert' in kwargs:  # Vérifiez si le code n'est pas défini ou si l'insertion forcée est demandée
+#             while True:
+#                 number_list = [x for x in range(10)]
+#                 code_items = []
+#                 for _ in range(5):
+#                     num = random.choice(number_list)
+#                     code_items.append(str(num))
+#                 new_code = "".join(code_items)
+                
+#                 # Vérifiez si le code généré est déjà utilisé par un autre objet Code
+#                 if not Code.objects.filter(number=new_code).exists():
+#                     self.number = new_code
+#                     break  # Sortir de la boucle si le code généré est unique
+        
+#         super().save(*args, **kwargs)
+
 class Code(models.Model):
     number = models.CharField(max_length=5, blank=True, unique=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    est_validee = models.BooleanField(default=False)
+    last_generated = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return str(self.number)
 
     def save(self, *args, **kwargs):
-        if not self.number or 'force_insert' in kwargs:  # Vérifiez si le code n'est pas défini ou si l'insertion forcée est demandée
-            while True:
-                number_list = [x for x in range(10)]
-                code_items = []
-                for _ in range(5):
-                    num = random.choice(number_list)
-                    code_items.append(str(num))
-                new_code = "".join(code_items)
-                
-                # Vérifiez si le code généré est déjà utilisé par un autre objet Code
-                if not Code.objects.filter(number=new_code).exists():
-                    self.number = new_code
-                    break  # Sortir de la boucle si le code généré est unique
-        
+        if not self.est_validee:
+            time_diff = datetime.now() - self.last_generated
+            if time_diff.total_seconds() >= 120:  # Vérifie si 2 minutes se sont écoulées
+                while True:
+                    number_list = [x for x in range(10)]
+                    code_items = []
+                    for _ in range(5):
+                        num = random.choice(number_list)
+                        code_items.append(str(num))
+                    new_code = "".join(code_items)
+
+                    if not Code.objects.filter(number=new_code).exists():
+                        self.number = new_code
+                        self.last_generated = datetime.now()
+                        break
+
         super().save(*args, **kwargs)
 class Dates_commandes(models.Model):
     pk_date = models.DateTimeField(primary_key=True)
@@ -54,15 +79,11 @@ class Dates_commandes(models.Model):
     def __str__(self):
         return f'{self.pk_date}'
     
-# def get_competition_image_path(instance, filename):
-#     """
-#     Fonction pour définir le chemin de téléchargement des images de compétition.
-#     """
-#     return os.path.join('competition_images', filename)
+
 def get_competition_image_path(instance, filename):
-    # Définir le chemin de téléversement en fonction de l'ID de l'instance
     folder_name = str(instance.pk_list_competition)
-    return f'competition_images/{folder_name}/{filename}'
+    return f'static/images/competition_images/{folder_name}/{filename}'
+
 class List_competition(models.Model):
     pk_list_competition = models.CharField(max_length=150, primary_key=True ,unique=True)
     nom = models.CharField(max_length=150)
@@ -77,7 +98,6 @@ class List_competition(models.Model):
 
 
 class Lieu_des_competions(models.Model):
-    # Définir le champ pour la clé primaire AutoField
     pk_lieu = models.CharField(max_length=250,primary_key=True)
     Nom = models.CharField(max_length=250)
     Ville = models.CharField(max_length=50)
@@ -128,12 +148,7 @@ class Competitions(models.Model):
     pk_date_competition = models.ForeignKey(Dates_Competions, on_delete=models.CASCADE)
     pk_lieu = models.ForeignKey(Lieu_des_competions, on_delete=models.CASCADE)
 
-    # def save(self, *args, **kwargs):
-    #     # Vérifier si les clés étrangères ne sont pas nulles
-    #     if self.pk_lieu_id is not None and self.pk_list_competition_id is not None and self.pk_date_competition_id is not None:
-    #         # Concaténer les champs pour former la clé primaire
-    #         self.pk_typ_competition = "_".join([str(self.pk_lieu_id), str(self.pk_list_competition_id), str(self.pk_date_competition_id)])
-    #     super().save(*args, **kwargs)
+   
     def save(self, *args, **kwargs):
         # Vérifier si les clés étrangères ne sont pas nulles
         if self.pk_lieu_id is not None and self.pk_list_competition_id is not None:
@@ -166,10 +181,6 @@ class Offre(models.Model):
     def __str__(self):
         return f'{self.pk_Offre}, {self.type}, {self.prix}, {self.competition.Nom}'
    
-    
-    
-
-
 class Billet(models.Model):
     pk_Billet = models.AutoField(primary_key=True)
     Cledebilletelectroniquesecurisee = models.CharField(max_length=50, unique=True)
@@ -184,9 +195,7 @@ class Billet(models.Model):
             # Générer une clé unique sécurisée
             self.Cledebilletelectroniquesecurisee = uuid.uuid4().hex
         super().save(*args, **kwargs)
-
-    
-    
+   
     def __str__(self):
         return f'Billet {self.pk_Billet} pour {self.pk_typ_competition}'
 
@@ -199,8 +208,6 @@ class Commande(models.Model):
     pk_Utilisateur = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     pk_Billet = models.ForeignKey(Billet, on_delete=models.CASCADE)
     est_validee = models.BooleanField(default=False)
-
-    
 
     def __str__(self):
         return f'Commande {self.pk_Commande} pour {self.quantite} billet(s) {self.pk_Offre.type}'
@@ -215,9 +222,7 @@ class Commande(models.Model):
             billet.save()
             self.pk_Billet = billet
         super().save(*args, **kwargs)
-
-
-    
+   
 class ODS(models.Model):
     discipline = models.CharField(max_length=250)
     date_debut = models.DateField()

@@ -5,94 +5,94 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Votre application Django{% endblock %}</title>
-    <script src="https://kit.fontawesome.com/bf80631bb4.js" crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    {% bootstrap_css %}
-    {% bootstrap_javascript %}
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Votre application Django{% endblock %}</title>
+<script src="https://kit.fontawesome.com/bf80631bb4.js" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 
-    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
 
 </head>
 
 <body>
-    <section id="ackground-section">
-    <div class="container-fluid px-2">
-        <nav class="navbar navbar-expand-lg navbar-light bg-light justify-content-end">
-            <a class="navbar-brand" href="/">France JO 2024</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav ml-auto">
-                <!-- Liens pour les utilisateurs non connectés -->
-                {% if not user.is_authenticated %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'home' %}">Accueil</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'ventes_par_offre' %}">Ventes par offre</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'mes_billets' %}">Billets</a>
-                    
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'inscription' %}">Inscription</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'connexion' %}">Connexion</a>
-                </li>
-                {% endif %}
-                
-                <!-- Lien pour tous les utilisateurs -->
-                
-                <!-- Lien pour les utilisateurs connectés -->
-                {% if user.is_authenticated %}
-                {% if request.resolver_match.url_name != 'verificode' %}
-                <!-- Afficher les liens supplémentaires pour les utilisateurs connectés (sauf dans la vue de vérification du code de vérification) -->
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'home' %}">Accueil</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'choisir_ticket' %}">Choisir Ticket</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'voir_panier' %}">Panier d'achat</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'deconnexion' %}">Déconnexion</a>
-                </li>
-                {% endif %}
-                {% endif %}
-            </ul>
-            
-        </div>
-        <!--<div id="bandeau">
-            <div id="contenu">
-                <h1>JO 2024 PARIS</h1>
-                <img src="{% static 'images/olympic-games-1608127_640.png' %}" class="" alt="">
-                <div>
-        
-                    <a href="">cest ici</a>
-                </div>
-        
-            </div>
-        </div>-->
-        </div>
-    </nav>
-        
+<section id="ackground-section">
+<div class="container-fluid px-2">
+<nav class="navbar navbar-expand-lg navbar-light bg-light justify-content-end">
+<a class="navbar-brand" href="/">France JO 2024</a>
+<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+<span class="navbar-toggler-icon"></span>
+</button>
+
+<div class="collapse navbar-collapse" id="navbarSupportedContent">
+<ul class="navbar-nav ml-auto">
+<!-- Liens pour les utilisateurs non connectés -->
+{% if not user.is_authenticated %}
+<li class="nav-item">
+<a class="nav-link" href="{% url 'home' %}">Accueil</a>
+</li>
+<li class="nav-item">
+<a class="nav-link" href="{% url 'ventes_par_offre' %}">Ventes par offre</a>
+</li>
+<li class="nav-item">
+<a class="nav-link" href="{% url 'mes_billets' %}">Billets</a>
+
+</li>
+<li class="nav-item">
+<a class="nav-link" href="{% url 'inscription' %}">Inscription</a>
+</li>
+<li class="nav-item">
+<a class="nav-link" href="{% url 'connexion' %}">Connexion</a>
+</li>
+{% endif %}
+
+<!-- Lien pour tous les utilisateurs -->
+
+<!-- Lien pour les utilisateurs connectés -->
+{% if user.is_authenticated %}
+{% if request.resolver_match.url_name != 'verificode' %}
+<!-- Afficher les liens supplémentaires pour les utilisateurs connectés (sauf dans la vue de vérification du code de vérification) -->
+<li class="nav-item">
+<a class="nav-link" href="{% url 'home' %}">Accueil</a>
+</li>
+<li class="nav-item">
+<a class="nav-link" href="{% url 'choisir_ticket' %}">Choisir Ticket</a>
+</li>
+<li class="nav-item">
+<a class="nav-link" href="{% url 'voir_panier' %}">Panier d'achat</a>
+</li>
+<li class="nav-item">
+<a class="nav-link" href="{% url 'deconnexion' %}">Déconnexion</a>
+</li>
+{% endif %}
+{% endif %}
+</ul>
+
+</div>
+<!--<div id="bandeau">
+<div id="contenu">
+<h1>JO 2024 PARIS</h1>
+<img src="{% static 'images/olympic-games-1608127_640.png' %}" class="" alt="">
+<div>
+
+<a href="">cest ici</a>
+</div>
+
+</div>
+</div>-->
+</div>
+</nav>
+
 </section>  
-    
+
 {% block content %}
 {% endblock %}
-  <script src="{% static 'js/ajouter_au_panier.js' %}"></script>
+<script src="{% static 'js/ajouter_au_panier.js' %}"></script>
 </body>
 
 
