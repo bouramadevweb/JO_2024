@@ -2,7 +2,40 @@
 {% load static %}
 {% block content %}
 {% block title %}  {% endblock %}
-<section id="home_user">
+<header>
+    <div class="row">
+        <div class="col-md-6" style="padding: 0;">
+            <div class="img" style="height: 90%; margin: 0; padding: 0;">
+                <img src="{% static 'images/jeuxonav.jpg' %}" alt=""
+                    style="height: 90%; width: 100%; margin: 0; padding: 0;">
+            </div>
+        </div>
+        <div class="col-md-6" style="padding: 0;">
+            <div class="img" style="height: 90%; margin: 0; padding: 0;">
+                <img src="{% static 'images/stade.jpg' %}" alt=""
+                    style="height: 90%; width: 100%; margin: 0; padding: 0;">
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+<main>
+    <section id="home_user">
+        <div id="bandeau">
+            <div id="contenu">
+                <h1>JO 2024 PARIS</h1>
+                <img src="{% static 'images/olympic-games-1608127_640.png' %}" class="" alt="">
+                <div>
+                    <p>Obtenez vos tickets dès maintenant !</p>
+                    <a href="{% url 'choisir_ticket' %}">C'est ici</a>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+<section>
 <div class="container-fluid">
 <br>
 <div class="row">

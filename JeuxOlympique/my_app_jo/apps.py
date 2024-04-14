@@ -1,4 +1,5 @@
 from django.apps import AppConfig
+from django_cron import CronJobManager
 
 
 class MyAppJoConfig(AppConfig):
@@ -9,3 +10,6 @@ class MyAppJoConfig(AppConfig):
     """
     def ready(self):
         import  my_app_jo.signals
+    # def ready(self):
+    #     # Enregistrer votre tâche cron lorsque l'application est prête
+    #         CronJobManager.register(UpdateCodeJob)    

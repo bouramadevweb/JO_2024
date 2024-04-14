@@ -15,7 +15,8 @@ from datetime import datetime ,timezone
 import qrcode, base64
 # from django.db.models import Count, Sum,Q
 # import secrets
-# import string
+import string
+import random
 from django.views.decorators.csrf import csrf_exempt
 # from django.core.mail import send_mail
 from django.contrib.auth.models import User
@@ -356,12 +357,33 @@ def inscription(request):
             user.save()
             login(request, user)
             messages.success(request, f'Félicitations, {user.email} ! Votre compte a été créé avec succès.')
-            return redirect('choisir_ticket')
+            request.session['user_pk'] = user.pk 
+            return redirect('verificode')
     else:
         form = InscriptionForm()
         
     return render(request, 'inscription.html', {'form': form})
         
+
+# def connexion(request):
+#     if request.method == 'POST':
+#         form = AuthenticationForm(request, request.POST)
+#         if form.is_valid():
+#             username = form.cleaned_data.get('username')
+#             password = form.cleaned_data.get('password')
+#             user = authenticate(request, username=username, password=password)
+#             if user is not None:
+#                 login(request, user)
+#                 request.session['user_pk'] = user.pk 
+#                 return redirect('verificode')  
+#             else:
+#                 messages.error(request, "L'adresse e-mail ou le mot de passe est incorrect.")
+#     else:      
+#         form = BootstrapAuthenticationForm()
+#     return render(request, 'connexion.html', {'form': form})
+
+# import random
+
 
 def connexion(request):
     if request.method == 'POST':
@@ -372,13 +394,57 @@ def connexion(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                request.session['user_pk'] = user.pk 
+                request.session['user_pk'] = user.pk
+                
+                # Vérifier si le code associé à l'utilisateur est déjà valide
+                code = user.code
+                if code.est_validee:
+                    # Générer un nouveau code en mettant à jour le numéro du code existant
+                    while True:
+                        new_code = ''.join(random.choices(string.digits, k=5))
+                        if not Code.objects.filter(number=new_code).exists():
+                            code.number = new_code
+                            code.save()
+                            messages.info(request, "Un nouveau code de vérification a été envoyé à votre téléphone.")
+                            break
+                
                 return redirect('verificode')  
             else:
                 messages.error(request, "L'adresse e-mail ou le mot de passe est incorrect.")
     else:      
         form = BootstrapAuthenticationForm()
     return render(request, 'connexion.html', {'form': form})
+
+
+# def verificode(request):
+#     form = VerificationCodeForm(request.POST or None)
+#     user_pk = request.session.get('user_pk')  # Récupérer la clé primaire de l'utilisateur depuis la session
+#     if user_pk:
+#         user = User.objects.get(pk=user_pk)
+#         code = user.code
+#         code_user = f'{user.username} {user.phone_number}'
+#         print(code_user)
+        
+#         # Vérification si le code n'est pas encore valide et envoie du SMS
+#         if not code.est_validee :
+#             envoie_sms(code.number, user.phone_number)
+        
+#         if request.method == 'POST':
+#             if form.is_valid():
+#                 num = form.cleaned_data.get('verification_code')
+#                 if str(code) == num:
+#                     # Appeler la méthode verifier() du code
+#                     code.verifier()
+                    
+#                     # Connecter l'utilisateur
+#                     user.save()
+#                     login(request, user)
+#                     messages.success(request, "Connexion réussie.")
+#                     return redirect('home')
+#                 else:
+#                     messages.error(request, "Code incorrect. Redirection vers la page d'inscription.")
+#                     return redirect('inscription')
+#     return render(request, 'saisie_code_verification.html', {'form': form})
 
 def verificode(request):
     form = VerificationCodeForm(request.POST or None)
@@ -388,22 +454,32 @@ def verificode(request):
         code = user.code
         code_user = f'{user.username} {user.phone_number}'
         print(code_user)
-        if not request.POST:
-            print(code_user)
-            envoie_sms(user.code, user.phone_number)
-
-        elif request.method == 'POST':
+        
+        # Envoi du SMS de vérification dans tous les cas
+        envoie_sms(code.number, user.phone_number)
+        
+        if request.method == 'POST':
             if form.is_valid():
                 num = form.cleaned_data.get('verification_code')
                 if str(code) == num:
-                    user.save()
-                    login(request, user)
-                    messages.success(request, "Connexion réussie.")
-                    return redirect('home')
+                    # Vérifier si le code est valide et non utilisé
+                    if not code.est_validee:
+                        # Appeler la méthode verifier() du code
+                        code.verifier()
+                        # Connecter l'utilisateur
+                        user.save()
+                        login(request, user)
+                        messages.success(request, "Connexion réussie.")
+                        return redirect('home')
+                    else:
+                        messages.error(request, "Code déjà utilisé.")
+                        return redirect('inscription')  # Rediriger vers la page d'inscription si le code est déjà utilisé
                 else:
                     messages.error(request, "Code incorrect. Redirection vers la page d'inscription.")
                     return redirect('inscription')
     return render(request, 'saisie_code_verification.html', {'form': form})
+
+
 
 def deconnexion(request):
     logout(request)
