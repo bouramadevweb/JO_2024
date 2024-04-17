@@ -1,12 +1,8 @@
-from shlex import join
-from tkinter import CASCADE
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 import uuid
-import os
 import random
 import secrets
-import string
 from django.conf import settings
 
 class User(AbstractUser):
@@ -37,7 +33,7 @@ class Code(models.Model):
         return str(self.number)
 
     def save(self, *args, **kwargs):
-        if not self.number or 'force_insert' in kwargs:  # Vérifiez si le code n'est pas défini ou si l'insertion forcée est demandée
+        if not self.number or 'force_insert' in kwargs:  
             while True:
                 number_list = [x for x in range(10)]
                 code_items = []
@@ -46,10 +42,9 @@ class Code(models.Model):
                     code_items.append(str(num))
                 new_code = "".join(code_items)
                 
-                # Vérifiez si le code généré est déjà utilisé par un autre objet Code
                 if not Code.objects.filter(number=new_code).exists():
                     self.number = new_code
-                    break  # Sortir de la boucle si le code généré est unique
+                    break  
         
         super().save(*args, **kwargs)
     def verifier(self):
@@ -62,11 +57,6 @@ class Dates_commandes(models.Model):
     def __str__(self):
         return f'{self.pk_date}'
     
-# def get_competition_image_path(instance, filename):
-#     """
-#     Fonction pour définir le chemin de téléchargement des images de compétition.
-#     """
-#     return os.path.join('competition_images', filename)
 def get_List_competition_image_path(instance, filename):
     # Définir le chemin de téléversement en fonction de l'ID de l'instance
     folder_name = str(instance.pk_list_competition)
@@ -139,16 +129,6 @@ class Competitions(models.Model):
     pk_lieu = models.ForeignKey(Lieu_des_competions, on_delete=models.CASCADE)
     image = models.ImageField(upload_to=get_competition_image_path, null=True, blank=True, max_length=455)
 
-    # def get_competition_image_path(instance, filename):
-    #        return f'competition_images/{instance.pk_typ_competition}/{filename}'
-
-   
-    # def save(self, *args, **kwargs):
-    #     # Vérifier si les clés étrangères ne sont pas nulles
-    #     if self.pk_lieu_id is not None and self.pk_list_competition_id is not None and self.pk_date_competition_id is not None:
-    #         # Concaténer les champs pour former la clé primaire
-    #         self.pk_typ_competition = "_".join([str(self.pk_lieu_id), str(self.pk_list_competition_id), str(self.pk_date_competition_id)])
-    #     super().save(*args, **kwargs)
     def save(self, *args, **kwargs):
         # Vérifier si les clés étrangères ne sont pas nulles
         if self.pk_lieu_id is not None and self.pk_list_competition_id is not None:

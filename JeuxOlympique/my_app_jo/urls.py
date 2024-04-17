@@ -2,6 +2,8 @@ from django.urls import path
 from . import views
 from django.conf import settings
 from django.conf.urls import static
+from . import views
+from django.views.generic.base import RedirectView
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -19,4 +21,7 @@ urlpatterns = [
     path('modifier_profile',views.modifier_profile,name='modifier_profile' ),
     path('inscription/', views.inscription, name='inscription'),
     path('deconnexion/', views.deconnexion, name='deconnexion'),
+
 ]
+
+handler404 = 'my_app_jo.views.handler404'
