@@ -24,7 +24,7 @@ import secrets
 
 from django.test import TestCase, RequestFactory
 from django.urls import reverse
-from my_app_jo.models import User  # Assurez-vous d'importer votre modèle utilisateur personnalisé
+from my_app_jo.models import User  
 from my_app_jo.views import ajouter_au_panier
 from my_app_jo.models import Commande, Billet, Offre, Competitions
 from django.http import QueryDict
@@ -38,6 +38,9 @@ from .views import home, choisir_ticket, ajouter_au_panier, voir_panier, payer_c
 
 User = get_user_model()
 class ListCompetitionCRUDTestCase(TestCase):
+    """
+        test List des competitions   
+    """
     def setUp(self):
         # Créer une instance de List_competition pour les tests
         self.football_competition = List_competition.objects.create(pk_list_competition='Football', 
@@ -72,6 +75,8 @@ class ListCompetitionCRUDTestCase(TestCase):
             List_competition.objects.get(pk_list_competition='Football')
 
 class LieuDesCompetionsCRUDTestCase(TestCase):
+    """Lieu_des_competions
+    """
     def setUp(self):
         # Créer une instance de List_competition pour les tests
         self.list_competition = List_competition.objects.create(pk_list_competition='Football', 
@@ -120,6 +125,8 @@ class LieuDesCompetionsCRUDTestCase(TestCase):
             Lieu_des_competions.objects.get(pk_lieu='Paris_Stade_10000_Football')  
 
 class DatesCompetionsCRUDTestCase(TestCase):
+    """ test  Dates_Competions
+    """
     def setUp(self):
         # Créer des instances de List_competition et Lieu_des_competions pour les tests
         self.list_competition = List_competition.objects.create(pk_list_competition='Football', 
@@ -187,6 +194,8 @@ class DatesCompetionsCRUDTestCase(TestCase):
             Dates_Competions.objects.get(pk_date_competition='Football_Paris_Stade_2024-08-01_2024-08-11')
 
 class CompetitionsCRUDTestCase(TestCase):
+    """ test  Competitions
+    """
     def setUp(self):
         # Création des instances nécessaires pour les tests
         self.list_competition = List_competition.objects.create(pk_list_competition='Football', nom='Football')
@@ -220,6 +229,8 @@ class CompetitionsCRUDTestCase(TestCase):
             Competitions.objects.get(pk_typ_competition=new_competition.pk_typ_competition)
 
 class OffreCRUDTestCase(TestCase):
+    """Test Offre
+    """
     def setUp(self):
         # Création des instances 
         self.list_competition = List_competition.objects.create(pk_list_competition='Football', nom='Football')
@@ -255,6 +266,8 @@ class OffreCRUDTestCase(TestCase):
             Offre.objects.get(pk_Offre=new_offre.pk_Offre)
 
 class BilletCRUDTestCase(TestCase):
+    """test Billet
+    """
 
     def setUp(self):
         # Créer des instances nécessaires pour Competitions
@@ -332,6 +345,8 @@ class BilletCRUDTestCase(TestCase):
 
 
 class CommandeCRUDTestCase(TestCase):
+    """test Commande
+    """
     def setUp(self):
         # Créer des instances nécessaires pour les tests
         self.user = get_user_model().objects.create_user(username='testuser', 
@@ -416,6 +431,8 @@ class CommandeCRUDTestCase(TestCase):
         self.assertFalse(commande_exists_after_deletion)
 
 class AjouterAuPanierTestCase(TestCase):
+    """test Ajouter au Panier
+    """
     def setUp(self):
         # Créer un utilisateur
         self.user = User.objects.create_user(username='testuser', password='testpassword')
@@ -436,6 +453,8 @@ class AjouterAuPanierTestCase(TestCase):
     
 
 class VoirPanierTestCase(TestCase):
+    """test Voir panier
+    """
     def setUp(self):
         # Créer un utilisateur
         self.user = User.objects.create_user(username='testuser', password='testpassword')
@@ -490,6 +509,8 @@ class VoirPanierTestCase(TestCase):
 
 
 class ModifierCommandeTestCase(TestCase):
+    """Test Modifier Commande
+    """
     def setUp(self):
         # Créer une commande et une offre pour le test
         self.user = User.objects.create_user(username='testuser',
@@ -544,6 +565,8 @@ class ModifierCommandeTestCase(TestCase):
         self.assertEqual(commande_modifiee.MontantTotal, 20.0)
 
 class SupprimerCommandeTestCase(TestCase):
+    """test Supprimer Commande
+    """
     def setUp(self):
         # Créer un utilisateur
         self.user = User.objects.create_user(username='testuser', password='testpassword')
@@ -604,6 +627,8 @@ class SupprimerCommandeTestCase(TestCase):
         self.assertEqual(messages[0].message, "La commande a été supprimée avec succès.")   
 
 class SupprimerCommandeTestCase(TestCase):
+    """test Supprimer Commande
+    """
     def setUp(self):
         # Créer un utilisateur
         self.user = User.objects.create_user(username='testuser',
@@ -655,6 +680,8 @@ class SupprimerCommandeTestCase(TestCase):
         self.assertFalse(Commande.objects.filter(pk=self.commande.pk).exists())
 
 class DetailsBilletTestCase(TestCase):
+    """test Details Billet
+    """
     def setUp(self):
         self.user = get_user_model().objects.create_user(username='testuser',
                                                         email='test@example.com',
@@ -705,6 +732,8 @@ class DetailsBilletTestCase(TestCase):
         self.assertContains(response, str(self.billet.Cledebilletelectroniquesecurisee))
 
 class TestUrls(TestCase):
+    """test url
+    """
     def setUp(self):
         # Créer une instance de RequestFactory
         self.factory = RequestFactory()
@@ -735,6 +764,8 @@ class TestUrls(TestCase):
         
 
 class ChoixTicketTestCase(TestCase):
+    """test Choisir le ticket
+    """
     def setUp(self):
                 
         User.objects.all().delete()
@@ -802,12 +833,14 @@ class ChoixTicketTestCase(TestCase):
         self.assertTemplateUsed(response, 'choisir_ticket.html')
 
     def test_choisir_ticket_post(self):
-        competition_id = 1  # Remplacez par l'ID de la compétition que vous voulez tester
+        competition_id = 1  
         response = self.client.get(reverse('choisir_ticket'), {'competition': competition_id})
         self.assertIn('offres', response.context)
 
 
     def test_ajouter_au_panier_post(self):
+        """test ajouter au panier
+        """
        
         self.list_competition = List_competition.objects.create(pk_list_competition='escrime',
                                                                 nom='escrime')

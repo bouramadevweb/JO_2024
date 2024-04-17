@@ -3,7 +3,6 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm,UserChangeForm
 from django.contrib import messages
 from .forms import InscriptionForm,CustomUserChangeForm
-# from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from .models import Offre, Commande, Competitions, User ,List_competition,Billet,Competitions,Offre
 from django.contrib import messages
@@ -26,10 +25,14 @@ from .forms import BootstrapAuthenticationForm
 from .utils import envoie_sms
 
 def home(request):
+    """Page d'accueil
+    """
     competitions = Competitions.objects.all()
     return render(request, 'home.html', {'competitions': competitions})
 
 def choisir_ticket(request):
+    """chosisez le ticket
+    """
     if request.method == 'GET' and 'competition' in request.GET:
         # Récupérer l'ID de la compétition sélectionnée par l'utilisateur
         competition_id = request.GET.get('competition')
@@ -55,6 +58,8 @@ def choisir_ticket(request):
 @login_required
 @csrf_exempt
 def ajouter_au_panier(request):
+    """ajouter au panier
+    """
     if request.method == 'POST':
         try:
             print("Données POST reçues :", request.POST)
@@ -117,11 +122,15 @@ def ajouter_au_panier(request):
 
 @login_required
 def voir_panier(request):
+    """voir son panier
+    """
     commandes = Commande.objects.filter(pk_Utilisateur=request.user)
     return render(request, 'voir_panier.html', {'commandes': commandes})
 
 @login_required
 def payer_commande(request, commande_id):
+    """payer Commande
+    """
     # Récupérer la commande spécifique à payer
     commande = Commande.objects.filter(pk=commande_id, pk_Utilisateur=request.user, est_validee=False).first()
     
@@ -145,6 +154,8 @@ def payer_commande(request, commande_id):
         return render(request, 'payer_commande.html', {'commande_id': commande_id , 'montant_total': montant_total})
 @login_required
 def modifier_commande(request, commande_id):
+    """modifier Commande
+    """
     # Récupérer la commande correspondante
     commande = get_object_or_404(Commande, pk=commande_id)
 
@@ -205,6 +216,8 @@ def modifier_commande(request, commande_id):
 
 
 def supprimer_commande(request, commande_id):
+    """supprimer Commande
+    """
     commande = Commande.objects.get(pk=commande_id)
     commande.delete()
     messages.success(request, "La commande a été supprimée avec succès.")
@@ -212,6 +225,8 @@ def supprimer_commande(request, commande_id):
  
 
 def details_billet(request, billet_id):
+    """Billet
+    """
     billet = get_object_or_404(Billet, pk=billet_id)
     
     # Récupérer la commande associée au billet
@@ -254,6 +269,8 @@ def details_billet(request, billet_id):
                                                    'nom_utilisateur': nom_utilisateur})
 
 def mes_billets(request):
+    """Billet en QR code
+    """
     # Récupérer tous les billets avec les informations de commande associées
     billets_with_qr = []
 
@@ -286,6 +303,8 @@ def mes_billets(request):
 
 
 def inscription(request):
+    """inscription
+    """
     if request.method == 'POST':
         form = InscriptionForm(request.POST)
         if form.is_valid():
@@ -303,6 +322,8 @@ def inscription(request):
  
 
 def connexion(request):
+    """connexion
+    """
     if request.method == 'POST':
         form = AuthenticationForm(request, request.POST)
         if form.is_valid():
@@ -334,8 +355,10 @@ def connexion(request):
 
 
 def verificode(request):
+    """verifiaction code par sms
+    """
     form = VerificationCodeForm(request.POST or None)
-    user_pk = request.session.get('user_pk')  # Récupérer la clé primaire de l'utilisateur depuis la session
+    user_pk = request.session.get('user_pk')  
     if user_pk:
         user = User.objects.get(pk=user_pk)
         code = user.code
@@ -368,11 +391,15 @@ def verificode(request):
 
 @login_required
 def profile(request):
+    """profile
+    """
     user = request.user
     context = {'user': user}
     return render(request, 'profile.html', context)
 @login_required
 def modifier_profile(request):
+    """modification des profiles
+    """
     if request.method == 'POST':
         form = CustomUserChangeForm(request.POST, instance=request.user)
         if form.is_valid():
@@ -384,6 +411,8 @@ def modifier_profile(request):
 
     return render(request, 'modifier_profile.html', {'form': form})
 def deconnexion(request):
+    """la deconnexion
+    """
     logout(request)
     return redirect('home')
 

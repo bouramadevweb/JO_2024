@@ -6,6 +6,14 @@ import secrets
 from django.conf import settings
 
 class User(AbstractUser):
+    """_summary_
+
+    Args:
+        AbstractUser (_type_): _description_
+
+    Returns: User
+        
+    """
     Nom = models.CharField(max_length=150)
     Prenom = models.CharField(max_length=150)
     ClefGeneree = models.CharField(max_length=50, default=secrets.token_hex(16))
@@ -22,6 +30,14 @@ class User(AbstractUser):
     def __str__(self):
         return f'{self.Nom}, {self.Prenom}'
 class Code(models.Model):
+    """_summary_
+
+    Args:
+        models (_type_): _description_
+
+    Returns: Code pour identification
+        
+    """
     number = models.CharField(max_length=5, blank=True, unique=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     est_validee = models.BooleanField(default=False)
@@ -58,6 +74,14 @@ def get_List_competition_image_path(instance, filename):
     return f'List_competition_images/{folder_name}/{filename}'
 
 class List_competition(models.Model):
+    """_summary_
+
+    Args:
+        models (_type_):List des competitions
+
+    Returns: la liste des Competition
+        
+    """
     pk_list_competition = models.CharField(max_length=150, primary_key=True ,unique=True)
     nom = models.CharField(max_length=150)
     image = models.ImageField(upload_to=get_List_competition_image_path, null=True, blank=True)
@@ -71,6 +95,14 @@ class List_competition(models.Model):
 
 
 class Lieu_des_competions(models.Model):
+    """_summary_
+
+    Args:
+        models (_type_): Lieux des competitions
+
+    Returns: lieux des Competitions
+        
+    """
     # Définir le champ pour la clé primaire AutoField
     pk_lieu = models.CharField(max_length=250,primary_key=True)
     Nom = models.CharField(max_length=250)
@@ -93,6 +125,14 @@ class Lieu_des_competions(models.Model):
     def __str__(self):
         return f'{self.Nom}, {self.Ville}, {self.Capacite} ,{self.Discipline.nom}'    
 class Dates_Competions(models.Model):
+    """_summary_
+
+    Args:
+        models (_type_): dates des Competitions
+
+    Returns: date des competitions
+
+    """
     # Définir le champ pour la clé primaire concaténée
     pk_date_competition = models.CharField(max_length=600, primary_key=True)
     date_debut = models.DateTimeField()
@@ -116,7 +156,15 @@ class Dates_Competions(models.Model):
 def get_competition_image_path(instance, filename):
     folder_name = instance.Nom
     return f'competition_images/{folder_name}/{filename}'
+
 class Competitions(models.Model):
+    """_summary_
+
+    Args:
+        models (_type_): les Competitions
+
+    Returns: les Competitions
+    """
     pk_typ_competition = models.CharField(max_length=1000, primary_key=True)
     Nom = models.CharField(max_length=250)
     pk_list_competition = models.ForeignKey(List_competition, on_delete=models.CASCADE)
@@ -135,13 +183,27 @@ class Competitions(models.Model):
         return self.Nom
     
 class Types(models.Model):
+    """_summary_
+
+    Args:
+        models (_type_): Types Offre
+
+    Returns: Type Offre
+        
+    """
     type =models.CharField(primary_key=True)
     def __str__(self):
         return f'{self.type}'
 
 class Offre(models.Model):
-   
+    """_summary_
 
+    Args:
+        models (_type_): Offre
+
+    Returns: Offre
+    """
+   
     pk_Offre = models.CharField(max_length=2000, primary_key=True)
     type = models.ForeignKey(Types, on_delete=models.CASCADE)
     nombre_personnes = models.IntegerField()
@@ -155,12 +217,15 @@ class Offre(models.Model):
 
     def __str__(self):
         return f'{self.pk_Offre}, {self.type}, {self.prix}, {self.competition.Nom}'
-   
     
-    
-
-
 class Billet(models.Model):
+    """_summary_
+
+    Args:
+        models (_type_):Billet
+
+    Returns: Billet Electronique
+    """
     pk_Billet = models.AutoField(primary_key=True)
     Cledebilletelectroniquesecurisee = models.CharField(max_length=50, unique=True)
     ClefUtilisateur = models.CharField(max_length=50)
@@ -181,6 +246,13 @@ class Billet(models.Model):
         return f'Billet {self.pk_Billet} pour {self.pk_typ_competition}'
 
 class Commande(models.Model):
+    """_summary_
+
+    Args:
+        models (_type_): Commande
+
+    Returns: Les commandes 
+    """
     pk_Commande = models.AutoField(primary_key=True)
     quantite = models.IntegerField()
     MontantTotal = models.FloatField()
@@ -189,9 +261,6 @@ class Commande(models.Model):
     pk_Utilisateur = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     pk_Billet = models.ForeignKey(Billet, on_delete=models.CASCADE)
     est_validee = models.BooleanField(default=False)
-
-    
-
     def __str__(self):
         return f'Commande {self.pk_Commande} pour {self.quantite} billet(s) {self.pk_Offre.type}'
 
@@ -206,9 +275,13 @@ class Commande(models.Model):
             self.pk_Billet = billet
         super().save(*args, **kwargs)
 
-
-    
+ 
 class ODS(models.Model):
+    """_summary_
+
+    Args:
+        models (_type_):ODS  ou entrepôt de données opérationnelles en français
+    """
     discipline = models.CharField(max_length=250)
     date_debut = models.DateField()
     date_fin = models.DateField()
