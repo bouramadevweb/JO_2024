@@ -14,5 +14,6 @@ urlpatterns = [
     path('administration/', views.administration, name='administration'),
     path('add_competition/', views.list_competition, name='add_competition'),
     path('update_competition/', views.list_competition, name='update_competition'),
+    path('upload_image/', views.upload_image, name='upload_image'),
     path('delete_competition/', views.list_competition, name='delete_competition'),
 ]

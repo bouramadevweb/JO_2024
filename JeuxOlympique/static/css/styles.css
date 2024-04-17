@@ -11,6 +11,13 @@ font-size: 16px;
 /* padding: 1%; */
 /* max-width: auto; */
 }
+.navbar-expand-lg{
+    background-color: #5DADE2; 
+}
+.nav-link{
+   
+    color: #f2f2f2;
+}
 #home_user {
     /* background: url('/static/images/jeuxonav.jpg');   */
     background-repeat: no-repeat;
@@ -25,47 +32,15 @@ font-size: 16px;
 
 }
 
-/* section nav {
-  text-align: center;
-  padding-bottom: 20px;
-} */
-
-#bandeau{
-    background-color: rgba(255,255,255,0.5);
-    margin-bottom: 10%;
-    margin-top: 15%;
+.competition-image {
+    width: 100%;
+    height: 200px;
+    /* Spécifiez la hauteur désirée ici */
+    object-fit: contain;
+        /* Garantit que l'image s'adapte sans déformation */    /* Pour couvrir complètement le conteneur en conservant les proportions */
 }
-#contenu{
-    text-align: center;
-     /* background-color:rgba(255, 255, 255, 0.5); */
-    /* width: 50%; */
-    padding: 0;
-}
-#contenu a{
-  color: rgb(137, 137, 240);
-  border: 1px solid red;
-  border-radius: 15px;
-  padding: 20px;
-  transition: ease 1s;
-  text-align: center;
-  text-decoration: none;
-  max-width: 3px;
-  /* background-color: rgba(170,32 ,19 , 0.8); */
-
-}
-/* #contenu img:hover{
-    transform: rotate(360deg) scale(1);
-    transition: ease 3s;
-} */
-a{
-    color: white;
-    text-decoration: none;
-    padding: 20px;
-    transition: 1s;
-}
-#contenu a:hover{
-    color: #4cb4c7;
-
+.bg-lights{
+    background-color: #f1f1f1;
 }
 
 #total-order {

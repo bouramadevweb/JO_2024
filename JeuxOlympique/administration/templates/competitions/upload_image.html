@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Ajouter une image à une compétition</title>
+    <script src="https://kit.fontawesome.com/bf80631bb4.js" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="mt-4">Ajouter une image à une compétition</h1>
+        <form action="{% url 'upload_image' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="competition" class="form-label">Sélectionnez une compétition :</label>
+                <select class="form-select" id="competition" name="competition">
+                    {% for competition in competitions %}
+               <option value="{{ competition.pk_typ_competition }}">{{ competition.Nom }} - Lieu: {{competition.pk_lieu.Nom }} ({{competition.pk_lieu.Ville }}) {{competition.pk_date_competition.date_debut|date:'Y-m-d' }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="image" class="form-label">Choisissez une image :</label>
+                <input type="file" class="form-control" id="image" name="image">
+            </div>
+            <button type="submit" class="btn btn-primary">Ajouter l'image</button>
+            <a href="{% url 'competitions' %}" class="btn btn-success">retourne a competitions</a>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

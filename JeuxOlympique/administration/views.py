@@ -55,6 +55,29 @@ def list_competition(request):
             competition = get_object_or_404(List_competition, pk=competition_id)
             competition.delete()
         return redirect('list_competition')
+    
+
+def upload_image(request):
+    if request.method == 'POST':
+        competition_id = request.POST.get('competition')
+        try:
+            competition = Competitions.objects.get(pk_typ_competition=competition_id)
+        except Competitions.DoesNotExist:
+            return HttpResponse('Compétition non trouvée.')
+        
+        image_file = request.FILES.get('image')
+        
+        # Enregistrez l'image pour la compétition sélectionnée
+        if image_file and competition:
+            competition.image = image_file
+            competition.save()
+            return HttpResponse('Image ajoutée avec succès à la compétition {}'.format(competition.Nom))
+    
+    # Récupérer toutes les compétitions pour afficher dans le formulaire déroulant
+    competitions = Competitions.objects.all()
+    
+    # Rendre le template HTML avec le contexte des compétitions
+    return render(request, 'competitions/upload_image.html', {'competitions': competitions})
   # Rediriger pour éviter les re-postages
     
 

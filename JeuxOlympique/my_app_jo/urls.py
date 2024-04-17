@@ -15,6 +15,8 @@ urlpatterns = [
     path('billet/<int:billet_id>/', views.details_billet, name='details_billet'),
     path('connexion/', views.connexion, name='connexion'),
     path('verificode',views.verificode,name='verificode'),
+    path('profile/', views.profile, name='profile'),
+    path('modifier_profile',views.modifier_profile,name='modifier_profile' ),
     path('inscription/', views.inscription, name='inscription'),
     path('deconnexion/', views.deconnexion, name='deconnexion'),
 ]

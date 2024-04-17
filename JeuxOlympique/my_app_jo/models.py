@@ -67,17 +67,18 @@ class Dates_commandes(models.Model):
 #     Fonction pour définir le chemin de téléchargement des images de compétition.
 #     """
 #     return os.path.join('competition_images', filename)
-def get_competition_image_path(instance, filename):
+def get_List_competition_image_path(instance, filename):
     # Définir le chemin de téléversement en fonction de l'ID de l'instance
     folder_name = str(instance.pk_list_competition)
-    return f'competition_images/{folder_name}/{filename}'
+    return f'List_competition_images/{folder_name}/{filename}'
+
 class List_competition(models.Model):
     pk_list_competition = models.CharField(max_length=150, primary_key=True ,unique=True)
     nom = models.CharField(max_length=150)
-    image = models.ImageField(upload_to=get_competition_image_path, null=True, blank=True)
+    image = models.ImageField(upload_to=get_List_competition_image_path, null=True, blank=True)
     
-    def get_competition_image_path(instance, filename):
-           return f'competition_images/{instance.pk_list_competition}/{filename}'
+    def get_List_competition_image_path(instance, filename):
+           return f'List_competition_images/{instance.pk_list_competition}/{filename}'
 
    
     def __str__(self):
@@ -129,13 +130,21 @@ class Dates_Competions(models.Model):
         return f'{self.pk_date_competition},{self.date_debut} ,{self.date_fin},{self.Remises_de_medailles}'
 
 
+def get_competition_image_path(instance, filename):
+    folder_name = instance.pk_typ_competition
+    return f'competition_images/{folder_name}/{filename}'
 class Competitions(models.Model):
     pk_typ_competition = models.CharField(max_length=1000, primary_key=True)
     Nom = models.CharField(max_length=250)
     pk_list_competition = models.ForeignKey(List_competition, on_delete=models.CASCADE)
     pk_date_competition = models.ForeignKey(Dates_Competions, on_delete=models.CASCADE)
     pk_lieu = models.ForeignKey(Lieu_des_competions, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to=get_competition_image_path, null=True, blank=True, max_length=455)
 
+    # def get_competition_image_path(instance, filename):
+    #        return f'competition_images/{instance.pk_typ_competition}/{filename}'
+
+   
     # def save(self, *args, **kwargs):
     #     # Vérifier si les clés étrangères ne sont pas nulles
     #     if self.pk_lieu_id is not None and self.pk_list_competition_id is not None and self.pk_date_competition_id is not None:

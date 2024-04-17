@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm,UserChangeForm
 from django.contrib import messages
-from .forms import InscriptionForm
+from .forms import InscriptionForm,CustomUserChangeForm
 # from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from .models import Offre, Commande, Competitions, User ,List_competition,Billet,Competitions,Offre
@@ -479,8 +479,23 @@ def verificode(request):
                     return redirect('inscription')
     return render(request, 'saisie_code_verification.html', {'form': form})
 
+@login_required
+def profile(request):
+    user = request.user
+    context = {'user': user}
+    return render(request, 'profile.html', context)
+@login_required
+def modifier_profile(request):
+    if request.method == 'POST':
+        form = CustomUserChangeForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Votre profil a été mis à jour avec succès !')
+            return redirect('profile')
+    else:
+        form = CustomUserChangeForm(instance=request.user)
 
-
+    return render(request, 'modifier_profile.html', {'form': form})
 def deconnexion(request):
     logout(request)
     return redirect('home')

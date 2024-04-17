@@ -54,9 +54,14 @@ class ModifierCommandeForm(forms.ModelForm):
 #         self.fields['password2'].widget.attrs.update({'class': 'form-control'})
 
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm,UserChangeForm
 from .models import User
 
+
+class CustomUserChangeForm(UserChangeForm):
+    class Meta(UserChangeForm.Meta):
+        model = User
+        fields = ('username', 'first_name', 'last_name', 'phone_number')
 class PhoneNumberField(forms.CharField):
     def __init__(self, *args, **kwargs):
         kwargs.setdefault('label', 'Numéro de téléphone')

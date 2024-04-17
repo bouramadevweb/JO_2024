@@ -20,70 +20,75 @@
 </head>
 
 <body>
-<section id="base">
-<div class="container-fluid px-2">
-<nav class="navbar navbar-expand-lg navbar-light bg-light justify-content-end">
-<a class="navbar-brand" href="/">France JO 2024</a>
-<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-<span class="navbar-toggler-icon"></span>
-</button>
+<section id="base" > 
+    <div class="container-fluid px-2">
+        <nav class="navbar navbar-expand-lg navbar-light justify-content-end">
+            <a class="navbar-brand text-white" href="/">France JO 2024</a> <!-- Ajoutez la classe text-white ici -->
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-<div class="collapse navbar-collapse" id="navbarSupportedContent">
-<ul class="navbar-nav ml-auto">
-<!-- Liens pour les utilisateurs non connectés -->
-{% if not user.is_authenticated %}
-<li class="nav-item">
-<a class="nav-link" href="{% url 'home' %}">Accueil</a>
-</li>
-<li class="nav-item">
-<a class="nav-link" href="{% url 'ventes_par_offre' %}">Ventes par offre</a>
-</li>
-<li class="nav-item">
-<a class="nav-link" href="{% url 'mes_billets' %}">Billets</a>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ml-auto">
+                    <!-- Liens pour les utilisateurs non connectés -->
+                    {% if not user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{% url 'home' %}">Accueil</a>
+                        <!-- Ajoutez la classe text-white ici -->
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{% url 'ventes_par_offre' %}">Ventes par offre</a>
+                        <!-- Ajoutez la classe text-white ici -->
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{% url 'mes_billets' %}">Billets</a>
+                        <!-- Ajoutez la classe text-white ici -->
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{% url 'inscription' %}">Inscription</a>
+                        <!-- Ajoutez la classe text-white ici -->
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{% url 'connexion' %}">Connexion</a>
+                        <!-- Ajoutez la classe text-white ici -->
+                    </li>
+                    {% endif %}
 
-</li>
-<li class="nav-item">
-<a class="nav-link" href="{% url 'inscription' %}">Inscription</a>
-</li>
-<li class="nav-item">
-<a class="nav-link" href="{% url 'connexion' %}">Connexion</a>
-</li>
-{% endif %}
-
-<!-- Lien pour tous les utilisateurs -->
-
-<!-- Lien pour les utilisateurs connectés -->
-{% if user.is_authenticated %}
-{% if request.resolver_match.url_name != 'verificode' %}
-<!-- Afficher les liens supplémentaires pour les utilisateurs connectés (sauf dans la vue de vérification du code de vérification) -->
-<li class="nav-item">
-<a class="nav-link" href="{% url 'home' %}">Accueil</a>
-</li>
-<li class="nav-item">
-<a class="nav-link" href="{% url 'choisir_ticket' %}">Choisir Ticket</a>
-</li>
-<li class="nav-item">
-<a class="nav-link" href="{% url 'voir_panier' %}">Panier d'achat</a>
-</li>
-<li class="nav-item">
-<a class="nav-link" href="{% url 'deconnexion' %}">Déconnexion</a>
-</li>
-{% endif %}
-{% endif %}
-</ul>
-
-</div>
-
-</div>
-</nav>
+                    <!-- Lien pour les utilisateurs connectés -->
+                    {% if user.is_authenticated %}
+                    {% if request.resolver_match.url_name != 'verificode' %}
+                    <!-- Afficher les liens supplémentaires pour les utilisateurs connectés (sauf dans la vue de vérification du code de vérification) -->
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{% url 'home' %}">Accueil</a>
+                        <!-- Ajoutez la classe text-white ici -->
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{% url 'choisir_ticket' %}">Choisir Ticket</a>
+                        <!-- Ajoutez la classe text-white ici -->
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{% url 'voir_panier' %}">Panier d'achat</a>
+                        <!-- Ajoutez la classe text-white ici -->
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{% url 'profile' %}">Mon compte</a>
+                        <!-- Ajoutez la classe text-white ici -->
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{% url 'deconnexion' %}">Déconnexion</a>
+                        <!-- Ajoutez la classe text-white ici -->
+                    </li>
+                    {% endif %}
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
+    </div>
 </section>
+
 
 
 {% block content %}
 {% endblock %}
 <script src="{% static 'js/ajouter_au_panier.js' %}"></script>
-</body>
-
-
-</html>

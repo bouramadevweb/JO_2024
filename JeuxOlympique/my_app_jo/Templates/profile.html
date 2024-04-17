@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} Profile{% endblock %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="jumbotron">
+                <h1 class="display-4">Bienvenue, {{ user.username }}</h1>
+                <p class="lead">Nom: {{ user.last_name }}</p>
+                <p class="lead">Prénom: {{ user.first_name }}</p>
+                <p class="lead">Téléphone: {{ user.phone_number }}</p>
+                <p class="lead">Email: {{ user.email }}</p>
+                <hr class="my-4">
+                <p class="lead">
+                    <a class="btn btn-primary btn-lg" href="{% url 'modifier_profile' %}" role="button">Modifier</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+
+</html>
+{% endblock %}
