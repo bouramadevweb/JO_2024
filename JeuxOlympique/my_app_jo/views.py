@@ -112,7 +112,7 @@ def ajouter_au_panier(request):
                         print(f"Commande créée avec succès pour l'offre {offre_id}")
 
                 messages.success(request, "Les offres ont été ajoutées au panier.")
-                return redirect('voir_panier')  # Redirection vers 'voir_panier' après un ajout réussi au panier
+                return redirect('voir_panier')  
         except Exception as e:
             messages.error(request, f"Une erreur s'est produite lors de la validation de la commande : {str(e)}")
             print(f"Erreur lors de la validation de la commande : {str(e)}")

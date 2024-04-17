@@ -1,7 +1,7 @@
 # Dans admin.py
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import User, Offre,Types, Dates_commandes, List_competition, Lieu_des_competions, Dates_Competions, Competitions, Billet, Commande, ODS, Code
+from .models import User, Offre,Types, List_competition, Lieu_des_competions, Dates_Competions, Competitions, Billet, Commande, ODS, Code
 from .forms import CustomUserCreationForm
 
 # Enregistrement des modèles dans l'interface d'administration
@@ -46,4 +46,3 @@ class ODSAdmin(admin.ModelAdmin):
     def has_change_permission(self, request, obj=None):
         return False            
 admin.site.register(User, CustomUserAdmin)
-admin.site.register(Dates_commandes)

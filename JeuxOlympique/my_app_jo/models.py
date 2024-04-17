@@ -51,12 +51,7 @@ class Code(models.Model):
         # Fonction pour vérifier le code et mettre à jour est_validee
         self.est_validee = True
         self.save()    
-class Dates_commandes(models.Model):
-    pk_date = models.DateTimeField(primary_key=True)
 
-    def __str__(self):
-        return f'{self.pk_date}'
-    
 def get_List_competition_image_path(instance, filename):
     # Définir le chemin de téléversement en fonction de l'ID de l'instance
     folder_name = str(instance.pk_list_competition)
