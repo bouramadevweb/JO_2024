@@ -14,17 +14,12 @@ from django.shortcuts import render
 from datetime import datetime ,timezone
 import qrcode, base64
 from django.http import HttpResponse
-# from django.db.models import Count, Sum,Q
-# import secrets
+
 import string
 import random
 from django.views.decorators.csrf import csrf_exempt
-# from django.core.mail import send_mail
 from django.contrib.auth.models import User
-# from django.utils.crypto import get_random_string
 from .models import User ,Code
-# from django.db.models.signals import post_save
-# from django.dispatch import receiver
 from .forms import VerificationCodeForm
 from io import BytesIO
 from .forms import BootstrapAuthenticationForm

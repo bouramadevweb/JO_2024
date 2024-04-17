@@ -78,33 +78,6 @@ def upload_image(request):
     
     # Rendre le template HTML avec le contexte des compétitions
     return render(request, 'competitions/upload_image.html', {'competitions': competitions})
-  # Rediriger pour éviter les re-postages
-    
-
-# def lieu_competition(request):
-#     if request.method == 'POST':
-#         # Gérer les opérations CRUD
-#         if 'add' in request.POST:
-#             form = LieuDesCompetionsForm(request.POST)
-#             if form.is_valid():
-#                 form.save()
-#         elif 'update' in request.POST:
-#             lieu_id = request.POST.get('id')
-#             lieu = get_object_or_404(Lieu_des_competions, pk=lieu_id)
-#             form = LieuDesCompetionsForm(request.POST, instance=lieu)
-#             if form.is_valid():
-#                 form.save()
-#                 return redirect('lieux_competitions/lieu_competitions')
-#         elif 'delete' in request.POST:
-#             lieu_id = request.POST.get('id')
-#             lieu = get_object_or_404(Lieu_des_competions, pk=lieu_id)
-#             lieu.delete()
-#         return redirect('lieux_competitions/lieu_competitions')  # Rediriger pour éviter les re-postages
-#     else:
-#         lieu_competition = Lieu_des_competions.objects.all()
-        
-#         form = LieuDesCompetionsForm()
-#         return render(request, 'lieux_competitions/lieu_competitions.html', {'lieu_competition': lieu_competition, 'form': form})
 
 def lieu_competition(request):
     if request.method == 'GET':
@@ -161,14 +134,7 @@ def dates_competitions(request):
             date_competition = get_object_or_404(Dates_Competions, pk=date_competition_id)
             date_competition.delete()
         return redirect('dates_competitions/dates_competitions')  # Rediriger pour éviter les re-postages
-    # else:
-    #     dates_competitions = Dates_Competions.objects.all().annotate(
-    #         cleaned_pk_date_competition=clean_primary_key('pk_date_competition')
-    #     )
-    #     form = DatesCompetitionsForm()
-    #     return render(request, 'dates_competitions/dates_competitions.html', {'dates_competitions': dates_competitions, 'form': form})
-
-
+    
 
 
 def competitions(request):
@@ -288,10 +254,9 @@ def commandes(request):
             form = CommandeForm(request.POST, instance=commande)
             if form.is_valid():
                 form.save()
-                return redirect('commandes')  # Redirection après modification
+                return redirect('commandes')  
         elif 'delete' in request.POST:
             commande_id = request.POST.get('id')
             commande = get_object_or_404(Commande, pk=commande_id)
             commande.delete()
-        return redirect('commandes')  # Redirection après ajout ou suppression
-    # else:
+        return redirect('commandes')  
