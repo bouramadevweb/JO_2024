@@ -7,13 +7,18 @@ from django.db.models.functions import Replace
 from django.core.paginator import Paginator
 from django.db.models import Count, Sum,Q
 
+"""Gestion administration de ce sites ici """
 def clean_primary_key(value):
     return Replace(Replace(Replace(value, Value(','), Value('')), Value(';'), Value('')), Value('.'), Value(''))
 
 def administration(request):
+    """administration 
+    """
     return render(request, 'status.html')
 
 def ventes_par_offre(request):
+    """Vente par offres
+    """
     # Récupérer les offres avec le nombre de ventes pour chaque offre
     ventes_par_offre = Offre.objects.annotate(
         nombre_ventes=Count('commande', filter=Q(commande__est_validee=True)),
@@ -30,6 +35,8 @@ def ventes_par_offre(request):
     
 
 def list_competition(request):
+    """ list des competion
+    """
     if request.method == 'GET':
         list_competition = List_competition.objects.all()
         paginator = Paginator(list_competition, 10)
@@ -58,6 +65,8 @@ def list_competition(request):
     
 
 def upload_image(request):
+    """ gestion insertion image pour competitions
+    """
     if request.method == 'POST':
         competition_id = request.POST.get('competition')
         try:
@@ -80,6 +89,8 @@ def upload_image(request):
     return render(request, 'competitions/upload_image.html', {'competitions': competitions})
 
 def lieu_competition(request):
+    """Lieu Competion
+    """
     if request.method == 'GET':
         lieu_competition = Lieu_des_competions.objects.all()
         paginator = Paginator(lieu_competition, 10)  # Paginer par 10 éléments par page
@@ -106,6 +117,8 @@ def lieu_competition(request):
         return redirect('lieu_competition')
     
 def dates_competitions(request):
+    """Dates Competitions
+    """
     if request.method == 'GET':
         dates_competitions = Dates_Competions.objects.all().annotate(
             cleaned_pk_date_competition=clean_primary_key('pk_date_competition')
@@ -138,6 +151,8 @@ def dates_competitions(request):
 
 
 def competitions(request):
+    """Competitions
+    """
     if request.method == 'GET':
         competitions = Competitions.objects.all()
         paginator =Paginator(competitions,10)
@@ -165,6 +180,8 @@ def competitions(request):
             return redirect('competitions')  # Rediriger vers la même page après la suppression
     # else:
 def types(request):
+    """ types Offre pour commande
+    """
     if request.method == 'GET':
         types = Types.objects.all()
         paginator = Paginator(types,10)
@@ -192,6 +209,8 @@ def types(request):
     
 
 def offres(request):
+    """Offre
+    """
     if request.method == 'GET':
         offres = Offre.objects.all()
         paginator = Paginator(offres, 10)
@@ -235,6 +254,8 @@ def offres(request):
         return redirect('offres')
 
 def commandes(request):
+    """Commande
+    """
     if request.method=='GET':
         commandes =Commande.objects.all()
         paginator = Paginator(commandes,10)
