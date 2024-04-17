@@ -13,6 +13,7 @@ from django.db import transaction
 from django.shortcuts import render
 from datetime import datetime ,timezone
 import qrcode, base64
+from django.http import HttpResponse
 # from django.db.models import Count, Sum,Q
 # import secrets
 import string
@@ -148,6 +149,53 @@ def payer_commande(request, commande_id):
         montant_total = commande.MontantTotal if commande else 0  
         return render(request, 'payer_commande.html', {'commande_id': commande_id , 'montant_total': montant_total})
 @login_required
+# def modifier_commande(request, commande_id):
+#     # Récupérer la commande correspondante
+#     commande = get_object_or_404(Commande, pk=commande_id)
+
+#     if request.method == 'POST':
+#         # Traitement des requêtes POST
+#         type_offre_id = request.POST.get('offre_id')
+#         quantite = int(request.POST.get('quantite'))
+
+#         # Récupérer l'offre correspondante
+#         offre = get_object_or_404(Offre, pk=type_offre_id)
+
+#         # Calculer le montant total de la commande
+#         montant_total = offre.prix * quantite
+
+#         # Mettre à jour la commande avec les nouvelles données
+#         Commande.objects.filter(pk=commande_id).update(
+#             pk_Offre=offre.pk_Offre,
+#             quantite=quantite,
+#             MontantTotal=montant_total
+#         )
+
+#         # Rediriger vers une autre vue après la modification
+#         return redirect('voir_panier')
+#     else:
+#         # Traitement des requêtes GET
+#         # Récupérer l'ID de la compétition sélectionnée par l'utilisateur (s'il y en a une)
+#         competition_id = request.GET.get('competition')
+
+#         # Sélectionner toutes les compétitions disponibles
+#         competitions = Competitions.objects.select_related('pk_lieu').all()
+
+#         # Sélectionner les offres en fonction de la compétition sélectionnée, ou toutes les offres si aucune compétition n'est sélectionnée
+#         if competition_id:
+#             offres = Offre.objects.filter(competition_id=competition_id)
+#         else:
+#             offres = Offre.objects.all()
+
+#         # Rendre le template avec les données nécessaires
+#         return render(request, 'modifier_commande.html', {
+#             'commande': commande,
+#             'offres': offres,
+#             'competitions': competitions,
+#             'selected_competition_id': competition_id  # Passer l'ID de la compétition sélectionnée au modèle
+#         })
+    
+
 def modifier_commande(request, commande_id):
     # Récupérer la commande correspondante
     commande = get_object_or_404(Commande, pk=commande_id)
@@ -155,7 +203,20 @@ def modifier_commande(request, commande_id):
     if request.method == 'POST':
         # Traitement des requêtes POST
         type_offre_id = request.POST.get('offre_id')
-        quantite = int(request.POST.get('quantite'))
+        quantite_str = request.POST.get('quantite')
+
+        # Débogage
+        print("Valeur de quantite_str :", quantite_str)
+
+        if quantite_str:
+            try:
+                quantite = int(quantite_str)
+            except ValueError:
+                # Gérer le cas où la quantité n'est pas un entier valide
+                return HttpResponse("La quantité doit être un entier.")
+        else:
+            # Gérer le cas où la clé 'quantite' n'est pas présente dans la requête POST
+            return HttpResponse("La quantité n'a pas été spécifiée.")
 
         # Récupérer l'offre correspondante
         offre = get_object_or_404(Offre, pk=type_offre_id)
@@ -164,11 +225,10 @@ def modifier_commande(request, commande_id):
         montant_total = offre.prix * quantite
 
         # Mettre à jour la commande avec les nouvelles données
-        Commande.objects.filter(pk=commande_id).update(
-            pk_Offre=offre.pk_Offre,
-            quantite=quantite,
-            MontantTotal=montant_total
-        )
+        commande.pk_Offre = offre
+        commande.quantite = quantite
+        commande.MontantTotal = montant_total
+        commande.save()
 
         # Rediriger vers une autre vue après la modification
         return redirect('voir_panier')
@@ -193,7 +253,9 @@ def modifier_commande(request, commande_id):
             'competitions': competitions,
             'selected_competition_id': competition_id  # Passer l'ID de la compétition sélectionnée au modèle
         })
-    
+
+
+
 def supprimer_commande(request, commande_id):
     commande = Commande.objects.get(pk=commande_id)
     commande.delete()

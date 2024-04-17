@@ -6,10 +6,10 @@
 <section id="voir_panier">
 
 <div class="container-fluid px-3">
-<h1 class="mt-5 mb-4">Panier</h1>
-
-
-<div class="row">
+    
+    <h1 class="mt-5 mb-4 px-5">Panier</h1>
+    
+    <div class="row">
 {% for commande in commandes %}
 {% if not commande.est_validee %}
 <div class="col-md-5 mb-1 px-5">

@@ -102,9 +102,7 @@ class Lieu_des_competions(models.Model):
         # Si l'objet n'a pas encore de clé primaire, créez-en une en utilisant les valeurs des champs spécifiés
         if not self.pk:
             
-            self.pk_lieu = "_".join([str(self.Ville),str(self.Nom.strip()),
-                                    str(self.Capacite),
-                                    str(self.Discipline.pk_list_competition.strip())])
+            self.pk_lieu = "_".join([str(self.Ville),str(self.Nom.strip()),str(self.Capacite),str(self.Discipline.pk_list_competition.strip())]).replace(',', '').replace(';', '').replace(' ', '').replace('-', '')
         super().save(*args, **kwargs)
     
     def __str__(self):
@@ -123,7 +121,7 @@ class Dates_Competions(models.Model):
         self.pk_date_competition = "_".join([str(self.pk_list_competition.pk_list_competition),
                                              str(self.pk_lieu.pk_lieu),str(self.date_debut),
                                              str(self.date_fin),
-                                             str(self.Remises_de_medailles)])
+                                             str(self.Remises_de_medailles)]).replace(',', '').replace(';', '').replace(' ', '').replace('-', '')
         super().save(*args, **kwargs)
     
     def __str__(self):
@@ -131,7 +129,7 @@ class Dates_Competions(models.Model):
 
 
 def get_competition_image_path(instance, filename):
-    folder_name = instance.pk_typ_competition
+    folder_name = instance.Nom
     return f'competition_images/{folder_name}/{filename}'
 class Competitions(models.Model):
     pk_typ_competition = models.CharField(max_length=1000, primary_key=True)
