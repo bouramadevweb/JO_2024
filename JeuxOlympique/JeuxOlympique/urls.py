@@ -26,10 +26,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('my_app_jo.urls')),
     path('administration/', include('administration.urls')),
-    path('<path:unknown_path>', RedirectView.as_view(url='/'), name='catchall_redirect'),
+    # path('<path:unknown_path>', RedirectView.as_view(url='/'), name='catchall_redirect'),
 
    
  ] 
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

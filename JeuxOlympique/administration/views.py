@@ -1,21 +1,98 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from my_app_jo.models import List_competition, Lieu_des_competions, Dates_Competions,Competitions,Offre,Commande,Types
+from my_app_jo.models import List_competition, Lieu_des_competions, Dates_Competions,Competitions,Offre,Commande,Types,User
 from administration.form import TypesForm,ListCompetitionForm, LieuDesCompetionsForm, DatesCompetitionsForm,CompetitionForm,CommandeForm,OffreForm
 from django.http import HttpResponse
 from django.db.models import Value
 from django.db.models.functions import Replace
 from django.core.paginator import Paginator
 from django.db.models import Count, Sum,Q
+from django.contrib.auth.models import User
+from my_app_jo.models import User as Users
+from django.views.generic import ListView ,DetailView,CreateView,UpdateView,DeleteView
+from django.urls import reverse_lazy
+from .form import AdminInscriptionForm
+from django.contrib.auth import login,authenticate
+from django.contrib.auth.forms import AuthenticationForm
+from .form import CustomAuthenticationForm,BootstrapAuthenticationForm
+from django.contrib.auth import authenticate, login as auth_login  
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth import logout
+
+
 
 """Gestion administration de ce sites ici """
+
+
+def login(request):
+    if request.method == 'POST':
+        form = CustomAuthenticationForm(request, request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                auth_login(request, user)  
+                return redirect('administration')  
+    else:
+        form = BootstrapAuthenticationForm()
+    return render(request, 'admin/login.html', {'form': form})
+
+def deconnexion(request):
+    """la deconnexion
+    """
+    logout(request)
+    return redirect('login')
+
+@user_passes_test(lambda u: u.is_superuser, login_url='/votre-url-de-redirection/')
+def users(request):
+    if request.method == 'GET':
+        users = Users.objects.all() 
+        paginator = Paginator(users, 10)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        form = UserCreationForm()
+        return render(request, 'admin/users.html', {'page_obj': page_obj, 'form': form})
+
+    elif request.method == 'POST':
+        if 'add' in request.POST:
+            form = UserCreationForm(request.POST)
+            if form.is_valid():
+                form.save()
+                return redirect('admin/users')
+        elif 'update' in request.POST:
+            user_id = request.POST.get('id')
+            user = get_object_or_404(User, pk=user_id)
+            form = UserChangeForm(request.POST, instance=user)
+            if form.is_valid():
+                form.save()
+                return redirect('admin/users')
+        elif 'delete' in request.POST:
+            user_id = request.POST.get('id')
+            user = get_object_or_404(User, pk=user_id)
+            user.delete()
+            return redirect('admin/users')
+        
+class AdminCreateView(CreateView):
+    form_class = AdminInscriptionForm
+    template_name = 'admin/user_form.html'  
+    success_url = reverse_lazy('admin_dashboard')
+    @user_passes_test(lambda u: u.is_superuser, login_url='/votre-url-de-redirection/')
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+
+
+
 def clean_primary_key(value):
     return Replace(Replace(Replace(value, Value(','), Value('')), Value(';'), Value('')), Value('.'), Value(''))
 
+@user_passes_test(lambda u: u.is_superuser, login_url='/votre-url-de-redirection/')
 def administration(request):
     """administration 
     """
     return render(request, 'status.html')
 
+@user_passes_test(lambda u: u.is_superuser, login_url='/votre-url-de-redirection/')
 def ventes_par_offre(request):
     """Vente par offres
     """
@@ -33,13 +110,13 @@ def ventes_par_offre(request):
     return render(request, 'commandes/ventes_par_offre.html', {'ventes_par_offre': ventes_par_offre})
 
     
-
+@user_passes_test(lambda u: u.is_superuser, login_url='/votre-url-de-redirection/')
 def list_competition(request):
     """ list des competion
     """
     if request.method == 'GET':
         list_competition = List_competition.objects.all()
-        paginator = Paginator(list_competition, 10)
+        paginator = Paginator(list_competition,10)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
         form = ListCompetitionForm()
@@ -63,7 +140,7 @@ def list_competition(request):
             competition.delete()
         return redirect('list_competition')
     
-
+@user_passes_test(lambda u: u.is_superuser, login_url='/votre-url-de-redirection/')
 def upload_image(request):
     """ gestion insertion image pour competitions
     """
@@ -88,12 +165,13 @@ def upload_image(request):
     # Rendre le template HTML avec le contexte des compétitions
     return render(request, 'competitions/upload_image.html', {'competitions': competitions})
 
+@user_passes_test(lambda u: u.is_superuser, login_url='/votre-url-de-redirection/')
 def lieu_competition(request):
     """Lieu Competion
     """
     if request.method == 'GET':
         lieu_competition = Lieu_des_competions.objects.all()
-        paginator = Paginator(lieu_competition, 10)  # Paginer par 10 éléments par page
+        paginator = Paginator(lieu_competition,10)  # Paginer par 10 éléments par page
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
         form = LieuDesCompetionsForm()
@@ -116,6 +194,7 @@ def lieu_competition(request):
             lieu.delete()
         return redirect('lieu_competition')
     
+@user_passes_test(lambda u: u.is_superuser, login_url='/votre-url-de-redirection/')
 def dates_competitions(request):
     """Dates Competitions
     """
@@ -149,7 +228,7 @@ def dates_competitions(request):
         return redirect('dates_competitions/dates_competitions')  # Rediriger pour éviter les re-postages
     
 
-
+@user_passes_test(lambda u: u.is_superuser, login_url='/votre-url-de-redirection/')
 def competitions(request):
     """Competitions
     """
@@ -172,13 +251,14 @@ def competitions(request):
             form = CompetitionForm(request.POST, instance=competition)
             if form.is_valid():
                 form.save()
-                return redirect('competitions')  # Rediriger vers la même page après la modification
+                return redirect('competitions')  
         elif 'delete' in request.POST:
             competition_id = request.POST.get('id')
             competition = get_object_or_404(Competitions, pk=competition_id)
             competition.delete()
-            return redirect('competitions')  # Rediriger vers la même page après la suppression
-    # else:
+            return redirect('competitions')  
+        
+@user_passes_test(lambda u: u.is_superuser, login_url='/votre-url-de-redirection/')
 def types(request):
     """ types Offre pour commande
     """
@@ -207,13 +287,13 @@ def types(request):
             types.delete()
         return redirect('types')
     
-
+@user_passes_test(lambda u: u.is_superuser, login_url='/votre-url-de-redirection/')
 def offres(request):
     """Offre
     """
     if request.method == 'GET':
         offres = Offre.objects.all()
-        paginator = Paginator(offres, 10)
+        paginator = Paginator(offres,10)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
         page_objs = Types.objects.all()
@@ -252,7 +332,8 @@ def offres(request):
             offre = get_object_or_404(Offre, pk=offre_id)
             offre.delete()
         return redirect('offres')
-
+    
+@user_passes_test(lambda u: u.is_superuser, login_url='/votre-url-de-redirection/')
 def commandes(request):
     """Commande
     """

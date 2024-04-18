@@ -1,12 +1,66 @@
 from dataclasses import field
 from django import forms
 from my_app_jo.models import List_competition,Lieu_des_competions,Dates_Competions,Competitions,Offre,Commande, Types
+from django.contrib.auth.forms import UserCreationForm
+from my_app_jo.models import User
+from django.contrib.auth.forms import AuthenticationForm
 
+from django import forms
+from django.contrib.auth.forms import AuthenticationForm
+
+class CustomAuthenticationForm(AuthenticationForm):
+    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nom d\'utilisateur'}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Mot de passe'}))
+
+class BootstrapAuthenticationForm(AuthenticationForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['username'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Nom d\'utilisateur'})
+        self.fields['password'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Mot de passe'})
+        
+class AdminInscriptionForm(UserCreationForm):
+    accept_conditions = forms.BooleanField(label="J'accepte les conditions d'inscription", required=True)
+    is_superuser = forms.BooleanField(label="Administrateur", required=True)
+    phone_number = forms.CharField(label="Numéro de téléphone", max_length=12)
+
+    class Meta:
+        model = User
+        fields = ['username', 'last_name', 'first_name', 'email', 'phone_number', 'password1', 'password2','is_superuser']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['username'].widget.attrs.update({'class': 'form-control'})
+        self.fields['last_name'].widget.attrs.update({'class': 'form-control'})
+        self.fields['first_name'].widget.attrs.update({'class': 'form-control'})
+        self.fields['email'].widget.attrs.update({'class': 'form-control'})
+        self.fields['phone_number'].widget.attrs.update({'class': 'form-control'})
+        self.fields['password1'].widget.attrs.update({'class': 'form-control'})
+        self.fields['password2'].widget.attrs.update({'class': 'form-control'})
+        self.fields['is_superuser'].widget.attrs.update({'class': 'form-control'})
+
+class InscriptionForm(UserCreationForm):
+    accept_conditions = forms.BooleanField(label="J'accepte les conditions d'inscription", required=True)
+    phone_number = forms.CharField(max_length=12)
+
+    class Meta:
+        model = User
+        fields = ['username', 'last_name', 'first_name', 'email', 'phone_number', 'password1', 'password2','is_superuser']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['username'].widget.attrs.update({'class': 'form-control'})
+        self.fields['last_name'].widget.attrs.update({'class': 'form-control'})
+        self.fields['first_name'].widget.attrs.update({'class': 'form-control'})
+        self.fields['email'].widget.attrs.update({'class': 'form-control'})
+        self.fields['phone_number'].widget.attrs.update({'class': 'form-control'})
+        self.fields['password1'].widget.attrs.update({'class': 'form-control'})
+        self.fields['password2'].widget.attrs.update({'class': 'form-control'})
+        self.fields['is_superuser'].widget.attrs.update({'class': 'form-control'})
+        
 class ListCompetitionForm(forms.ModelForm):
     class Meta:
         model = List_competition
         fields = ['nom', 'image']
-
 
 class LieuDesCompetionsForm(forms.ModelForm):
     class Meta:
@@ -18,19 +72,6 @@ class DatesCompetitionsForm(forms.ModelForm):
         model = Dates_Competions
         fields = '__all__' 
 
-# class CompetitionForm(forms.ModelForm):
-#     class Meta:
-#         model = Competitions
-#         fields = ['Nom','pk_list_competition', 'pk_date_competition', 'pk_lieu']
-#         labels = {
-#             'Nom': 'Nom de la compétition',
-#             'pk_date_competition': 'Date de la compétition',
-#             'pk_lieu': 'Lieu de la compétition'
-#         }
-#         widgets = {
-#             'pk_date_competition': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
-#             'pk_lieu': forms.TextInput(attrs={'class': 'form-control'}),
-        # }
 
 class CompetitionForm(forms.ModelForm):
     class Meta:

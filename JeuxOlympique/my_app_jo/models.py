@@ -29,6 +29,7 @@ class User(AbstractUser):
 
     def __str__(self):
         return f'{self.Nom}, {self.Prenom}'
+    
 class Code(models.Model):
     """_summary_
 

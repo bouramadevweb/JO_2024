@@ -4,6 +4,8 @@ from django.conf import settings
 from django.conf.urls import static
 from . import views
 from django.views.generic.base import RedirectView
+from django.conf.urls.static import static
+from django.conf import settings
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -23,5 +25,7 @@ urlpatterns = [
     path('deconnexion/', views.deconnexion, name='deconnexion'),
 
 ]
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+# urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 handler404 = 'my_app_jo.views.handler404'

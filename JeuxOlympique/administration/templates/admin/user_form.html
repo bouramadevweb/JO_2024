@@ -1,0 +1,73 @@
+{% include 'status.html' %}
+{% block title %} {% endblock %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Créer un utilisateur</title>
+    <!-- Inclure les fichiers CSS de Bootstrap -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="mt-5">Créer un utilisateur</h1>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="id_username">Nom d'utilisateur</label>
+                <input type="text" class="form-control" id="id_username" name="username" required>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="id_first_name">Prénom</label>
+                    <input type="text" class="form-control" id="id_first_name" name="first_name" required>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="id_last_name">Nom</label>
+                    <input type="text" class="form-control" id="id_last_name" name="last_name" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="id_email">Email</label>
+                <input type="email" class="form-control" id="id_email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="id_phone_number">Numéro de téléphone</label>
+                <input type="text" class="form-control" id="id_phone_number" name="phone_number" required>
+            </div>
+            <div class="form-group">
+                <label for="id_password1">Mot de passe</label>
+                <input type="password" class="form-control" id="id_password1" name="password1" required>
+            </div>
+            <div class="form-group">
+                <label for="id_password2">Confirmer le mot de passe</label>
+                <input type="password" class="form-control" id="id_password2" name="password2" required>
+            </div>
+            <div class="form-group form-check">
+                <input type="checkbox" class="form-check-input" id="id_accept_conditions" name="accept_conditions"
+                    required>
+                <label class="form-check-label" for="is_superuser">Admin</label>
+            </div>
+            <div class="form-group form-check">
+                <input type="checkbox" class="form-check-input" id="id_accept_conditions" name="accept_conditions"
+                    required>
+                <label class="form-check-label" for="id_accept_conditions">J'accepte les conditions
+                    d'inscription</label>
+            </div>
+            <button type="submit" class="btn btn-primary">Créer</button>
+        </form>
+    </div>
+
+    <!-- Inclure le script JavaScript de Bootstrap (facultatif si vous n'utilisez pas de fonctionnalités JavaScript de Bootstrap) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>
+{% endblock %}
