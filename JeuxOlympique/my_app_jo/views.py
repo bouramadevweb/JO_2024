@@ -283,7 +283,7 @@ def mes_billets(request):
         # Vérifier si une commande existe pour ce billet et si elle est valide
         if commande and commande.est_validee:
             # Créer le contenu du QR code avec la clé utilisateur et la clé du billet
-            qr_content = f"{billet.ClefUtilisateur}{billet.Cledebilletelectroniquesecurisee} {commande.pk_Utilisateur.first_name} {commande.pk_Utilisateur.last_name}"
+            qr_content = f"{billet.ClefUtilisateur}{billet.Cledebilletelectroniquesecurisee} {commande.pk_Utilisateur.first_name} {commande.pk_Utilisateur.last_name} {commande.pk_Utilisateur.username}"
             
             # Générer le QR code
             qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)
@@ -415,6 +415,15 @@ def deconnexion(request):
     """
     logout(request)
     return redirect('home')
+
+def offres(request):
+    """Offre
+    """
+    if request.method == 'GET':
+        offres = Offre.objects.all()
+       
+        # competitions = Competitions.objects.all()
+        return render(request, 'offres.html', {'offres': offres})
 
 def handler404(request, exception):
     return render(request, '404.html', status=404)

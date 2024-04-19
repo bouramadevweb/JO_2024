@@ -1,32 +1,30 @@
 {% extends 'base.html' %}
-{% block title %}Billet {% endblock %}
+
+{% block title %}Détails du Billet{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-<h1 class="mt-5 mb-4">Détails du Billet</h1>
-<div class="card">
-<div class="card-body">
-<p class="card-text"><strong>Clé de billet électronique sécurisée:</strong> {{ billet.Cledebilletelectroniquesecurisee }}</p>
-<p class="card-text"><strong>Clef Utilisateur:</strong> {{ billet.ClefUtilisateur }}</p> 
-<p class="card-text"><strong>Compétition:</strong> {{ billet.pk_typ_competition.Nom }}</p>
-<p class="card-text"><strong> Validé :</strong>{% if  billet.est_validee  %} <i> oui </i> {% endif %}</p>
-{% if nom_utilisateur %}
-<p class="card-text"><strong>Nom:</strong> {{ nom_utilisateur }}</p>
-{% endif %}
-{% if type_offre %}
-<p class="card-text"><strong>Type d'Offre:</strong> {{ type_offre }}</p>
-{% endif %}
-{% if montant_total_commande %}
-<p class="card-text"><strong>Montant Total de la Commande:</strong> {{ montant_total_commande }}</p>
-{% endif %}
+<div class="container mt-5">
+    <h1 class="mb-4">Détails du Billet</h1>
+    <div class="card">
+        <div class="card-body">
+            <p class="card-text"><strong>Compétition:</strong> {{ billet.pk_typ_competition.Nom }}</p>
+            <p class="card-text"><strong>Validé :</strong>{% if billet.est_validee %} <i>oui</i> {% else %} <i>non</i>
+                {% endif %}</p>
+            {% if nom_utilisateur %}
+            <p class="card-text"><strong>Nom:</strong> {{ nom_utilisateur }}</p>
+            {% endif %}
+            {% if type_offre %}
+            <p class="card-text"><strong>Type d'Offre:</strong> {{ type_offre }}</p>
+            {% endif %}
+            {% if montant_total_commande %}
+            <p class="card-text"><strong>Montant Total de la Commande:</strong> {{ montant_total_commande }}</p>
+            {% endif %}
+        </div>
+    </div>
+    <div class="container mt-4">
+        <h2>Code QR</h2>
+        <!-- Affichage du QR code -->
+        <img src="data:image/png;base64,{{ qr_image }}" class="img-fluid" alt="QR Code">
+    </div>
 </div>
-<div class="container">
-<h2>Code QR</h2>
-<!-- Affichage du QR code -->
-<img src="data:image/png;base64,{{ qr_image }}" alt="QR Code">
-</div>
-</div>
-</div>    
-
-
 {% endblock %}

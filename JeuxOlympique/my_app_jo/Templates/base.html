@@ -37,14 +37,7 @@
                         <a class="nav-link text-white" href="{% url 'home' %}">Accueil</a>
                         <!-- Ajoutez la classe text-white ici -->
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white" href="{% url 'ventes_par_offre' %}">Ventes par offre</a>
-                        <!-- Ajoutez la classe text-white ici -->
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white" href="{% url 'mes_billets' %}">Billets</a>
-                        <!-- Ajoutez la classe text-white ici -->
-                    </li>
+                  
                     <li class="nav-item">
                         <a class="nav-link text-white" href="{% url 'inscription' %}">Inscription</a>
                         <!-- Ajoutez la classe text-white ici -->
@@ -54,13 +47,17 @@
                         <!-- Ajoutez la classe text-white ici -->
                     </li>
                     {% endif %}
-
+                    
                     <!-- Lien pour les utilisateurs connectés -->
                     {% if user.is_authenticated %}
                     {% if request.resolver_match.url_name != 'verificode' %}
                     <!-- Afficher les liens supplémentaires pour les utilisateurs connectés (sauf dans la vue de vérification du code de vérification) -->
                     <li class="nav-item">
                         <a class="nav-link text-white" href="{% url 'home' %}">Accueil</a>
+                        <!-- Ajoutez la classe text-white ici -->
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{% url 'mes_billets' %}">Billets</a>
                         <!-- Ajoutez la classe text-white ici -->
                     </li>
                     <li class="nav-item">

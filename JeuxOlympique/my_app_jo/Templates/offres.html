@@ -1,0 +1,27 @@
+<!-- offres.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Offres{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Liste des offres</h2>
+    <div class="row">
+        {% for offre in offres %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ offre.competition}}</h5>
+                    <p class="card-text">Type: {{ offre.type }}</p>
+                    <p class="card-text">lieux: {{ offre.competition.pk_lieu.Nom }}</p>
+                    <p class="card-text">Nombre de personnes: {{ offre.nombre_personnes }}</p>
+                    <p class="card-text">Prix: {{ offre.prix }} EURO</p>
+                    <p class="card-text">Compétition: {{ offre.competition.Nom }}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
