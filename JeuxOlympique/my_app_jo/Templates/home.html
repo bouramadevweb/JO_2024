@@ -30,7 +30,7 @@
             {% for competition in competitions %}
             <div class="col-md-4 mb-4">
                 <div class="card h-100">
-                    <img src="{{ competition.image }}" class="card-img-top competition-image"
+                    <img src="{{ competition.image.url }}" class="card-img-top competition-image"
                         alt="Competition Image">
                     <div class="card-body">
                         <h5 class="card-title">{{ competition.Nom }}</h5>
@@ -48,6 +48,7 @@
     </div>
 
 </section>
+{% include "footer.html" %}
 
 <style>
  .bandeau::before {
@@ -69,26 +70,6 @@
 
 </style>
 
-<script>
-    window.addEventListener('load', function () {
-            // Sélectionnez toutes les balises d'images sur la page
-            var images = document.querySelectorAll('img');
-
-            // Parcourez chaque image
-            images.forEach(function (img) {
-                // Vérifiez si l'attribut src contient une valeur
-                if (img.src) {
-                    // Préchargez l'image en créant un nouvel objet Image
-                    var imageToLoad = new Image();
-                    imageToLoad.src = img.src;
-                    // Attendez que l'image soit chargée avant de l'afficher
-                    imageToLoad.onload = function () {
-                        img.classList.add('loaded'); // Ajoutez une classe CSS pour indiquer que l'image est chargée
-                    };
-                }
-            });
-        });
-
-</script>
+<script src="{% static 'js/home.js' %}"></script>
 
 {% endblock %}

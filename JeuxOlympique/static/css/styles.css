@@ -7,6 +7,24 @@ html{
 font-family: 'Courier New', Courier, monospace, Helvetica, sans-serif;
 font-size: 16px;
 }
+.bandeau::before {
+    content: "";
+    position: absolute;
+    top: 7%;
+    left: 0;
+    width: 100%;
+    height: 60%;
+    background-color: rgba(255, 255, 255, 0.5);
+    z-index: 1;
+}
+
+.bandeau img {
+    position: relative;
+    z-index: 0;
+    filter: brightness(100%);
+}
+
+ 
 
 .navbar-expand-lg{
     background-color: #5DADE2; 

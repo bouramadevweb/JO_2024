@@ -12,11 +12,11 @@
 <p>Numéro de commande : {{ commande.pk_Commande }}</p>
 <p>Quantité : {{ commande.quantite }}</p>
 <p>Montant total : {{ commande.MontantTotal }}</p>
-<!-- Ajoutez les détails du billet ici -->
 <h2>Détails du billet :</h2>
 <p>Clef du billet électronique :{{ commande.pk_Billet.Cledebilletelectroniquesecurisee }}</p>
 <p>Clef du billet : {{ commande.pk_Billet.ClefBillet }}</p>
 <p>Clef de sécurité : {{ commande.pk_Billet.ClefSecurite }}</p>
 </body>
 </html>
+{% include "footer.html" %}
 

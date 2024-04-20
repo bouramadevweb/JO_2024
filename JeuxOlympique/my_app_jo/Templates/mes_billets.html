@@ -4,24 +4,26 @@
 
 {% block content %}
 <section id="mes_billet" class="py-4">
-<div class="container-fluid">
-<h1 class="mb-4">Tous les billets</h1>
-<div class="row">
-{% for billet_info in billets_with_qr %}
-<div class="col-md-4 mb-4">
-<a href="{% url 'details_billet' billet_id=billet_info.billet.pk_Billet %}" class="card-link">
-<div class="card h-100">
-<div class="card-body">
-<h3 class="card-title">Billet {{ billet_info.billet.pk_Billet }}</h3>
-<p class="card-text">Montant total: {{ billet_info.commande.MontantTotal }}</p>
-</div>
-<img class="card-img-bottom img-fluid" style="max-height: 100px; max-width: 100px;"
-src="data:image/png;base64,{{ billet_info.qr_image }}" alt="QR Code">
-</div>
-</a>
-</div>
-{% endfor %}
-</div>
-</div>
+    <div class="container-fluid">
+        <h1 class="mb-4">Tous les billets</h1>
+        <div class="row">
+            {% for billet_info in billets_with_qr %}
+            <div class="col-md-4 mb-4">
+                <a href="{% url 'details_billet' billet_id=billet_info.billet.pk_Billet %}" class="card-link">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h3 class="card-title">Billet {{ billet_info.billet.pk_Billet }}</h3>
+                            <p class="card-text">Montant total: {{ billet_info.commande.MontantTotal }}</p>
+                        </div>
+                        <img class="card-img-bottom img-fluid" style="max-height: 100px; max-width: 100px;"
+                            src="data:image/png;base64,{{ billet_info.qr_image }}" alt="QR Code">
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
 </section>
+
+{% include "footer.html" %}
 {% endblock %}

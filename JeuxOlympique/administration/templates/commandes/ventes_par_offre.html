@@ -47,6 +47,7 @@
                 <thead>
                     <tr>
                         <th>Offre</th>
+                        <th>competition vendus </th>
                         <th>Nombre de Ventes</th>
                         <th>Quantité Vendue</th>
                     </tr>
@@ -55,6 +56,7 @@
                     {% for offre in ventes_par_offre %}
                     <tr>
                         <td>{{ offre.type }}</td>
+                        <td>{{ offre.competition.Nom }}</td>
                         <td>{{ offre.nombre_ventes }}</td>
                         <td>{{ offre.quantite_vendue }}</td>
                     </tr>
@@ -66,7 +68,6 @@
 </div>
 </div>
 
-<!-- Votre CSS -->
 <style>
 body {
 background-color: #dfe9f5;
