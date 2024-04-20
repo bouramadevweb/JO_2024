@@ -25,6 +25,8 @@ from django.contrib.auth import logout
 
 
 def login(request):
+    """admin login
+    """
     if request.method == 'POST':
         form = CustomAuthenticationForm(request, request.POST)
         if form.is_valid():
@@ -101,7 +103,7 @@ def ventes_par_offre(request):
         nombre_ventes=Count('commande', filter=Q(commande__est_validee=True)),
         quantite_vendue=Sum('commande__quantite', filter=Q(commande__est_validee=True))
     ).filter(
-        commande__est_validee=True  # Commande validée
+        commande__est_validee=True  #
     ).annotate(
         montant_total_ventes=Sum('commande__MontantTotal')  # Calcul du montant total des ventes pour chaque offre
     )
