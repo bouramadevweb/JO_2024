@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 import os
+import django_heroku
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,7 +29,7 @@ SECRET_KEY = 'django-insecure-z$6(o!_gyn&og3tusy-lit^4s)#21hqh20eq&c05ft@93g8pj4
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['app-jeux-olympique-180bb4725e45.herokuapp.com']
 
 
 # Application definition
@@ -87,13 +89,23 @@ WSGI_APPLICATION = 'JeuxOlympique.wsgi.application'
 #         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql",
+#         "NAME": "Olympique",
+#         "USER": "postgres",
+#         "PASSWORD": "kungfu",
+#         "HOST": "localhost",
+#         "PORT": "5432",
+#     }
+# }
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "Olympique",
-        "USER": "postgres",
-        "PASSWORD": "kungfu",
-        "HOST": "localhost",
+        "NAME": "de1av6uup5kcte",
+        "USER": "u3f9ao4iu5h3au",
+        "PASSWORD": "p0856ebe4ff3aaab8f1404ba2247d08c656e377ee8e1aeb422ae60b9f8e31c4a1",
+        "HOST": "cdgn4ufq38ipd0.cluster-czz5s0kz4scl.eu-west-1.rds.amazonaws.com",
         "PORT": "5432",
     }
 }
@@ -150,10 +162,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Configuration des fichiers statiques
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
+django_heroku.settings(locals()),
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
-
 # Configuration des fichiers média
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

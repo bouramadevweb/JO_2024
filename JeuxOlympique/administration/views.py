@@ -48,6 +48,8 @@ def deconnexion(request):
 
 @user_passes_test(lambda u: u.is_superuser, login_url='/votre-url-de-redirection/')
 def users(request):
+    """users
+    """
     if request.method == 'GET':
         users = Users.objects.all() 
         paginator = Paginator(users, 10)
