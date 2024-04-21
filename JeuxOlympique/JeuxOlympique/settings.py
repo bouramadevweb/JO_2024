@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 import os
 import django_heroku
+import dj_database_url
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -107,8 +108,11 @@ DATABASES = {
         "PASSWORD": "p0856ebe4ff3aaab8f1404ba2247d08c656e377ee8e1aeb422ae60b9f8e31c4a1",
         "HOST": "cdgn4ufq38ipd0.cluster-czz5s0kz4scl.eu-west-1.rds.amazonaws.com",
         "PORT": "5432",
+        "URI": "postgres://u3f9ao4iu5h3au:p0856ebe4ff3aaab8f1404ba2247d08c656e377ee8e1aeb422ae60b9f8e31c4a1@cdgn4ufq38ipd0.cluster-czz5s0kz4scl.eu-west-1.rds.amazonaws.com:5432/de1av6uup5kcte"
+
     }
 }
+
 
 
 # Password validation

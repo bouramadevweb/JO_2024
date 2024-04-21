@@ -1,2 +1,2 @@
 release: python manage.py migrate
-web: gunicorn JeuxOlympique.wsgi --log-file=-
+web: gunicorn my_app_jo.wsgi --log-file -

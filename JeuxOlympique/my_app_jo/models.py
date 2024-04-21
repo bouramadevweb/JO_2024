@@ -192,7 +192,7 @@ class Types(models.Model):
     Returns: Type Offre
         
     """
-    type =models.CharField(primary_key=True)
+    type =models.CharField(primary_key=True,max_length=20)
     def __str__(self):
         return f'{self.type}'
 

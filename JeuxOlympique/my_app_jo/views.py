@@ -422,7 +422,6 @@ def offres(request):
     if request.method == 'GET':
         offres = Offre.objects.all()
        
-        # competitions = Competitions.objects.all()
         return render(request, 'offres.html', {'offres': offres})
 
 def handler404(request, exception):
