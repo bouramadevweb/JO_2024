@@ -30,7 +30,7 @@ SECRET_KEY = 'django-insecure-z$6(o!_gyn&og3tusy-lit^4s)#21hqh20eq&c05ft@93g8pj4
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['app-jeux-olympique-180bb4725e45.herokuapp.com']
+ALLOWED_HOSTS = ['jeuxolympique-ababa0c1b617.herokuapp.com']
 
 
 # Application definition
@@ -103,12 +103,13 @@ WSGI_APPLICATION = 'JeuxOlympique.wsgi.application'
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "de1av6uup5kcte",
-        "USER": "u3f9ao4iu5h3au",
-        "PASSWORD": "p0856ebe4ff3aaab8f1404ba2247d08c656e377ee8e1aeb422ae60b9f8e31c4a1",
+        "NAME": "d3hakkjh8d40tg",
+        "USER": "u71jj16hv9q4vu",
+        "PASSWORD": "p4944a9cc23366839f71da4bfe78969d759af518a7d521b78c388f26caceaf052",
         "HOST": "cdgn4ufq38ipd0.cluster-czz5s0kz4scl.eu-west-1.rds.amazonaws.com",
         "PORT": "5432",
-        "URI": "postgres://u3f9ao4iu5h3au:p0856ebe4ff3aaab8f1404ba2247d08c656e377ee8e1aeb422ae60b9f8e31c4a1@cdgn4ufq38ipd0.cluster-czz5s0kz4scl.eu-west-1.rds.amazonaws.com:5432/de1av6uup5kcte"
+        "URI":   "postgres://u71jj16hv9q4vu:p4944a9cc23366839f71da4bfe78969d759af518a7d521b78c388f26caceaf052@cdgn4ufq38ipd0.cluster-czz5s0kz4scl.eu-west-1.rds.amazonaws.com:5432/d3hakkjh8d40tg"
+
 
     }
 }
