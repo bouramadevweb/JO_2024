@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'my_app_jo',
     'administration',
-    'bootstrap5',
+    'bootstrap4',
     'django_twilio'
 ]
 
