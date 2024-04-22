@@ -14,6 +14,7 @@ from pathlib import Path
 import os
 import django_heroku
 import dj_database_url
+from decouple import config
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -25,8 +26,8 @@ DATA_DIR = os.path.join(BASE_DIR, 'data')
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-z$6(o!_gyn&og3tusy-lit^4s)#21hqh20eq&c05ft@93g8pj4'
-
+# SECRET_KEY = 'django-insecure-z$6(o!_gyn&og3tusy-lit^4s)#21hqh20eq&c05ft@93g8pj4'
+SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -100,18 +101,21 @@ WSGI_APPLICATION = 'JeuxOlympique.wsgi.application'
 #         "PORT": "5432",
 #     }
 # }
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql",
+#         "NAME": "d3hakkjh8d40tg",
+#         "USER": "u71jj16hv9q4vu",
+#         "PASSWORD": "p4944a9cc23366839f71da4bfe78969d759af518a7d521b78c388f26caceaf052",
+#         "HOST": "cdgn4ufq38ipd0.cluster-czz5s0kz4scl.eu-west-1.rds.amazonaws.com",
+#         "PORT": "5432",
+#         "URI":   "postgres://u71jj16hv9q4vu:p4944a9cc23366839f71da4bfe78969d759af518a7d521b78c388f26caceaf052@cdgn4ufq38ipd0.cluster-czz5s0kz4scl.eu-west-1.rds.amazonaws.com:5432/d3hakkjh8d40tg"
+
+
+#     }
+# }
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "d3hakkjh8d40tg",
-        "USER": "u71jj16hv9q4vu",
-        "PASSWORD": "p4944a9cc23366839f71da4bfe78969d759af518a7d521b78c388f26caceaf052",
-        "HOST": "cdgn4ufq38ipd0.cluster-czz5s0kz4scl.eu-west-1.rds.amazonaws.com",
-        "PORT": "5432",
-        "URI":   "postgres://u71jj16hv9q4vu:p4944a9cc23366839f71da4bfe78969d759af518a7d521b78c388f26caceaf052@cdgn4ufq38ipd0.cluster-czz5s0kz4scl.eu-west-1.rds.amazonaws.com:5432/d3hakkjh8d40tg"
-
-
-    }
+    "default": dj_database_url.parse(config('DATABASE_URL'))
 }
 
 
