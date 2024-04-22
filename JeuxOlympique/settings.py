@@ -31,7 +31,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['jo-2024.onrender.com']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
