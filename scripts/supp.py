@@ -25,14 +25,14 @@ except Exception as e:
 
 
 
-# try:
-#     with connection.cursor() as cursor:
-#         # Mettre à jour pk_date_competition en supprimant les espaces
-#         cursor.execute("UPDATE my_app_jo_dates_competions SET pk_date_competition = REPLACE(pk_date_competition, ' ', '')")
+try:
+    with connection.cursor() as cursor:
+        # Mettre à jour pk_date_competition en supprimant les espaces
+        cursor.execute("UPDATE my_app_jo_dates_competions SET pk_date_competition = REPLACE(pk_date_competition, ' ', '')")
 
-#     print('Mise à jour des données de la table Dates_Competions terminée avec succès.')
-# except Exception as e:
-#     print(f"Une erreur s'est produite lors de la mise à jour des données : {e}")
+    print('Mise à jour des données de la table Dates_Competions terminée avec succès.')
+except Exception as e:
+    print(f"Une erreur s'est produite lors de la mise à jour des données : {e}")
 
 
 
