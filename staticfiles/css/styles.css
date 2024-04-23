@@ -1,0 +1,95 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+html{
+font-family: 'Courier New', Courier, monospace, Helvetica, sans-serif;
+font-size: 16px;
+}
+.bandeau::before {
+    content: "";
+    position: absolute;
+    top: 7%;
+    left: 0;
+    width: 100%;
+    height: 60%;
+    background-color: rgba(255, 255, 255, 0.5);
+    z-index: 1;
+}
+
+.bandeau img {
+    position: relative;
+    z-index: 0;
+    filter: brightness(100%);
+}
+
+ 
+
+.navbar-expand-lg{
+    background-color: #5DADE2; 
+}
+.nav-link{
+   
+    color: #f2f2f2;
+}
+#home_user {
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center ; 
+    /* background-position-y:1; */
+    background-position-x:100%;
+    padding-bottom: 1%; 
+    margin: 0.8%;
+    padding: 0.2%;
+   
+
+}
+
+.competition-image {
+    width: 100%;
+    height: 200px;
+    object-fit: contain;
+}
+.bg-lights{
+    /* background-color: #f1f1f1; */
+}
+
+#total-order {
+  background-color: #4cb4c7;
+}
+
+.vertical-menu {
+    width: 100%;
+}
+
+.vertical-menu ul {
+    list-style-type: none;
+    /* Supprime les puces de la liste */
+    padding: 0;
+    /* Supprime le remplissage par défaut de la liste */
+    margin: 0;
+    /* Supprime la marge par défaut de la liste */
+}
+
+.vertical-menu li a {
+    display: block;
+    /* Affiche les liens comme des blocs pour occuper toute la largeur */
+    padding: 8px 16px;
+    /* Ajoute un peu de remplissage autour des liens */
+    text-decoration: none;
+    /* Supprime la décoration des liens */
+    color: #000;
+    /* Couleur du texte */
+    background-color: #f2f2f2;
+    /* Couleur de fond des éléments de menu */
+    border-radius: 5px;
+    /* Ajoute un peu de coins arrondis aux éléments de menu */
+    margin-bottom: 5px;
+    /* Espacement entre les éléments de menu */
+}
+
+.vertical-menu li a:hover {
+    background-color: #ccc;
+    /* Couleur de fond au survol */
+}
