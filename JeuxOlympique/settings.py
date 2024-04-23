@@ -71,8 +71,8 @@ ROOT_URLCONF = 'JeuxOlympique.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        # 'DIRS': [os.path.join(BASE_DIR,  'templates')],
-        'DIRS': [TEMPLATES_DIR],
+        'DIRS': [os.path.join(BASE_DIR,  'templates/')],
+        # 'DIRS': [TEMPLATES_DIR],
 
         'APP_DIRS': True,
         'OPTIONS': {
