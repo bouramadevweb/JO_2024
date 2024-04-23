@@ -17,6 +17,8 @@ import django_heroku
 import dj_database_url
 from  decouple import config
 
+import my_app_jo
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -72,7 +74,7 @@ ROOT_URLCONF = 'JeuxOlympique.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [TEMPLATES_DIR],
+        'DIRS': ['JeuxOlympique/',TEMPLATES_DIR],
         # 'DIRS': [TEMPLATES_DIR],
 
         'APP_DIRS': True,
