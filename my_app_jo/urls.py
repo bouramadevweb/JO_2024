@@ -10,8 +10,8 @@ from django.views.generic.base import RedirectView
 
 
 urlpatterns = [
-    path('', RedirectView.as_view(pattern_name='home', permanent=False)),
-    path('home/', views.home, name='home'),
+    # path('', RedirectView.as_view(pattern_name='home', permanent=False)),
+    path('', views.home, name='home'),
     path('choisir_ticket/', views.choisir_ticket, name='choisir_ticket'),
     path('ajouter_au_panier/',views.ajouter_au_panier,name='ajouter_au_panier'),
     path('voir_panier/', views.voir_panier, name='voir_panier'),
