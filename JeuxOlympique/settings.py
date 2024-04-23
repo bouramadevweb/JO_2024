@@ -64,7 +64,7 @@ MIDDLEWARE = [
     
 ]
 
-ROOT_URLCONF = 'JeuxOlympique.urls'
+# ROOT_URLCONF = 'JeuxOlympique.urls'
 
 
 
