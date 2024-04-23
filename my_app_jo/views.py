@@ -28,7 +28,7 @@ def home(request):
     """Page d'accueil
     """
     competitions = Competitions.objects.all()
-    return render(request, 'home/home.html', {'competitions': competitions})
+    return render(request, 'my_app_jo/Templates/home/home.html', {'competitions': competitions})
 
 def choisir_ticket(request):
     """chosisez le ticket
