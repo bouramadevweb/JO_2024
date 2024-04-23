@@ -31,11 +31,10 @@ DATA_DIR = os.path.join(BASE_DIR, 'data')
 # SECRET_KEY = 'django-insecure-z$6(o!_gyn&og3tusy-lit^4s)#21hqh20eq&c05ft@93g8pj4'
 SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = True
-DEBUG = os.environ.get("DEBUG","False")== "True"
+DEBUG = True
+# DEBUG = os.environ.get("DEBUG","False")== "True"
 
-# ALLOWED_HOSTS = ['*']
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS').split()
+ALLOWED_HOSTS = ['jo-2024.onrender.com']
 
 
 # Application definition
