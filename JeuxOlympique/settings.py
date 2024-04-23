@@ -34,7 +34,7 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = True
 # DEBUG = os.environ.get("DEBUG","False")== "True"
 
-ALLOWED_HOSTS = ['jo-2024.onrender.com']
+ALLOWED_HOSTS = ['jeuxolympique-ababa0c1b617.herokuapp.com']
 
 
 # Application definition
