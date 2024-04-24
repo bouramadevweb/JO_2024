@@ -24,7 +24,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('JO2024',include('my_app_jo.urls')),
+    path('JO2024/',include('my_app_jo.urls')),
     path('administration/', include('administration.urls')),
     # path('<path:unknown_path>', RedirectView.as_view(url='/'), name='catchall_redirect'),
 
