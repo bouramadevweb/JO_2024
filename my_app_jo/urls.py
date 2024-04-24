@@ -9,9 +9,9 @@ from django.conf import settings
 from django.views.generic.base import RedirectView
 from my_app_jo.views import home
 
-# urlpatterns = [
+urlpatterns = [
 #     # path('', RedirectView.as_view(pattern_name='home', permanent=False)),
-#     # path('', home, name='home'),
+       path('', home, name='home'),
 #     path('choisir_ticket/', views.choisir_ticket, name='choisir_ticket'),
 #     path('ajouter_au_panier/',views.ajouter_au_panier,name='ajouter_au_panier'),
 #     path('voir_panier/', views.voir_panier, name='voir_panier'),
@@ -28,7 +28,7 @@ from my_app_jo.views import home
 #     path('deconnexion/', views.deconnexion, name='deconnexion'),
 #     path('offres',views.offres,name='offres'),
 
-# ]
+]
 # urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 # urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
