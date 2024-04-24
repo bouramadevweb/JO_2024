@@ -1,4 +1,4 @@
-{% load bootstrap5 %}
+{% load bootstrap4 %}
 
 
 {% load static %}
@@ -51,7 +51,7 @@ class="nav-item"> commandes</span></a></li>
 <li><a href="{% url  'ventes_par_offre' %}"><i class="fas fa-file-invoice"></i></i><span class="nav-item">Vente</span></a></li>
 <li><a href="#"><i class="fas fa-ticket-alt"></i><span class="nav-item">Billets vendus</span></a></li>
 <li><a href="#"><i class="fas fa-question-circle"></i><span class="nav-item">Aide</span></a></li>
-<li><a href="{% url 'deconnexion' %}" class="logout"><i class="fas fa-sign-out-alt"></i><span
+<li><a href="{% url 'admindeconnexion' %}" class="logout"><i class="fas fa-sign-out-alt"></i><span
             class="nav-item">Déconnexion</span></a></li>
 </ul>
 </nav>

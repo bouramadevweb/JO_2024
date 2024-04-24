@@ -40,7 +40,7 @@ def login(request):
         form = BootstrapAuthenticationForm()
     return render(request, 'admin/login.html', {'form': form})
 
-def deconnexion(request):
+def admindeconnexion(request):
     """la deconnexion
     """
     logout(request)
