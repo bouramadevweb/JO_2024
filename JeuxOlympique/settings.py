@@ -36,8 +36,14 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = True
 # DEBUG = os.environ.get("DEBUG","False")== "True"
 
-ALLOWED_HOSTS = ['jeuxolympique-ababa0c1b617.herokuapp.com']
+# ALLOWED_HOSTS = ['jeuxolympique-ababa0c1b617.herokuapp.com']
+IS_HEROKU_APP = "DYNO" in os.environ and not "CI" in os.environ
 
+
+if IS_HEROKU_APP:
+    ALLOWED_HOSTS = ["*"]
+else:
+    ALLOWED_HOSTS = []
 
 # Application definition
 
@@ -52,7 +58,8 @@ INSTALLED_APPS = [
     'my_app_jo',
     'administration',
     'bootstrap4',
-    'django_twilio'
+    'django_twilio',
+    'whitenoise.runserver_nostatic'
 ]
 
 MIDDLEWARE = [
