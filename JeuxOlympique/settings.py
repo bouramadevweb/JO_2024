@@ -41,7 +41,7 @@ IS_HEROKU_APP = "DYNO" in os.environ and not "CI" in os.environ
 
 
 if IS_HEROKU_APP:
-    ALLOWED_HOSTS = ["*"]
+    ALLOWED_HOSTS = ["https://jeuxolympique-ababa0c1b617.herokuapp.com/"]
 else:
     ALLOWED_HOSTS = []
 
