@@ -383,7 +383,7 @@ def verificode(request):
                         return redirect('home')
                     else:
                         messages.error(request, "Code déjà utilisé.")
-                        return redirect('inscription')  # Rediriger vers la page d'inscription si le code est déjà utilisé
+                        return redirect('home') 
                 else:
                     messages.error(request, "Code incorrect. Redirection vers la page d'inscription.")
                     return redirect('inscription')
@@ -416,7 +416,7 @@ def deconnexion(request):
     logout(request)
     return redirect('home')
 
-def offres(request):
+def offresuser(request):
     """Offre
     """
     if request.method == 'GET':

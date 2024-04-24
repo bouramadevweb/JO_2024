@@ -27,7 +27,7 @@ urlpatterns = [
     path('modifier_profile',views.modifier_profile,name='modifier_profile' ),
     path('inscription/', views.inscription, name='inscription'),
     path('deconnexion/', views.deconnexion, name='deconnexion'),
-    path('offres',views.offres,name='offres'),
+    path('offresuser/',views.offresuser,name='offresuser'),
 
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
