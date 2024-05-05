@@ -1,4 +1,4 @@
-{% include 'status.html' %}
+{% extends  'status.html' %}
 {% block title %} {% endblock %}
 
 {% block content %}
@@ -15,7 +15,7 @@
 
 <body>
 
-    <div class="container mt-3">
+    <div class="container  shifted-content">
         <div class="mb-3">
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addOffreModal">
                 Ajouter un offre <span><i class="fas fa-plus-circle"></i></span>
@@ -200,4 +200,6 @@
             }
         });
 </script>
+
+
 {% endblock %}

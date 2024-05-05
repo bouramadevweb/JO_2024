@@ -58,7 +58,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'my_app_jo',
     'administration',
-    'bootstrap4',
+    'django_bootstrap5',
     'django_twilio',
     'whitenoise.runserver_nostatic'
 ]

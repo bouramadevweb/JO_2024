@@ -1,4 +1,4 @@
-{% include   'status.html' %}
+{% extends   'status.html' %}
 {% block title %}Liste des lieux de compétitions{% endblock %}
 
 {% block content %}
@@ -14,7 +14,7 @@
 </head>
 
 <body>
-<div class="container ">
+<div class="container .shifted-content ">
     <div class="row mt-3 ">
         <div class="col-md-auto">
     <h1 class="mt-2">Liste des lieux de compétition</h1>
@@ -139,4 +139,10 @@ aria-labelledby="editModalLabel" aria-hidden="true">
 </body>
 
 </html>
+
+<style>
+    .shifted-content {
+            margin-left: 20%; /* Décalage vers la droite */
+        }
+</style>
 {% endblock %}

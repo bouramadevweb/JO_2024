@@ -4,7 +4,6 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,13 +13,12 @@
     {% bootstrap_javascript %}
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-
+    
     <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
     <script src="https://kit.fontawesome.com/bf80631bb4.js" crossorigin="anonymous"></script>
 
     <title>Document</title>
 </head>
-
 <body>
     <div class="container-fluid container-status " style="overflow-x: hidden;">
         <!-- Barre de navigation latérale -->
@@ -33,23 +31,19 @@
                         <span class="nav-item">Tableau de Bord</span>
                     </a>
                 </li>
-                <li><a href="{% url 'administration' %}"><i class="fas fa-home"></i><span
-                            class="nav-item">Home</span></a>
+                <li><a href="{% url 'administration' %}"><i class="fas fa-home"></i><span class="nav-item">Home</span></a>
                 </li>
-                <li><a href="{% url 'list_competition' %}"><i class="fas fa-ellipsis-v"></i></i><span
-                            class="nav-item">list
+                <li><a href="{% url 'list_competition' %}"><i class="fas fa-ellipsis-v"></i></i><span class="nav-item">list
                             des competitions</span></a></li>
-
-                <li><a href="{% url 'lieu_competition' %}"><i class="fas fa-map-marked-alt"></i><span
-                            class="nav-item">lieux
+    
+                <li><a href="{% url 'lieu_competition' %}"><i class="fas fa-map-marked-alt"></i><span class="nav-item">lieux
                             des competitions</span></a></li>
                 <li><a href="{% url 'dates_competitions' %}"><i class="fas fa-calendar-alt"></i></i><span
                             class="nav-item">dates des competitions</span></a></li>
                 <li><a href="{% url 'competitions' %}"><i class="fas fa-chess"></i><span class="nav-item">
                             competitions</span></a></li>
-                <li><a href="{% url 'offres' %}"><i class="fas fa-tags"></i><span class="nav-item"> Offres</span></a>
-                </li>
-
+                <li><a href="{% url 'offres' %}"><i class="fas fa-tags"></i><span class="nav-item"> Offres</span></a></li>
+    
                 <li><a href="{% url 'commandes' %}"><i class="fas fa-shopping-cart"></i><span class="nav-item">
                             commandes</span></a></li>
                 <li><a href="{% url  'ventes_par_offre' %}"><i class="fas fa-file-invoice"></i></i><span
@@ -61,13 +55,14 @@
             </ul>
         </nav>
         {% block content %}
-
+        
         {% endblock %}
-
-
+</body>
+</html>
+!-- Votre CSS -->
 <style>
     body {
-        background-color: #fff;
+        background-color: #dfe9f5;
     }
 
     .nav-admin {
