@@ -136,16 +136,16 @@ DATABASES = {
     "default": dj_database_url.parse(config('DATABASE_URL'))
 }
 
-AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY')
-AWS_S3_SIGNATURE_NAME = 'S3V4'
-AWS_STORAGE_BUCKET_NAME = 'django-jo-2024'
-AWS_REGION_NAME = config('AWS_REGION')
-AWS_S3_FILE_OVERWRITE = False
-AWS_DEFAULT_ACL = None
-AWS_S3_VERIFY = True
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
+# AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID')
+# AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY')
+# AWS_S3_SIGNATURE_NAME = 'S3V4'
+# AWS_STORAGE_BUCKET_NAME = 'django-jo-2024'
+# AWS_REGION_NAME = config('AWS_REGION')
+# AWS_S3_FILE_OVERWRITE = False
+# AWS_DEFAULT_ACL = None
+# AWS_S3_VERIFY = True
+# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+# AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
 
 
 # Password validation
@@ -199,12 +199,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Configuration des fichiers statiques
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
-django_heroku.settings(locals()),
+django_heroku.settings(locals())
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 # Configuration des fichiers média
-MEDIA_URL = '/'
+MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # Default primary k ey field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
