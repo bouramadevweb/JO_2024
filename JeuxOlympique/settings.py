@@ -184,28 +184,30 @@ AUTH_USER_MODEL = 'my_app_jo.User'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-# STATIC_URL = 'static/'
-# MEDIA_URL = '/media/'
-# STATICFILES_DIR = [BASE_DIR,'static']
-# STATICFILES_DIRS = [
-#     os.path.join(BASE_DIR, 'static'),
-# ]
-# MEDIA_URL ='/'
-# MEDIA_ROOT = os.path.join(BASE_DIR,'media')
-
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-# Configuration des fichiers statiques
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATIC_URL = '/static/'
+STATIC_URL = 'static/'
+MEDIA_URL = '/media/'
 django_heroku.settings(locals())
+STATICFILES_DIR = [BASE_DIR,'static']
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
-# Configuration des fichiers média
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL ='/'
+MEDIA_ROOT = os.path.join(BASE_DIR,'media')
+
+
+# BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# Configuration des fichiers statiques
+# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+# STATIC_URL = '/static/'
+# django_heroku.settings(locals())
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, 'static'),
+# ]
+# # Configuration des fichiers média
+# MEDIA_URL = '/media/'
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # Default primary k ey field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
