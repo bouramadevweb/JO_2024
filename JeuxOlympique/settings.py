@@ -186,7 +186,7 @@ AUTH_USER_MODEL = 'my_app_jo.User'
 
 django_heroku.settings(locals())
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/'
+MEDIA_URL = '/media/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
