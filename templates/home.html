@@ -6,7 +6,7 @@
 {% block content %}
 <header class="py-3 bg-lights px-4 ">
     <div class="container-fluid  ">
-        <div class="row bandeau ">
+        <div class="row bandeau  ">
             <div class="col-md-6 px-1" style="height: 550px;">
                 <div class="img" style="height: 100%; width: 100%; overflow: hidden;">
                     <img src="{% static 'images/jeuxonav.jpg' %}" alt=""
@@ -60,21 +60,66 @@
  .bandeau::before {
     content: "";
     position: absolute;
-    top: 10%;
+    top: 0%;
     left: 0;
     width: 100%;
-    height: 76%;
+    height: 100%;
     background-color: rgba(255, 255, 255, 0.5);
     z-index: 1; 
 }
-
+ 
 .bandeau img {
     position: relative;
     z-index: 0; 
     filter: brightness(100%); 
 }
 
+
+
+@media (max-width: 768px) {
+    .bandeau {
+        flex-direction: column;
+    }
+    
+    .bandeau .col-md-6 {
+        height: 300px;
+    }
+
+    .card {
+        margin-bottom: 20px;
+    }
+
+    .card img {
+        height: 200px;
+        object-fit: cover;
+    }
+}
+
+@media (max-width: 576px) {
+    .bandeau {
+        flex-direction: column;
+    }
+
+    .bandeau .col-md-4 {
+        height: 200px;
+    }
+
+    .card img {
+        height: 150px;
+        
+    }
+}
+.menu {
+    position: relative;
+    z-index: 1000; 
+}
+
+.bandeau {
+    position: relative;
+    z-index: 999; 
+}
 </style>
+
 
 <script src="{% static 'js/home.js' %}"></script>
 
