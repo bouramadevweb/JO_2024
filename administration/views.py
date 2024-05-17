@@ -330,7 +330,7 @@ def offres(request):
             form = OffreForm(request.POST, instance=offre)
             if form.is_valid():
                 form.save()
-                return redirect('offres')  # Redirection après modification
+                return redirect('offres') 
         elif 'delete' in request.POST:
             offre_id = request.POST.get('id')
             offre = get_object_or_404(Offre, pk=offre_id)

@@ -30,8 +30,7 @@
             {% for competition in competitions %}
             <div class="col-md-4 mb-4">
                 <div class="card h-100">
-                    <img src="{{ competition.image }}" class="card-img-top competition-image"
-                        alt="Competition Image">
+     <img src="{{ competition.image }}" class="card-img-top competition-image" alt="Competition Image"> 
                     <div class="card-body">
                         <h5 class="card-title">{{ competition.Nom }}</h5>
                         <p class="card-text">{{ competition.pk_lieu }}</p>
@@ -39,7 +38,14 @@
                         <p class="card-text"><small class="text-muted"><strong>Date de fin :</strong>{{competition.pk_date_competition.date_fin|date:'d-m-Y' }}</small></p>
                         <p class="card-text"><small class="text-muted"><strong>Date remises de médailles :</strong> {{competition.pk_date_competition.Remises_de_medailles|default:"Non spécifiée"}}</small>
                         </p>
-                        <a href="#" class="btn btn-primary">Voir les offres disponibles</a>
+
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'choisir_ticket' %}" class="btn btn-primary">Voir les offres disponibles</a>
+                    {% else %}
+                    <a href="{% url 'connexion' %}?next={% url 'choisir_ticket' %}" class="btn btn-primary">Voir les offres disponibles</a>
+                    {% endif %}
+
+
                     </div>
                 </div>
             </div>

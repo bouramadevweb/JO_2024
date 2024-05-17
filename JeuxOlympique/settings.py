@@ -73,6 +73,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     
+    
 ]
 
 ROOT_URLCONF = 'JeuxOlympique.urls'
@@ -83,7 +84,6 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [TEMPLATES_DIR],
-        # 'DIRS': [TEMPLATES_DIR],
 
         'APP_DIRS': True,
         'OPTIONS': {
@@ -184,17 +184,15 @@ AUTH_USER_MODEL = 'my_app_jo.User'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATIC_URL = 'static/'
-MEDIA_URL = '/media/'
 django_heroku.settings(locals())
-STATICFILES_DIR = [BASE_DIR,'static']
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
-MEDIA_URL ='/'
-MEDIA_ROOT = os.path.join(BASE_DIR,'media')
-
+# Configuration des fichiers média
 
 # BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
