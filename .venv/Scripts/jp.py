@@ -1,4 +1,4 @@
-#!C:\Users\maitr\OneDrive\Bureau\JeuxOlympique\.venv\Scripts\python.exe
+#!C:\Users\maitr\OneDrive\Bureau\JeuxOlympiques\.venv\Scripts\python.exe
 
 import sys
 import json

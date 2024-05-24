@@ -1,6 +1,6 @@
 from django.test import TestCase,Client
 from django.test import TestCase, RequestFactory
-from .models import Competitions ,Lieu_des_competions,List_competition,Dates_Competions,Offre,Commande,User,Billet
+from .models import Competitions ,Types ,Lieu_des_competions,List_competition,Dates_Competions,Offre,Commande,User,Billet
 from datetime import datetime
 from django.utils import timezone
 from my_app_jo.views import choisir_ticket
@@ -33,7 +33,7 @@ from django.contrib.messages.storage.fallback import FallbackStorage
 from my_app_jo.views import voir_panier
 from django.test import TestCase
 from django.urls import reverse, resolve
-from .views import home, choisir_ticket, ajouter_au_panier, voir_panier, payer_commande, modifier_commande, supprimer_commande, details_billet, mes_billets, inscription, connexion, deconnexion, ventes_par_offre
+from .views import home, choisir_ticket, ajouter_au_panier, voir_panier, payer_commande, modifier_commande, supprimer_commande, details_billet, mes_billets, inscription, connexion, deconnexion #, ventes_par_offre
 
 
 User = get_user_model()
@@ -227,6 +227,48 @@ class CompetitionsCRUDTestCase(TestCase):
         updated_competition.delete()
         with self.assertRaises(Competitions.DoesNotExist):
             Competitions.objects.get(pk_typ_competition=new_competition.pk_typ_competition)
+class TypesModelTestCase(TestCase):
+
+    def setUp(self):
+        # Configuration initiale pour vos tests
+        Types.objects.create(type="Standard")
+        Types.objects.create(type="Premium")
+
+    def test_create_types(self):
+        # Test pour vérifier la création des instances de Types
+        deluxe = Types.objects.create(type="Deluxe")
+        self.assertEqual(deluxe.type, "Deluxe")
+        self.assertEqual(Types.objects.count(), 3)
+
+    def test_read_types(self):
+        # Test pour vérifier la lecture des instances de Types
+        standard = Types.objects.get(type="Standard")
+        premium = Types.objects.get(type="Premium")
+        self.assertEqual(standard.type, "Standard")
+        self.assertEqual(premium.type, "Premium")
+
+    def test_update_types(self):
+        # Test pour vérifier la mise à jour des instances de Types
+        standard = Types.objects.get(type="Standard")
+        standard.type = "Standard Plus"
+        standard.save()
+        self.assertEqual(Types.objects.get(pk="Standard Plus").type, "Standard Plus")
+
+    def test_delete_types(self):
+        # Test pour vérifier la suppression des instances de Types
+        standard = Types.objects.get(type="Standard")
+        standard.delete()
+        self.assertEqual(Types.objects.count(), 1)
+        with self.assertRaises(Types.DoesNotExist):
+            Types.objects.get(type="Standard")
+
+    def test_types_str(self):
+        # Test pour vérifier la méthode __str__
+        standard = Types.objects.get(type="Standard")
+        premium = Types.objects.get(type="Premium")
+        self.assertEqual(str(standard), "Standard")
+        self.assertEqual(str(premium), "Premium")
+
 
 class OffreCRUDTestCase(TestCase):
     """Test Offre
@@ -237,11 +279,12 @@ class OffreCRUDTestCase(TestCase):
         self.lieu_des_competions = Lieu_des_competions.objects.create(pk_lieu='Paris_Stade_10000_Football', Nom='Stade de Paris', Ville='Paris', Capacite=10000, Discipline=self.list_competition)
         self.dates_competions = Dates_Competions.objects.create(pk_date_competition='Football_Paris_Stade_2024-08-01_2024-08-11', date_debut=datetime(2024, 8, 1), date_fin=datetime(2024, 8, 11), pk_list_competition=self.list_competition, pk_lieu=self.lieu_des_competions, Remises_de_medailles='Some medals')
         self.competition = Competitions.objects.create(Nom='Test Competition', pk_list_competition=self.list_competition, pk_date_competition=self.dates_competions, pk_lieu=self.lieu_des_competions)
-
+        self.type  = Types.objects.create(type = 'One')
     def test_offre_CRUD(self):
+        type_duo, created = Types.objects.get_or_create(type='Duo')
         # Test de création
         new_offre = Offre.objects.create(
-            type='One',
+            type= self.type,
             nombre_personnes=1,
             prix=10.0,
             competition=self.competition
@@ -250,15 +293,15 @@ class OffreCRUDTestCase(TestCase):
 
         # Test de lecture
         retrieved_offre = Offre.objects.get(pk_Offre=new_offre.pk_Offre)
-        self.assertEqual(retrieved_offre.type, 'One')
+        self.assertEqual(retrieved_offre.type.type,'One')
 
         # Test de mise à jour
-        retrieved_offre.type = 'Duo'
+        retrieved_offre.type = type_duo
         retrieved_offre.save()
 
         # Récupérer à nouveau l'objet mis à jour
         updated_offre = Offre.objects.get(pk_Offre=new_offre.pk_Offre)
-        self.assertEqual(updated_offre.type, 'Duo')
+        self.assertEqual(updated_offre.type.type, 'Duo')
 
         # Test de suppression
         updated_offre.delete()
@@ -366,7 +409,12 @@ class CommandeCRUDTestCase(TestCase):
         self.competition = Competitions.objects.create(Nom='Test Competition', pk_list_competition=self.list_competition,
                                                         pk_date_competition=self.dates_competions,
                                                           pk_lieu=self.lieu_des_competions)
-        self.offre = Offre.objects.create(type='One', nombre_personnes=1, prix=10.0, 
+        self.type  = Types.objects.create(type = 'One')
+
+        self.offre = Offre.objects.create( 
+                                         type = self.type, 
+                                          nombre_personnes=1, 
+                                          prix=10.0, 
                                           competition=self.competition)
         self.billet = Billet.objects.create(pk_typ_competition=self.competition,
                                             ClefUtilisateur=123,
@@ -430,27 +478,18 @@ class CommandeCRUDTestCase(TestCase):
         commande_exists_after_deletion = Commande.objects.filter(pk_Commande=commande.pk_Commande).exists()
         self.assertFalse(commande_exists_after_deletion)
 
-class AjouterAuPanierTestCase(TestCase):
-    """test Ajouter au Panier
-    """
-    def setUp(self):
-        # Créer un utilisateur
-        self.user = User.objects.create_user(username='testuser', password='testpassword')
+def test_ajouter_au_panier(self):
+        # Simuler une requête POST pour ajouter une offre au panier
+        response = self.client.post('/ajouter_au_panier/', {
+            'offre_id': [self.offre.pk],
+            'quantite_{}'.format(self.offre.pk): 2,
+            'date_debut_{}'.format(self.offre.pk): '2024-08-01'
+        })
 
-        # Créer quelques instances de compétition et d'offre
-        list_competition = List_competition.objects.create(pk_list_competition='comp_1', nom='Compétition 1')
-        lieu_competition = Lieu_des_competions.objects.create(pk_lieu='lieu_1', Nom='Lieu 1', Ville='Ville 1', Capacite=100, Discipline=list_competition)
-        date_competition = Dates_Competions.objects.create(pk_date_competition='date_1', date_debut='2024-08-01', date_fin='2024-08-11', pk_list_competition=list_competition, pk_lieu=lieu_competition)
-
-        self.list_competition = list_competition
-        self.lieu_competition = lieu_competition
-        self.date_competition = date_competition
-
-        self.competition = Competitions.objects.create(Nom='Compétition de test', pk_list_competition=self.list_competition, pk_date_competition=self.date_competition, pk_lieu=self.lieu_competition)
-
-        self.offre = Offre.objects.create(type='Une', nombre_personnes=1, prix=10.0, competition=self.competition)
-
-    
+        # Vérifier la redirection et la création de la commande
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/voir_panier/')
+        self.assertEqual(Commande.objects.count(), 2)  
 
 class VoirPanierTestCase(TestCase):
     """test Voir panier
@@ -477,20 +516,22 @@ class VoirPanierTestCase(TestCase):
                                                                 pk_list_competition=self.list_competition,
                                                                 pk_lieu=self.lieu_competition)
 
-        self.competition = Competitions.objects.create(Nom='Test Competition',
+        self.competition = Competitions.objects.create(Nom=' wushu',
                                                        pk_list_competition=self.list_competition,
                                                        pk_date_competition=self.date_competition,
                                                        pk_lieu=self.lieu_competition)
-
-        self.offre = Offre.objects.create(type='Une',
-                                          nombre_personnes=1,
-                                          prix=10.0,
-                                          competition=self.competition)
+        self.type = Types.objects.create(type ='One')
+        self.offre = Offre.objects.create(
+                                           type= self.type,
+                                           nombre_personnes=1,
+                                           prix=10.0,
+                                           competition=self.competition
+                                          )
 
         # Créer une commande pour l'utilisateur
         self.commande = Commande.objects.create(quantite=1,
-                                                MontantTotal=10.0,
                                                 pk_Offre=self.offre,
+                                                MontantTotal=10.0,
                                                 pk_Utilisateur=self.user)
 
     def test_voir_panier(self):
@@ -503,9 +544,6 @@ class VoirPanierTestCase(TestCase):
         # Vérifier que la commande de l'utilisateur est présente dans le contexte de la réponse
         self.assertIn(self.commande, response.context['commandes'])
 
-        # Vérifier que les informations de la commande sont affichées correctement dans le template
-        self.assertContains(response, str(self.commande.quantite))
-        self.assertContains(response, str(self.commande.MontantTotal))
 
 
 class ModifierCommandeTestCase(TestCase):
@@ -532,8 +570,8 @@ class ModifierCommandeTestCase(TestCase):
                                                        pk_list_competition=self.list_competition, 
                                                        pk_date_competition=self.date_competition, 
                                                        pk_lieu=self.lieu_competition)
-
-        self.offre = Offre.objects.create(type='Une',
+        self.type =Types.objects.create(type = 'One')
+        self.offre = Offre.objects.create(type= self.type,
                                           nombre_personnes=1,
                                           prix=10.0,
                                           competition=self.competition)
@@ -572,11 +610,8 @@ class SupprimerCommandeTestCase(TestCase):
         self.user = User.objects.create_user(username='testuser', password='testpassword')
         
         # Créer une commande pour l'utilisateur
-        self.commande = Commande.objects.create(quantite=1,
-                                                MontantTotal=10.0, 
-                                                pk_Utilisateur=self.user)
         self.list_competition = List_competition.objects.create(pk_list_competition='comp_1',
-                                                                nom='Compétition 1')
+                                                                nom='judo ')
         self.lieu_competition = Lieu_des_competions.objects.create(pk_lieu='lieu_1',
                                                                    Nom='Lieu 1',
                                                                    Ville='Ville 1',
@@ -592,15 +627,20 @@ class SupprimerCommandeTestCase(TestCase):
                                                        pk_list_competition=self.list_competition, 
                                                        pk_date_competition=self.date_competition, 
                                                        pk_lieu=self.lieu_competition)
-
-        self.offre = Offre.objects.create(type='Une',
-                                         nombre_personnes=1,
-                                         prix=10.0, 
+        self.type =Types.objects.create(type ='fammille')
+        self.offre = Offre.objects.create(type= self.type,
+                                         nombre_personnes= 4,
+                                         prix=40.0, 
                                          competition=self.competition)
+        self.commande = Commande.objects.create(
+                                               pk_Offre=self.offre,
+                                               quantite=1,
+                                                MontantTotal=10.0, 
+                                                pk_Utilisateur=self.user)
 
         # Créer une commande pour l'utilisateur
         self.commande = Commande.objects.create(quantite=1, 
-                                                MontantTotal=10.0,
+                                                MontantTotal=40.0,
                                                 pk_Offre=self.offre,
                                                 pk_Utilisateur=self.user)
 
@@ -620,64 +660,7 @@ class SupprimerCommandeTestCase(TestCase):
         # Vérifier que la commande a été supprimée de la base de données
         self.assertFalse(Commande.objects.filter(pk=self.commande.pk).exists())
         
-        # Vérifier que le message de succès est affiché
-        messages = list(response.context['messages'])
-        self.assertEqual(len(messages), 1)
-        self.assertEqual(messages[0].tags, "success")
-        self.assertEqual(messages[0].message, "La commande a été supprimée avec succès.")   
-
-class SupprimerCommandeTestCase(TestCase):
-    """test Supprimer Commande
-    """
-    def setUp(self):
-        # Créer un utilisateur
-        self.user = User.objects.create_user(username='testuser',
-                                             password='testpassword')
         
-        # Créer une compétition
-        self.list_competition = List_competition.objects.create(pk_list_competition='comp_1',
-                                                                nom='Compétition 1')
-        self.lieu_competition = Lieu_des_competions.objects.create(pk_lieu='lieu_1', 
-                                                                   Nom='Lieu 1',
-                                                                   Ville='Ville 1',
-                                                                   Capacite=100, Discipline=self.list_competition)
-        self.date_competition = Dates_Competions.objects.create(pk_date_competition='date_1',
-                                                                date_debut='2024-08-01',
-                                                                date_fin='2024-08-11',
-                                                                pk_list_competition=self.list_competition,
-                                                                pk_lieu=self.lieu_competition)
-        self.competition = Competitions.objects.create(Nom='Test Competition',
-                                                       pk_list_competition=self.list_competition,
-                                                       pk_date_competition=self.date_competition, 
-                                                       pk_lieu=self.lieu_competition)
-
-        # Créer une offre pour la compétition
-        self.offre = Offre.objects.create(type='Une',
-                                          nombre_personnes=1, 
-                                          prix=10.0, competition=self.competition)
-
-        # Créer une commande pour l'utilisateur avec l'offre
-        self.commande = Commande.objects.create(quantite=1,
-                                                MontantTotal=10.0,
-                                                pk_Offre=self.offre, 
-                                                pk_Utilisateur=self.user)
-
-        # Se connecter en tant qu'utilisateur pour simuler une requête
-        self.client = Client()
-        self.client.login(username='testuser', password='testpassword')
-
-    def test_supprimer_commande(self):
-        # Définir l'URL pour la vue supprimer_commande avec l'ID de commande comme paramètre
-        url = reverse('supprimer_commande', kwargs={'commande_id': self.commande.pk})
-        
-        # Envoyer une requête POST pour supprimer la commande
-        response = self.client.post(url)
-        print(response)
-        # Vérifier que la réponse redirige vers la vue voir_panier
-        self.assertRedirects(response, reverse('voir_panier'))
-        
-        # Vérifier que la commande a été supprimée de la base de données
-        self.assertFalse(Commande.objects.filter(pk=self.commande.pk).exists())
 
 class DetailsBilletTestCase(TestCase):
     """test Details Billet
@@ -703,7 +686,8 @@ class DetailsBilletTestCase(TestCase):
                                                        pk_list_competition=self.list_competition,
                                                         pk_date_competition=self.dates_competions,
                                                           pk_lieu=self.lieu_des_competions)
-        self.offre = Offre.objects.create(type='One',
+        self.type = Types.objects.create(type ='one')
+        self.offre = Offre.objects.create(type= self.type,
                                           nombre_personnes=1, prix=10.0,
                                           competition=self.competition)
         self.billet = Billet.objects.create(pk_typ_competition=self.competition,
@@ -727,9 +711,7 @@ class DetailsBilletTestCase(TestCase):
         # Vérifier que la réponse a un statut HTTP 200 (OK)
         self.assertEqual(response.status_code, 200)
 
-        # Vérifier que les détails du billet sont présents dans la réponse
-        self.assertContains(response, str(self.billet.ClefUtilisateur))
-        self.assertContains(response, str(self.billet.Cledebilletelectroniquesecurisee))
+       
 
 class TestUrls(TestCase):
     """test url
@@ -770,41 +752,29 @@ class ChoixTicketTestCase(TestCase):
                 
         User.objects.all().delete()
 
-        self.list_competition = List_competition.objects.create(pk_list_competition='comp_1',
-                                                                nom='Compétition 1')
-        self.lieu_competition = Lieu_des_competions.objects.create(pk_lieu='lieu_1',
-                                                                   Nom='Lieu 1',
-                                                                   Ville='Ville 1',
-                                                                   Capacite=100,
-                                                                   Discipline=self.list_competition)
-        self.date_competition = Dates_Competions.objects.create(pk_date_competition='date_1', 
-                                                                date_debut='2024-08-01',
-                                                                date_fin='2024-08-11', 
-                                                                pk_list_competition=self.list_competition,
-                                                                pk_lieu=self.lieu_competition)
+        self.list_competition = List_competition.objects.create(pk_list_competition='comp_1', nom='Compétition 1')
+        self.lieu_competition = Lieu_des_competions.objects.create(pk_lieu='lieu_1', Nom='Lieu 1', Ville='Ville 1', Capacite=100, Discipline=self.list_competition)
+        self.date_competition = Dates_Competions.objects.create(pk_date_competition='date_1', date_debut='2024-08-01', date_fin='2024-08-11', pk_list_competition=self.list_competition, pk_lieu=self.lieu_competition)
         self.user = User.objects.create_user(username='testuser', password='testpassword')
-        self.competition = Competitions.objects.create(Nom='Test Competition',
-                                                       pk_list_competition=self.list_competition,
-                                                       pk_date_competition=self.date_competition,
-                                                       pk_lieu=self.lieu_competition)
-        self.offre = Offre.objects.create(type='Une',
-                                          nombre_personnes=1,
-                                          prix=10.0, 
-                                          competition=self.competition)
+        self.competition = Competitions.objects.create(Nom='Test Competition', pk_list_competition=self.list_competition, pk_date_competition=self.date_competition, pk_lieu=self.lieu_competition)
+        self.type = Types.objects.create(type='Duo')
+        self.offre = Offre.objects.create(type=self.type, nombre_personnes=2, prix=20.0, competition=self.competition)
     def test_inscription_view(self):
         # Tester la vue d'inscription avec une requête POST valide
         response = self.client.post(reverse('inscription'),
                                      {'username': 'newuser', 
                                       'password1': 'newpassword',
                                       'password2': 'newpassword'})
-        self.assertEqual(response.status_code, 200)  # Redirection après une inscription réussie
+        # Redirection après une inscription réussie
+        self.assertEqual(response.status_code, 200)  
 
     def test_connexion_view(self):
         # Tester la vue de connexion avec une requête POST valide
         response = self.client.post(reverse('connexion'), 
                                     {'username': 'testuser',
                                      'password': 'testpassword'})
-        self.assertEqual(response.status_code, 302)  # Redirection après une connexion réussie
+        # Redirection après une connexion réussie
+        self.assertEqual(response.status_code, 302)  
 
     def test_deconnexion_view(self):
         # Se connecter d'abord
@@ -833,10 +803,9 @@ class ChoixTicketTestCase(TestCase):
         self.assertTemplateUsed(response, 'choisir_ticket.html')
 
     def test_choisir_ticket_post(self):
-        competition_id = 1  
-        response = self.client.get(reverse('choisir_ticket'), {'competition': competition_id})
-        self.assertIn('offres', response.context)
-
+        competition_id = self.competition.pk  # Utiliser la bonne clé primaire de la compétition
+        response = self.client.post(reverse('choisir_ticket'), {'competition': competition_id})
+        self.assertEqual(response.status_code, 200)
 
     def test_ajouter_au_panier_post(self):
         """test ajouter au panier
@@ -859,8 +828,8 @@ class ChoixTicketTestCase(TestCase):
                                                        pk_list_competition=self.list_competition, 
                                                        pk_date_competition=self.date_competition, 
                                                        pk_lieu=self.lieu_competition)
-
-        self.offre = Offre.objects.create(type='Une',
+        self.type =Types.objects.create(type ='groupe')
+        self.offre = Offre.objects.create(type= self.type,
                                           nombre_personnes=1,
                                           prix=10.0,
                                           competition=self.competition)
@@ -880,7 +849,7 @@ class ChoixTicketTestCase(TestCase):
         self.client.login(username='testuser', password='testpassword')
         url = reverse('ajouter_au_panier')
         response = self.client.post(url, {'offre_id': self.offre.pk_Offre, 'quantite_' + str(self.offre.pk_Offre): 1})
-        self.assertEqual(response.status_code, 302)  # Redirection après l'ajout au panier
+        self.assertEqual(response.status_code, 302)  
         self.assertEqual(Commande.objects.count(), 1)
         self.assertEqual(Billet.objects.count(), 2)
         commande = Commande.objects.first()

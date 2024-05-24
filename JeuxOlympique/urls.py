@@ -26,7 +26,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('my_app_jo.urls')),
     path('administration/', include('administration.urls')),
-    # path('<path:unknown_path>', RedirectView.as_view(url='/'), name='catchall_redirect'),
+    path('<path:unknown_path>', RedirectView.as_view(url='/'), name='catchall_redirect'),
 
    
  ] 

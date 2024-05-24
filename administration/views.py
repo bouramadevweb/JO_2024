@@ -8,7 +8,7 @@ from django.core.paginator import Paginator
 from django.db.models import Count, Sum,Q
 from django.contrib.auth.models import User
 from my_app_jo.models import User as Users
-from django.views.generic import ListView ,DetailView,CreateView,UpdateView,DeleteView
+from django.views.generic import  DetailView,CreateView,UpdateView,DeleteView
 from django.urls import reverse_lazy
 from .form import AdminInscriptionForm
 from django.contrib.auth import login,authenticate
@@ -46,7 +46,7 @@ def admindeconnexion(request):
     logout(request)
     return redirect('login')
 
-@user_passes_test(lambda u: u.is_superuser, login_url='/votre-url-de-redirection/')
+@user_passes_test(lambda u: u.is_superuser, login_url='/administration/login')
 def users(request):
     """users
     """
@@ -81,7 +81,7 @@ class AdminCreateView(CreateView):
     form_class = AdminInscriptionForm
     template_name = 'admin/user_form.html'  
     success_url = reverse_lazy('admin_dashboard')
-    @user_passes_test(lambda u: u.is_superuser, login_url='/votre-url-de-redirection/')
+    @user_passes_test(lambda u: u.is_superuser, login_url='/administration/login/')
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
 
@@ -90,13 +90,13 @@ class AdminCreateView(CreateView):
 def clean_primary_key(value):
     return Replace(Replace(Replace(value, Value(','), Value('')), Value(';'), Value('')), Value('.'), Value(''))
 
-@user_passes_test(lambda u: u.is_superuser, login_url='/votre-url-de-redirection/')
+@user_passes_test(lambda u: u.is_superuser, login_url='/administration/login/')
 def administration(request):
     """administration 
     """
     return render(request, 'status.html')
 
-@user_passes_test(lambda u: u.is_superuser, login_url='/votre-url-de-redirection/')
+@user_passes_test(lambda u: u.is_superuser, login_url='/administration/login/')
 def ventes_par_offre(request):
     """Vente par offres
     """
@@ -114,7 +114,7 @@ def ventes_par_offre(request):
     return render(request, 'commandes/ventes_par_offre.html', {'ventes_par_offre': ventes_par_offre})
 
     
-@user_passes_test(lambda u: u.is_superuser, login_url='/votre-url-de-redirection/')
+@user_passes_test(lambda u: u.is_superuser, login_url='/administration/login/')
 def list_competition(request):
     """ list des competion
     """
@@ -144,7 +144,7 @@ def list_competition(request):
             competition.delete()
         return redirect('list_competition')
     
-@user_passes_test(lambda u: u.is_superuser, login_url='/votre-url-de-redirection/')
+@user_passes_test(lambda u: u.is_superuser, login_url='/administration/login/')
 def upload_image(request):
     """ gestion insertion image pour competitions
     """
@@ -169,7 +169,7 @@ def upload_image(request):
     # Rendre le template HTML avec le contexte des compétitions
     return render(request, 'competitions/upload_image.html', {'competitions': competitions})
 
-@user_passes_test(lambda u: u.is_superuser, login_url='/votre-url-de-redirection/')
+@user_passes_test(lambda u: u.is_superuser, login_url='/administration/login/')
 def lieu_competition(request):
     """Lieu Competion
     """
@@ -198,7 +198,7 @@ def lieu_competition(request):
             lieu.delete()
         return redirect('lieu_competition')
     
-@user_passes_test(lambda u: u.is_superuser, login_url='/votre-url-de-redirection/')
+@user_passes_test(lambda u: u.is_superuser, login_url='/administration/login/')
 def dates_competitions(request):
     """Dates Competitions
     """
@@ -232,7 +232,7 @@ def dates_competitions(request):
         return redirect('dates_competitions/dates_competitions')  # Rediriger pour éviter les re-postages
     
 
-@user_passes_test(lambda u: u.is_superuser, login_url='/votre-url-de-redirection/')
+@user_passes_test(lambda u: u.is_superuser, login_url='/administration/login/')
 def competitions(request):
     """Competitions
     """
@@ -262,7 +262,7 @@ def competitions(request):
             competition.delete()
             return redirect('competitions')  
         
-@user_passes_test(lambda u: u.is_superuser, login_url='/votre-url-de-redirection/')
+@user_passes_test(lambda u: u.is_superuser, login_url='/administration/login/')
 def types(request):
     """ types Offre pour commande
     """
@@ -291,7 +291,7 @@ def types(request):
             types.delete()
         return redirect('types')
     
-@user_passes_test(lambda u: u.is_superuser, login_url='/votre-url-de-redirection/')
+@user_passes_test(lambda u: u.is_superuser, login_url='/administration/login/')
 def offres(request):
     """Offre
     """
@@ -337,7 +337,7 @@ def offres(request):
             offre.delete()
         return redirect('offres')
     
-@user_passes_test(lambda u: u.is_superuser, login_url='/votre-url-de-redirection/')
+@user_passes_test(lambda u: u.is_superuser, login_url='/administration/login/')
 def commandes(request):
     """Commande
     """
