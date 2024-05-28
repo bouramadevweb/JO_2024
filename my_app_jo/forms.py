@@ -38,7 +38,7 @@ class CustomUserChangeForm(UserChangeForm):
         fields = ('username', 'first_name', 'last_name', 'email','phone_number')
 class PhoneNumberField(forms.CharField):
     def __init__(self, *args, **kwargs):
-        kwargs.setdefault('label', 'Numéro de téléphone')
+        kwargs.setdefault('label', 'Tel : indicatif de votre pays exemple pour la  france = +330255256412')
         kwargs.setdefault('max_length', 12) 
         kwargs.setdefault('widget', forms.TextInput(attrs={'type': 'tel', 'class': 'form-control', 'placeholder': '+33612345678', 'required': True}))
         super().__init__(*args, **kwargs)
