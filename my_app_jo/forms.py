@@ -51,6 +51,8 @@ class PhoneNumberField(forms.CharField):
         super().__init__(*args, **kwargs)
 
 class InscriptionForm(UserCreationForm):
+    ''' inscription 
+    '''
     accept_conditions = forms.BooleanField(label="J'accepte les conditions d'inscription", required=True)
     phone_number = PhoneNumberField()
 
