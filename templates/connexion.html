@@ -23,12 +23,17 @@
 {{form.}}
 {{ form.as_p }}
 <div class="row">
-    <div class="col-md-6">
-        <button type="submit" class="btn btn-primary btn-block">Se connecter</button>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-12 mb-2">
+                <button type="submit" class="btn btn-primary btn-block">Se connecter</button>
+            </div>
+            <div class="col-md-6 col-12 mb-2">
+                <a href="{% url 'password_reset' %}" class="btn btn-success btn-block">Mot de passe oublié</a>
+            </div>
+        </div>
     </div>
-    <div class="col-md-6">
-        <a href="{% url 'password_reset' %}" class="btn btn-success btn-block">Mot de passe oublié</a>
-    </div>
+
 </div>
 </form>
 </div>

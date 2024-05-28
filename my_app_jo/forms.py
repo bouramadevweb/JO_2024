@@ -35,11 +35,11 @@ class ModifierCommandeForm(forms.ModelForm):
 class CustomUserChangeForm(UserChangeForm):
     class Meta(UserChangeForm.Meta):
         model = User
-        fields = ('username', 'first_name', 'last_name', 'phone_number')
+        fields = ('username', 'first_name', 'last_name', 'email','phone_number')
 class PhoneNumberField(forms.CharField):
     def __init__(self, *args, **kwargs):
         kwargs.setdefault('label', 'Numéro de téléphone')
-        kwargs.setdefault('max_length', 12)  # définir la longueur maximale selon le standard international E.164
+        kwargs.setdefault('max_length', 12) 
         kwargs.setdefault('widget', forms.TextInput(attrs={'type': 'tel', 'class': 'form-control', 'placeholder': '+33612345678', 'required': True}))
         super().__init__(*args, **kwargs)
 

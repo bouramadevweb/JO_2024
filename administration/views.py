@@ -18,6 +18,10 @@ from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import logout
+from django.contrib.auth import get_user_model
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from django.views.decorators.csrf import csrf_exempt
+User = get_user_model()
 
 
 
@@ -25,7 +29,7 @@ from django.contrib.auth import logout
 
 
 def login(request):
-    """admin login
+    """admin login pour la ocnnexion admin 
     """
     if request.method == 'POST':
         form = CustomAuthenticationForm(request, request.POST)
@@ -37,7 +41,7 @@ def login(request):
                 auth_login(request, user)  
                 return redirect('administration')  
     else:
-        form = BootstrapAuthenticationForm()
+         form = BootstrapAuthenticationForm()
     return render(request, 'admin/login.html', {'form': form})
 
 def admindeconnexion(request):
@@ -47,36 +51,39 @@ def admindeconnexion(request):
     return redirect('login')
 
 @user_passes_test(lambda u: u.is_superuser, login_url='/administration/login')
+@csrf_exempt
 def users(request):
-    """users
-    """
     if request.method == 'GET':
-        users = Users.objects.all() 
+        users = User.objects.all()
         paginator = Paginator(users, 10)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
-        form = UserCreationForm()
-        return render(request, 'admin/users.html', {'page_obj': page_obj, 'form': form})
+        return render(request, 'admin/users.html', {'page_obj': page_obj})
 
     elif request.method == 'POST':
         if 'add' in request.POST:
             form = UserCreationForm(request.POST)
             if form.is_valid():
                 form.save()
-                return redirect('admin/users')
+                return redirect('users')
         elif 'update' in request.POST:
             user_id = request.POST.get('id')
             user = get_object_or_404(User, pk=user_id)
             form = UserChangeForm(request.POST, instance=user)
             if form.is_valid():
                 form.save()
-                return redirect('admin/users')
+                return redirect('users')
         elif 'delete' in request.POST:
             user_id = request.POST.get('id')
             user = get_object_or_404(User, pk=user_id)
             user.delete()
-            return redirect('admin/users')
-        
+            return redirect('users')
+
+    users = User.objects.all()
+    paginator = Paginator(users, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'admin/users.html', {'page_obj': page_obj})
 class AdminCreateView(CreateView):
     form_class = AdminInscriptionForm
     template_name = 'admin/user_form.html'  
@@ -98,7 +105,7 @@ def administration(request):
 
 @user_passes_test(lambda u: u.is_superuser, login_url='/administration/login/')
 def ventes_par_offre(request):
-    """Vente par offres
+    """ pour la gestion des Vente par offres
     """
     # Récupérer les offres avec le nombre de ventes pour chaque offre
     ventes_par_offre = Offre.objects.annotate(
@@ -116,7 +123,8 @@ def ventes_par_offre(request):
     
 @user_passes_test(lambda u: u.is_superuser, login_url='/administration/login/')
 def list_competition(request):
-    """ list des competion
+    """ list des competion 
+        pour  la gestion list des competitions CRUD admin 
     """
     if request.method == 'GET':
         list_competition = List_competition.objects.all()
@@ -175,7 +183,8 @@ def lieu_competition(request):
     """
     if request.method == 'GET':
         lieu_competition = Lieu_des_competions.objects.all()
-        paginator = Paginator(lieu_competition,10)  # Paginer par 10 éléments par page
+         # Paginer par 10 éléments par page
+        paginator = Paginator(lieu_competition,10) 
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
         form = LieuDesCompetionsForm()
@@ -235,6 +244,7 @@ def dates_competitions(request):
 @user_passes_test(lambda u: u.is_superuser, login_url='/administration/login/')
 def competitions(request):
     """Competitions
+      pour la gestion des CRUD competitions des jeux 
     """
     if request.method == 'GET':
         competitions = Competitions.objects.all()
@@ -264,10 +274,11 @@ def competitions(request):
         
 @user_passes_test(lambda u: u.is_superuser, login_url='/administration/login/')
 def types(request):
-    """ types Offre pour commande
+    """ gestion CRUD des  types Offre pour commande
     """
     if request.method == 'GET':
         types = Types.objects.all()
+        # pagination 
         paginator = Paginator(types,10)
         page_number = request.GET.get('page')
         page_objs = paginator.get_page(page_number)
@@ -293,7 +304,7 @@ def types(request):
     
 @user_passes_test(lambda u: u.is_superuser, login_url='/administration/login/')
 def offres(request):
-    """Offre
+    """ gestion CRUD des Offres pour la competitoins
     """
     if request.method == 'GET':
         offres = Offre.objects.all()
@@ -339,7 +350,7 @@ def offres(request):
     
 @user_passes_test(lambda u: u.is_superuser, login_url='/administration/login/')
 def commandes(request):
-    """Commande
+    """Gestion CRUD des Commandes 
     """
     if request.method=='GET':
         commandes =Commande.objects.all()
@@ -355,6 +366,7 @@ def commandes(request):
             if form.is_valid():
                 form.save()
         elif 'update' in request.POST:
+            
             commande_id = request.POST.get('id')
             commande = get_object_or_404(Commande, pk=commande_id)
             form = CommandeForm(request.POST, instance=commande)

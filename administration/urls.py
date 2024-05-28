@@ -1,15 +1,15 @@
 from django.urls import path
 from administration import views
-from .views import AdminCreateView
+from .views import AdminCreateView,login
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('admin/create/', AdminCreateView.as_view(), name='admin_create'),
-    path('login/', views.login, name='login'),
+    path('login/', login , name='login'),
     path('admindeconnexion/',views.admindeconnexion, name='admindeconnexion'),
-    path('admin/users/', views.users, name='users'),
+    path('users/', views.users, name='users'),
     path('administration/', views.administration, name='administration'),
     
     path('list_competition/', views.list_competition, name='list_competition'),

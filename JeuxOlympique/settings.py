@@ -214,14 +214,13 @@ LOGIN_REDIRECT_URL ='/'
 
 # ENVIRONMENT == 'production' or POSTGRESLOCALLY == TRUE 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-ACCOUNT_AUTHENTICATION_METHOD ='email'
-ACCOUNT_EMAIL_REQUIRED =True
-EMAIL_HOST = 'smtp.gmail.com'   # env('EMAIL_ADDRESS')
+EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'bouramadevweb@gmail.com'  
-EMAIL_HOST_PASSWORD = '240283KungfuMaitre' 
-ACCOUNT_AUTHENTICATION_BLACKLIST = ['admin','accounts','connexion']
+EMAIL_HOST_USER = 'jeuxos2024@gmail.com'  
+EMAIL_HOST_PASSWORD = 'z j q u n k b d d s g b m u t a' 
+DEFAULT_FROM_EMAIL = 'jeuxos2024@gmail.com'
+
 
 import os
 from dotenv import load_dotenv

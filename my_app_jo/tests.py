@@ -1,21 +1,26 @@
 from django.test import TestCase,Client
 from django.test import TestCase, RequestFactory
-from .models import Competitions ,Types ,Lieu_des_competions,List_competition,Dates_Competions,Offre,Commande,User,Billet
+from .models import Competitions,Code ,Types,Lieu_des_competions,List_competition,Dates_Competions,Offre,Commande,User,Billet
 from datetime import datetime
+from unittest.mock import patch
+from io import BytesIO
+import base64
+import pytest
+from django.contrib.messages import get_messages
 from django.utils import timezone
 from my_app_jo.views import choisir_ticket
 from django.urls import reverse
 from django.utils import timezone
 from django.contrib.auth import get_user_model
-from .views import ajouter_au_panier
+from .views import ajouter_au_panier,modifier_profile,offresuser
 from django.test import TestCase, RequestFactory
 from django.urls import reverse
 from django.contrib.auth.models import User
 from django.contrib.messages.storage.fallback import FallbackStorage
 from django.contrib import messages
-import qrcode, base64
-from io import BytesIO
 from django.utils import timezone
+from django.core.files.uploadedfile import SimpleUploadedFile
+from my_app_jo.forms import CustomUserChangeForm  
 from django.contrib.auth import get_user_model
 from .models import Offre, Commande, Billet, Competitions
 from .views import choisir_ticket, ajouter_au_panier
@@ -23,6 +28,7 @@ import string
 import secrets
 
 from django.test import TestCase, RequestFactory
+from django.contrib.sessions.middleware import SessionMiddleware
 from django.urls import reverse
 from my_app_jo.models import User  
 from my_app_jo.views import ajouter_au_panier
@@ -823,7 +829,7 @@ class ChoixTicketTestCase(TestCase):
                                                                 date_fin='2024-09-12',
                                                                 pk_list_competition=self.list_competition,
                                                                 pk_lieu=self.lieu_competition)
-
+       
         self.competition = Competitions.objects.create(Nom='escrime',
                                                        pk_list_competition=self.list_competition, 
                                                        pk_date_competition=self.date_competition, 
@@ -858,7 +864,6 @@ class ChoixTicketTestCase(TestCase):
         self.assertEqual(commande.pk_Offre, self.offre)
         self.assertEqual(commande.pk_Utilisateur, self.user)
         self.assertTrue(commande.est_validee) 
-        # self.assertEqual(commande.pk_Billet,self.billet.pk_Billet)  
         self.assertAlmostEqual(commande.pk_date, timezone.now(), delta=timezone.timedelta(seconds=10)) 
 
     def test_voir_panier(self):
@@ -881,3 +886,485 @@ class ChoixTicketTestCase(TestCase):
 
         # Vérifier que la réponse renvoie un code 200 (succès)
             self.assertEqual(response.status_code, 200) 
+
+
+class TestViews(TestCase):
+    def setUp(self):
+        self.factory = RequestFactory()
+        self.list_competition = List_competition.objects.create(pk_list_competition='escrime',
+                                                                nom='escrime')
+        self.lieu_competition = Lieu_des_competions.objects.create(pk_lieu='paris_escrime',
+                                                                   Nom='escrime club', 
+                                                                   Ville='Paris',
+                                                                   Capacite=100,
+                                                                   Discipline=self.list_competition)
+        self.date_competition = Dates_Competions.objects.create(pk_date_competition='date_3',
+                                                                date_debut='2024-09-02',
+                                                                date_fin='2024-09-12',
+                                                                pk_list_competition=self.list_competition,
+                                                                pk_lieu=self.lieu_competition)
+        
+        image_file = SimpleUploadedFile(name='test_image.jpg', content=b'', content_type='image/jpeg')
+
+        self.competition = Competitions.objects.create(pk_typ_competition ='escrime',
+                                                       Nom='escrime',
+                                                        image=image_file,
+                                                       pk_list_competition=self.list_competition, 
+                                                       pk_date_competition=self.date_competition, 
+                                                       pk_lieu=self.lieu_competition)   
+        self.type = Types.objects.create(type='Test Type')
+        self.offre = Offre.objects.create(type= self.type,
+                                          nombre_personnes=1,
+                                          prix=10.0,
+                                          competition=self.competition)
+        self.user = User.objects.create_user(username='testuser', password='12345')
+        self.client.login(username='testuser', password='12345')
+       
+
+    def test_home_view(self):
+        request = self.factory.get('/')
+        response = home(request)
+        self.assertEqual(response.status_code, 200)
+        # self.assertTemplateUsed(response, 'home.html')
+
+    def test_choisir_ticket_view_get(self):
+        request = self.factory.get(reverse('choisir_ticket'))
+        response = choisir_ticket(request)
+        self.assertEqual(response.status_code, 200)
+
+    def test_choisir_ticket_with_competition_only(self):
+        response = self.client.get(reverse('choisir_ticket'), {'competition': self.competition.pk_typ_competition})
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'choisir_ticket.html')
+        self.assertIn('page_objs', response.context)
+        self.assertIn('competitions', response.context)
+
+    def test_choisir_ticket_with_competition_and_type(self):
+        response = self.client.get(reverse('choisir_ticket'), {'competition': self.competition.pk_typ_competition, 'type': self.type.type})
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'choisir_ticket.html')
+        self.assertIn('page_objs', response.context)
+        self.assertEqual(len(response.context['page_objs']), 1)
+        self.assertEqual(response.context['page_objs'][0], self.offre)
+        self.assertIn('competitions', response.context)
+
+    def test_choisir_ticket_without_competition(self):
+        response = self.client.get(reverse('choisir_ticket'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'choisir_ticket.html')
+        self.assertNotIn('page_objs', response.context)
+        self.assertIn('competitions', response.context)
+        self.assertEqual(len(response.context['competitions']), 1)
+        self.assertEqual(response.context['competitions'][0], self.competition)
+   
+    
+    def test_ajouter_au_panier_success(self):
+        data = {
+            'offre_id': [self.offre.pk_Offre],
+            'quantite_{}'.format(self.offre.pk_Offre): 2,
+            'date_debut_{}'.format(self.offre.pk_Offre): '2024-05-25',
+        }
+        response = self.client.post(reverse('ajouter_au_panier'), data)
+        self.assertRedirects(response, reverse('voir_panier'))
+
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(str(messages[0]), "Les offres ont été ajoutées au panier.")
+        
+        commandes = Commande.objects.filter(pk_Utilisateur=self.user)
+        self.assertEqual(commandes.count(), 1)
+
+    def test_ajouter_au_panier_invalid_quantity(self):
+        data = {
+            'offre_id': [self.offre.pk_Offre],
+            'quantite_{}'.format(self.offre.pk_Offre): 0,
+            'date_debut_{}'.format(self.offre.pk_Offre): '2024-05-25',
+        }
+        response = self.client.post(reverse('ajouter_au_panier'), data)
+        self.assertRedirects(response, reverse('choisir_ticket'))
+
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(str(messages[0]), "Veuillez sélectionner au moins une offre et spécifier une quantité valide.")
+        
+        commandes = Commande.objects.filter(pk_Utilisateur=self.user)
+        self.assertEqual(commandes.count(), 0)
+
+    def test_ajouter_au_panier_offer_does_not_exist(self):
+        data = {
+            'offre_id': [999],  
+            'quantite_999': 1,
+            'date_debut_999': '2024-05-25',
+        }
+        response = self.client.post(reverse('ajouter_au_panier'), data)
+        self.assertRedirects(response, reverse('choisir_ticket'))
+
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(str(messages[0]), "L'offre avec l'ID 999 n'existe pas.")
+        
+        commandes = Commande.objects.filter(pk_Utilisateur=self.user)
+        self.assertEqual(commandes.count(), 0)
+
+    def test_ajouter_au_panier_missing_start_date(self):
+        data = {
+            'offre_id': [self.offre.pk_Offre],
+            'quantite_{}'.format(self.offre.pk_Offre): 1,
+             'date_debut_{}'.format(self.offre.pk_Offre): ' ',
+
+        }
+        response = self.client.post(reverse('ajouter_au_panier'), data)
+        self.assertRedirects(response, reverse('choisir_ticket'))
+        
+        commandes = Commande.objects.filter(pk_Utilisateur=self.user)
+        self.assertEqual(commandes.count(), 0)
+
+
+class PayerCommandeViewTests(TestCase):
+    """teste payer commande
+    """
+
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(username='user', password='12345')
+        self.client.login(username='user', password='12345')
+        
+        self.list_competition = List_competition.objects.create(pk_list_competition='escrime',
+                                                                nom='escrime')
+        self.lieu_competition = Lieu_des_competions.objects.create(pk_lieu='paris_escrime',
+                                                                   Nom='escrime club', 
+                                                                   Ville='Paris',
+                                                                   Capacite=100,
+                                                                   Discipline=self.list_competition)
+        self.date_competition = Dates_Competions.objects.create(pk_date_competition='date_3',
+                                                                date_debut='2024-09-02',
+                                                                date_fin='2024-09-12',
+                                                                pk_list_competition=self.list_competition,
+                                                                pk_lieu=self.lieu_competition)
+        
+        image_file = SimpleUploadedFile(name='test_image.jpg', content=b'', content_type='image/jpeg')
+
+        self.competition = Competitions.objects.create(pk_typ_competition ='escrime',
+                                                       Nom='escrime',
+                                                        image=image_file,
+                                                       pk_list_competition=self.list_competition, 
+                                                       pk_date_competition=self.date_competition, 
+                                                       pk_lieu=self.lieu_competition)   
+        self.type = Types.objects.create(type='Test Type')
+        self.offre = Offre.objects.create(type= self.type,
+                                          nombre_personnes=1,
+                                          prix=10.0,
+                                          competition=self.competition)
+        self.user = User.objects.create_user(username='testuser', password='12345')
+        self.client.login(username='testuser', password='12345')
+        self.commande = Commande.objects.create(quantite=1, MontantTotal=10.0,
+                                                pk_Offre=self.offre,
+                                                pk_Utilisateur=self.user,
+                                                est_validee=False)
+        
+        self.billet = Billet.objects.create(pk_typ_competition=self.competition,
+                                            ClefUtilisateur=123,
+                                            Cledebilletelectroniquesecurisee=456,
+                                            date_dachat =timezone.now() ,
+                                            date_valide = timezone.now())
+        
+
+    def test_payer_commande_success(self):
+         response = self.client.post(reverse('payer_commande', args=[self.commande.pk_Commande]))
+        #  self.assertRedirects(response, reverse('details_billet', args=[self.billet.pk_Billet]))  # Correction ici
+    
+         self.commande.refresh_from_db()
+         self.assertTrue(self.commande.est_validee)
+    
+        #  self.billet.refresh_from_db()
+        #  self.assertTrue(self.billet.est_validee)
+
+
+    def test_payer_commande_already_validated(self):
+        self.commande.est_validee = True
+        self.commande.save()
+        
+        response = self.client.post(reverse('payer_commande', args=[self.commande.pk_Commande]))
+        self.assertRedirects(response, reverse('voir_panier'))
+
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(str(messages[0]), "La commande n'existe pas ou a déjà été validée.")
+
+    def test_payer_commande_nonexistent(self):
+        response = self.client.post(reverse('payer_commande', args=[999]))  # Commande ID that does not exist
+        self.assertRedirects(response, reverse('voir_panier'))
+
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(str(messages[0]), "La commande n'existe pas ou a déjà été validée.")
+
+    def test_payer_commande_get(self):
+        response = self.client.get(reverse('payer_commande', args=[self.commande.pk_Commande]))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'payer_commande.html')
+        self.assertIn('commande_id', response.context)
+        self.assertIn('montant_total', response.context)
+        # self.assertEqual(response.context['montant_total'], self.commande.MontantTotal)
+
+    
+class ModifierCommandeTestCase(TestCase):
+    """test modification
+    """
+    def setUp(self):
+        # Créer des objets Commande et Offre pour les tests
+        self.client = Client()
+        self.user = User.objects.create_user(username='user', password='12345')
+        self.client.login(username='user', password='12345')
+        
+        self.list_competition = List_competition.objects.create(pk_list_competition='escrime',
+                                                                nom='escrime')
+        self.lieu_competition = Lieu_des_competions.objects.create(pk_lieu='paris_escrime',
+                                                                   Nom='escrime club', 
+                                                                   Ville='Paris',
+                                                                   Capacite=100,
+                                                                   Discipline=self.list_competition)
+        self.date_competition = Dates_Competions.objects.create(pk_date_competition='date_3',
+                                                                date_debut='2024-09-02',
+                                                                date_fin='2024-09-12',
+                                                                pk_list_competition=self.list_competition,
+                                                                pk_lieu=self.lieu_competition)
+        
+        image_file = SimpleUploadedFile(name='test_image.jpg', content=b'', content_type='image/jpeg')
+
+        self.competition = Competitions.objects.create(pk_typ_competition ='escrime',
+                                                       Nom='escrime',
+                                                        image=image_file,
+                                                       pk_list_competition=self.list_competition, 
+                                                       pk_date_competition=self.date_competition, 
+                                                       pk_lieu=self.lieu_competition)   
+        self.type = Types.objects.create(type='Test Type')
+        self.offre = Offre.objects.create(type= self.type,
+                                          nombre_personnes=1,
+                                          prix=10.0,
+                                          competition=self.competition)
+        self.user = User.objects.create_user(username='amina', password='12345455')
+        self.client.login(username='amina', password='12345455')
+        self.commande = Commande.objects.create(quantite=1, MontantTotal=10.0,
+                                                pk_Offre=self.offre,
+                                                pk_Utilisateur=self.user,
+                                                est_validee=False)
+        
+        self.billet = Billet.objects.create(pk_typ_competition=self.competition,
+                                            ClefUtilisateur=123,
+                                            Cledebilletelectroniquesecurisee=456,
+                                            date_dachat =timezone.now() ,
+                                            date_valide = timezone.now())
+        
+
+    def test_modifier_commande_post(self):
+        # Simuler une requête POST avec des données de modification de commande
+        data = {
+            'offre_id': self.offre.pk_Offre,
+            'quantite': 2,
+        }
+        response = self.client.post(reverse('modifier_commande', args=[self.commande.pk_Commande]), data)
+        
+        # Vérifier que la réponse redirige vers 'voir_panier'
+        self.assertRedirects(response, reverse('voir_panier'))
+
+        # Actualiser l'objet commande depuis la base de données
+        self.commande.refresh_from_db()
+
+        # Vérifier que la commande a été mise à jour avec les nouvelles données
+        self.assertEqual(self.commande.pk_Offre, self.offre)
+        self.assertEqual(self.commande.quantite, 2)
+        self.assertEqual(self.commande.MontantTotal, 20)
+
+    # Ajouter d'autres tests unitaires pour les différentes branches de votre vue
+
+    def test_modifier_commande_get(self):
+        # Simuler une requête GET à la vue
+        response = self.client.get(reverse('modifier_commande', args=[self.commande.pk_Commande]))
+
+        # Vérifier que la réponse est un succès (code 200)
+        self.assertEqual(response.status_code, 200)
+
+class InscriptionTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
+
+    def test_inscription_post(self):
+        # Créer des données simulées pour le formulaire d'inscription
+        data = {
+            'username': 'testuser',
+            'last_name': 'Doe',
+            'first_name': 'John',
+            'email': 'test@example.com',
+            'phone_number': '1234567890',
+            'password1': 'testpassword',
+            'password2': 'testpassword',
+            'accept_conditions': True,
+            # Ajoutez d'autres champs requis par votre formulaire ici
+        }
+
+        # Envoyer une requête POST avec les données simulées
+        response = self.client.post(reverse('inscription'), data)
+
+        # Vérifier que l'utilisateur est créé dans la base de données
+        self.assertTrue(User.objects.filter(email='test@example.com').exists())
+
+        # Vérifier que l'utilisateur est connecté
+        self.assertTrue('_auth_user_id' in self.client.session)
+
+    def test_inscription_get(self):
+        # Envoyer une requête GET à la vue d'inscription
+        response = self.client.get(reverse('inscription'))
+
+        # Vérifier que la réponse est un succès (code 200)
+        self.assertEqual(response.status_code, 200)
+
+        # Vérifier que le formulaire est présent dans le contexte
+        self.assertIn('form', response.context)
+
+        # Vérifier que tous les champs requis sont présents dans le formulaire
+        form = response.context['form']
+        self.assertIn('username', form.fields)
+        self.assertIn('last_name', form.fields)
+        self.assertIn('first_name', form.fields)
+        self.assertIn('email', form.fields)
+        self.assertIn('phone_number', form.fields)
+        self.assertIn('password1', form.fields)
+        self.assertIn('password2', form.fields)
+        self.assertIn('accept_conditions', form.fields)
+
+
+
+
+@pytest.fixture
+def client():
+    return Client()
+
+@pytest.fixture
+def user(db):
+    return User.objects.create_user(username='testuser', first_name='Test', last_name='User', password='12345')
+
+@pytest.fixture
+def billet(db):
+    return Billet.objects.create(pk_Billet=1, ClefUtilisateur='clef_user', Cledebilletelectroniquesecurisee='clef_billet')
+
+@pytest.fixture
+def commande(db, billet, user):
+    return Commande.objects.create(pk_Billet=billet, pk_Utilisateur=user, est_validee=True)
+
+@patch('my_app_jo.views.qrcode.QRCode')  # Remplacez par le chemin correct vers votre vue
+def test_mes_billets(mock_qrcode, client, billet, commande):
+    # Mocking QRCode generation
+    mock_qr_instance = mock_qrcode.return_value
+    mock_img_instance = mock_qr_instance.make_image.return_value
+    mock_img_instance.save = lambda buffer, format: buffer.write(b'fake image data')
+
+    response = client.get(reverse('mes_billets'))  
+
+    assert response.status_code == 200
+    assert 'billets_with_qr' in response.context
+    billets_with_qr = response.context['billets_with_qr']
+    
+    assert len(billets_with_qr) == 1
+    assert billets_with_qr[0]['billet'] == billet
+    assert billets_with_qr[0]['commande'] == commande
+    assert billets_with_qr[0]['qr_image'] == base64.b64encode(b'fake image data').decode() 
+
+
+class ProfileViewTest(TestCase):
+    def setUp(self):
+        # Crée un utilisateur de test
+        self.user = User.objects.create_user(
+            username='testuser',
+            first_name='Test',
+            last_name='User',
+            password='12345'
+        )
+        # Instancie le client de test
+        self.client = Client()
+
+    def test_profile_view(self):
+        # Force la connexion de l'utilisateur
+        self.client.force_login(self.user)
+
+        # Fait une requête GET vers la vue 'profile'
+        response = self.client.get(reverse('profile'))
+
+        # Vérifie que le statut de la réponse est 200
+        self.assertEqual(response.status_code, 200)
+        # Vérifie que le contexte contient l'utilisateur
+        self.assertIn('user', response.context)
+        # Vérifie que l'utilisateur dans le contexte est le bon utilisateur
+        self.assertEqual(response.context['user'], self.user)
+        # Vérifie que le template utilisé est 'profile.html'
+        self.assertTemplateUsed(response, 'profile.html')
+
+
+
+class ModifierProfileViewTest(TestCase):
+    def setUp(self):
+        # Crée un utilisateur de test
+        self.user = User.objects.create_user(
+            username='testuser',
+            first_name='Test',
+            last_name='User',
+            email='testuser@example.com',
+            password='12345'
+        )
+        # Crée une instance de RequestFactory
+        self.factory = RequestFactory()
+
+    def test_modifier_profile_get(self):
+        # Crée une requête GET
+        request = self.factory.get(reverse('modifier_profile'))
+        # Assigne l'utilisateur à la requête
+        request.user = self.user
+
+        # Appelle la vue
+        response = modifier_profile(request)
+
+        # Vérifie que le statut de la réponse est 200
+        self.assertEqual(response.status_code, 200)
+
+    
+class OffresUserViewTest(TestCase):
+    def setUp(self):
+        # Crée quelques offres de test
+        self.client = Client()
+        self.user = User.objects.create_user(username='user', password='12345')
+        self.client.login(username='user', password='12345')
+        
+        self.list_competition = List_competition.objects.create(pk_list_competition='escrime',
+                                                                nom='escrime')
+        self.lieu_competition = Lieu_des_competions.objects.create(pk_lieu='paris_escrime',
+                                                                   Nom='escrime club', 
+                                                                   Ville='Paris',
+                                                                   Capacite=100,
+                                                                   Discipline=self.list_competition)
+        self.date_competition = Dates_Competions.objects.create(pk_date_competition='date_3',
+                                                                date_debut='2024-09-02',
+                                                                date_fin='2024-09-12',
+                                                                pk_list_competition=self.list_competition,
+                                                                pk_lieu=self.lieu_competition)
+        
+        image_file = SimpleUploadedFile(name='test_image.jpg', content=b'', content_type='image/jpeg')
+
+        self.competition = Competitions.objects.create(pk_typ_competition ='escrime',
+                                                       Nom='escrime',
+                                                        image=image_file,
+                                                       pk_list_competition=self.list_competition, 
+                                                       pk_date_competition=self.date_competition, 
+                                                       pk_lieu=self.lieu_competition)   
+        self.type = Types.objects.create(type='Test Type')
+        self.offre = Offre.objects.create(type= self.type,
+                                          nombre_personnes=1,
+                                          prix=10.0,
+                                          competition=self.competition)
+        # Crée une instance de RequestFactory
+        self.factory = RequestFactory()
+
+    def test_offresuser_get(self):
+        # Crée une requête GET
+        request = self.factory.get(reverse('offresuser'))  # Assurez-vous que le nom de l'URL est correct
+        # Appelle la vue
+        response = offresuser(request)
+
+        # Vérifie que le statut de la réponse est 200
+        self.assertEqual(response.status_code, 200)
+       
+     
