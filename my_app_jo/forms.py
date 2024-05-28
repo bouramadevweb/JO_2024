@@ -5,19 +5,26 @@ from django.contrib.auth.forms import AuthenticationForm,UserCreationForm,UserCh
 from django import forms
 
 class VerificationCodeForm(forms.Form):
+    ''' verification du code sms
+    '''
     verification_code = forms.CharField(label='Code de vérification', max_length=6)
 
 class BootstrapAuthenticationForm(AuthenticationForm):
+    '''authentification 
+    '''
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['username'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Nom d\'utilisateur'})
         self.fields['password'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Mot de passe'})
+
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = User
         fields = ('username', 'email')
 
 class CommandeForm(forms.Form):
+    '''
+    '''
     quantite = forms.IntegerField(label='Quantité', min_value=1)
 
 class ModifierCommandeForm(forms.ModelForm):
