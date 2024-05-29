@@ -6,8 +6,12 @@ from my_app_jo.models import User
 from django.contrib.auth.forms import AuthenticationForm
 
 from django import forms
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm,UserChangeForm
 
+class CustomUserChangeForms(UserChangeForm):
+    class Meta(UserChangeForm.Meta):
+        model = User
+        fields = ('username', 'first_name', 'last_name', 'email','phone_number')
 class CustomAuthenticationForm(AuthenticationForm):
     username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nom d\'utilisateur'}))
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Mot de passe'}))
@@ -84,7 +88,6 @@ class TypesForm(forms.ModelForm):
 
 class OffreForm(forms.ModelForm):
     
-
     class Meta:
         model = Offre
         fields = [ 'type','nombre_personnes', 'prix', 'competition']

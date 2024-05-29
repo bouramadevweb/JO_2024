@@ -10,7 +10,7 @@ from django.contrib.auth.models import User
 from my_app_jo.models import User as Users
 from django.views.generic import  DetailView,CreateView,UpdateView,DeleteView
 from django.urls import reverse_lazy
-from .form import AdminInscriptionForm
+from .form import AdminInscriptionForm,CustomUserChangeForms
 from django.contrib.auth import login,authenticate
 from django.contrib.auth.forms import AuthenticationForm
 from .form import CustomAuthenticationForm,BootstrapAuthenticationForm
@@ -54,7 +54,7 @@ def admindeconnexion(request):
 @csrf_exempt
 def users(request):
     if request.method == 'GET':
-        users = User.objects.all()
+        users = User.objects.filter(is_superuser=False)
         paginator = Paginator(users, 10)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
@@ -238,7 +238,8 @@ def dates_competitions(request):
             date_competition_id = request.POST.get('id')
             date_competition = get_object_or_404(Dates_Competions, pk=date_competition_id)
             date_competition.delete()
-        return redirect('dates_competitions/dates_competitions')  # Rediriger pour éviter les re-postages
+     # Rediriger pour éviter les re-postages
+        return redirect('dates_competitions/dates_competitions') 
     
 
 @user_passes_test(lambda u: u.is_superuser, login_url='/administration/login/')
@@ -378,3 +379,25 @@ def commandes(request):
             commande = get_object_or_404(Commande, pk=commande_id)
             commande.delete()
         return redirect('commandes')  
+
+
+def admin_profile(request):
+    """profile
+    """
+    user = request.user
+    context = {'user': user}
+    return render(request, 'admin/profiles.html', context)
+
+def admin_modifier_profile(request):
+    """modification des profiles
+    """
+    if request.method == 'POST':
+        form = CustomUserChangeForms(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            # messages.success(request, 'Votre profil a été mis à jour avec succès !')
+            return redirect('admin_profile')
+    else:
+        form = CustomUserChangeForms(instance=request.user)
+
+    return render(request, 'admin/admin_modifier_profile.html', {'form': form})

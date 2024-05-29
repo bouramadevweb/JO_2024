@@ -53,7 +53,7 @@
                             <div class="mb-3">
                                 <label for="competition" class="form-label">Compétition</label>
                                 <select class="form-select" id="competition" name="competition">
-                                    <option value="">Toutes les compétitions</option>
+                                 <!--   <option value="">Toutes les compétitions</option> -->
                                     {% for competition in competitions %}
                                     <option value="{{ competition.pk_typ_competition }}">
                                         {{ competition.pk_list_competition.nom }} {{competition.pk_lieu.Nom}} dates :
@@ -107,26 +107,57 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                             aria-label="Close"></button>
                                     </div>
+
+
                                     <div class="modal-body">
                                         <!-- Formulaire de modification d'offre -->
-                                        <form method="post">
+                                        <form method="post" action="{% url 'offres' %}">
                                             {% csrf_token %}
                                             <input type="hidden" name="id" value="{{ offre.pk_Offre }}">
+                                        
                                             <div class="mb-3">
-                                                <label for="edit_nombre_personnes" class="form-label">Nombre de
-                                                    personnes</label>
-                                                <input type="number" class="form-control" id="edit_nombre_personnes"
-                                                    name="edit_nombre_personnes" value="{{ offre.nombre_personnes }}">
+                                                <label for="edit_type_display{{ offre.pk_Offre }}" class="form-label">Type actuel</label>
+                                                <input type="text" class="form-control" id="edit_type_display{{ offre.pk_Offre }}" value="{{ offre.type }}"
+                                                    disabled>
                                             </div>
                                             <div class="mb-3">
-                                                <label for="edit_prix" class="form-label">Prix</label>
-                                                <input type="number" step="0.01" class="form-control" id="edit_prix"
-                                                    name="edit_prix" value="{{ offre.prix }}">
+                                                <label for="edit_type{{ offre.pk_Offre }}" class="form-label">Type</label>
+                                                <select class="form-select" id="edit_type{{ offre.pk_Offre }}" name="type">
+                                                    {% for type in page_objs %}
+                                                    <option value="{{ type.type }}" {% if type.type == offre.type %} selected {% endif %}>
+                                                        {{ type.type }}
+                                                    </option>
+                                                    {% endfor %}
+                                                </select>
                                             </div>
-                                            <button type="submit" class="btn btn-primary"
-                                                name="update">Modifier</button>
+                                            <div class="mb-3">
+                                                <label for="edit_nombre_personnes{{ offre.pk_Offre }}" class="form-label">Nombre de personnes</label>
+                                                <input type="number" class="form-control" id="edit_nombre_personnes{{ offre.pk_Offre }}" name="nombre_personnes"
+                                                    value="{{ offre.nombre_personnes }}">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="edit_prix{{ offre.pk_Offre }}" class="form-label">Prix</label>
+                                                <input type="number" step="0.01" class="form-control" id="edit_prix{{ offre.pk_Offre }}" name="prix"
+                                                    value="{{ offre.prix }}">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="edit_competition{{ offre.pk_Offre }}" class="form-label">Competition</label>
+                                                <select class="form-select" id="edit_competition{{ offre.pk_Offre }}" name="competition">
+                                                    {% for competition in competitions %}
+                                                    <option value="{{ competition.pk_typ_competition }}"
+                                                     {% if  offre.competition.pk_typ_competition == competition.pk_typ_competition %} selected {% endif %}>
+                                                        {{ competition.pk_list_competition.nom }} - {{competition.pk_lieu.Nom}} dates :
+                                                        {{competition.pk_date_competition.date_debut|date:'Y-m-d'}} -
+                                                        {{competition.pk_date_competition.date_fin|date:'Y-m-d'}} medailles :
+                                                        {{competition.pk_date_competition.Remises_de_medailles}}
+                                                    </option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary" name="update">Modifier</button>
                                         </form>
                                     </div>
+
                                 </div>
                             </div>
                         </div>
