@@ -60,8 +60,15 @@ INSTALLED_APPS = [
     'administration',
     'django_bootstrap5',
     'django_twilio',
-    'whitenoise.runserver_nostatic'
+    'whitenoise.runserver_nostatic',
+    
 ]
+
+SESSION_COOKIE_AGE = 10
+
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -72,9 +79,12 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
-    
+    'JeuxOlympique.middleware.SessionTimeoutMiddleware', 
+
     
 ]
+
+
 
 ROOT_URLCONF = 'JeuxOlympique.urls'
 
@@ -232,3 +242,5 @@ load_dotenv()
 # Utilisation des variables d'environnement
 account_sid = os.getenv('TWILIO_ACCOUNT_SID')
 auth_token = os.getenv('TWILIO_AUTH_TOKEN')
+
+

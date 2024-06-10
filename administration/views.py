@@ -28,9 +28,23 @@ User = get_user_model()
 """Gestion administration de ce sites ici """
 
 
+# def login(request):
+#     """admin login pour la ocnnexion admin 
+#     """
+#     if request.method == 'POST':
+#         form = CustomAuthenticationForm(request, request.POST)
+#         if form.is_valid():
+#             username = form.cleaned_data['username']
+#             password = form.cleaned_data['password']
+#             user = authenticate(username=username, password=password)
+#             if user is not None:
+#                 auth_login(request, user)  
+#                 return redirect('administration')  
+#     else:
+#          form = BootstrapAuthenticationForm()
+#     return render(request, 'admin/login.html', {'form': form})
+
 def login(request):
-    """admin login pour la ocnnexion admin 
-    """
     if request.method == 'POST':
         form = CustomAuthenticationForm(request, request.POST)
         if form.is_valid():
@@ -38,15 +52,23 @@ def login(request):
             password = form.cleaned_data['password']
             user = authenticate(username=username, password=password)
             if user is not None:
-                auth_login(request, user)  
-                return redirect('administration')  
+                auth_login(request, user)
+                # Ajoutez l'ID de l'utilisateur à la session
+                request.session['user_id'] = user.id
+                return redirect('administration')
     else:
-         form = BootstrapAuthenticationForm()
+        form = CustomAuthenticationForm()
     return render(request, 'admin/login.html', {'form': form})
 
+# def admindeconnexion(request):
+#     """la deconnexion
+#     """
+#     logout(request)
+#     return redirect('login')
+
 def admindeconnexion(request):
-    """la deconnexion
-    """
+    # Supprimer l'ID de l'utilisateur de la session lors de la déconnexion
+    request.session.pop('user_id', None)
     logout(request)
     return redirect('login')
 
