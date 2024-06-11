@@ -314,7 +314,7 @@ def inscription(request):
             login(request, user)
             messages.success(request, f'Félicitations, {user.email} ! Votre compte a été créé avec succès.')
             request.session['user_pk'] = user.pk 
-            return redirect('verificode')
+            return redirect('home')
     else:
         form = InscriptionForm()
         
