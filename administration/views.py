@@ -106,7 +106,6 @@ def users(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     return render(request, 'admin/users.html', {'page_obj': page_obj})
-
 class AdminCreateView(CreateView):
     form_class = AdminInscriptionForm
     template_name = 'admin/user_form.html'  
