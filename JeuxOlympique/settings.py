@@ -63,11 +63,11 @@ INSTALLED_APPS = [
     
 ]
 
-SESSION_COOKIE_AGE = 10
+# SESSION_COOKIE_AGE = 10
 
-SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+# SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+# SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -78,7 +78,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
-    'JeuxOlympique.middleware.SessionTimeoutMiddleware', 
+    #'JeuxOlympique.middleware.SessionTimeoutMiddleware', 
 
     
 ]

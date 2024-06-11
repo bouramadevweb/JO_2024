@@ -403,8 +403,7 @@ def commandes(request):
             commande.delete()
         return redirect('commandes')  
 
-@user_passes_test(lambda u: u.is_superuser, login_url='/administration/login/')
-@csrf_exempt
+
 def admin_profile(request):
     """profile
     """
@@ -412,8 +411,6 @@ def admin_profile(request):
     context = {'user': user}
     return render(request, 'admin/profiles.html', context)
 
-@user_passes_test(lambda u: u.is_superuser, login_url='/administration/login/')
-@csrf_exempt
 def admin_modifier_profile(request):
     """modification des profiles
     """
