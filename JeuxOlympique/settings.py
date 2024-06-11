@@ -31,7 +31,6 @@ TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = 'django-insecure-z$6(o!_gyn&og3tusy-lit^4s)#21hqh20eq&c05ft@93g8pj4'
 SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -124,39 +123,18 @@ WSGI_APPLICATION = 'JeuxOlympique.wsgi.application'
 #         "ENGINE": "django.db.backends.postgresql",
 #         "NAME": "Olympique",
 #         "USER": "postgres",
-#         "PASSWORD": "kungfu",
+#         "PASSWORD": "",
 #         "HOST": "localhost",
 #         "PORT": "5432",
 #     }
 # }
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.postgresql",
-#         "NAME": "d3hakkjh8d40tg",
-#         "USER": "u71jj16hv9q4vu",
-#         "PASSWORD": "p4944a9cc23366839f71da4bfe78969d759af518a7d521b78c388f26caceaf052",
-#         "HOST": "cdgn4ufq38ipd0.cluster-czz5s0kz4scl.eu-west-1.rds.amazonaws.com",
-#         "PORT": "5432",
-#         "URI":   "postgres://u71jj16hv9q4vu:p4944a9cc23366839f71da4bfe78969d759af518a7d521b78c388f26caceaf052@cdgn4ufq38ipd0.cluster-czz5s0kz4scl.eu-west-1.rds.amazonaws.com:5432/d3hakkjh8d40tg"
 
-
-#     }
-# }
 
 DATABASES = {
     "default": dj_database_url.parse(config('DATABASE_URL'))
 }
 
-# AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID')
-# AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY')
-# AWS_S3_SIGNATURE_NAME = 'S3V4'
-# AWS_STORAGE_BUCKET_NAME = 'django-jo-2024'
-# AWS_REGION_NAME = config('AWS_REGION')
-# AWS_S3_FILE_OVERWRITE = False
-# AWS_DEFAULT_ACL = None
-# AWS_S3_VERIFY = True
-# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-# AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
+
 
 
 # Password validation
@@ -203,21 +181,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
-# Configuration des fichiers média
 
-# BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-# Configuration des fichiers statiques
-# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-# STATIC_URL = '/static/'
-# django_heroku.settings(locals())
-# STATICFILES_DIRS = [
-#     os.path.join(BASE_DIR, 'static'),
-# ]
-# # Configuration des fichiers média
-# MEDIA_URL = '/media/'
-# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-# Default primary k ey field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
