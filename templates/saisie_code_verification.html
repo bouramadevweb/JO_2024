@@ -1,6 +1,19 @@
 {% extends 'base.html' %}
 
+{% block title %}Panier{% endblock %}
 
+{% block content %}
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
 <section id="saisie_code_verifiaction">
 
     <div class="container mt-5">
@@ -11,7 +24,8 @@
                     {% csrf_token %}
                     <div class="form-group">
                         <label for="verification_code">Code de vérification:</label>
-                        <input type="text" class="form-control" id="verification_code" name="verification_code" required>
+                        <input type="text" class="form-control" id="verification_code" name="verification_code"
+                            required>
                     </div>
                     <button type="submit" class="btn btn-primary">Valider</button>
                 </form>
@@ -19,4 +33,8 @@
         </div>
     </div>
 </section>
+</body>
+</html>
 
+
+{% endblock %}
